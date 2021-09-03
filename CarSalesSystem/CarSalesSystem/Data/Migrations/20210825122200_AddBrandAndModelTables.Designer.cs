@@ -4,14 +4,16 @@ using CarSalesSystem.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CarSalesSystem.Data.Migrations
 {
     [DbContext(typeof(CarSalesDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210825122200_AddBrandAndModelTables")]
+    partial class AddBrandAndModelTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,6 +55,9 @@ namespace CarSalesSystem.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("UserId1")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("VehicleId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -63,7 +68,10 @@ namespace CarSalesSystem.Data.Migrations
 
                     b.HasIndex("RegionId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.HasIndex("UserId1");
 
                     b.HasIndex("VehicleId");
 
@@ -76,9 +84,7 @@ namespace CarSalesSystem.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -292,9 +298,10 @@ namespace CarSalesSystem.Data.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("BrandId")
+                    b.Property<string>("Brand")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
 
                     b.Property<int>("Category")
                         .HasColumnType("int");
@@ -311,6 +318,11 @@ namespace CarSalesSystem.Data.Migrations
                     b.Property<int>("Mileage")
                         .HasColumnType("int");
 
+                    b.Property<string>("Model")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
                     b.Property<int>("Power")
                         .HasColumnType("int");
 
@@ -322,37 +334,7 @@ namespace CarSalesSystem.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BrandId");
-
                     b.ToTable("Vehicles");
-                });
-
-            modelBuilder.Entity("CarSalesSystem.Data.Models.VehicleImage", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("AdvertisementId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("FullPath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(32)
-                        .HasColumnType("nvarchar(32)");
-
-                    b.Property<string>("UniqueName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AdvertisementId");
-
-                    b.ToTable("Images");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -503,10 +485,14 @@ namespace CarSalesSystem.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("CarSalesSystem.Data.Models.User", null)
-                        .WithMany("Advertisements")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .WithOne()
+                        .HasForeignKey("CarSalesSystem.Data.Models.Advertisement", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("CarSalesSystem.Data.Models.User", null)
+                        .WithMany("Advertisements")
+                        .HasForeignKey("UserId1");
 
                     b.HasOne("CarSalesSystem.Data.Models.Vehicle", "Vehicle")
                         .WithMany()
@@ -559,24 +545,6 @@ namespace CarSalesSystem.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Brand");
-                });
-
-            modelBuilder.Entity("CarSalesSystem.Data.Models.Vehicle", b =>
-                {
-                    b.HasOne("CarSalesSystem.Data.Models.Brand", "Brand")
-                        .WithMany("Vehicles")
-                        .HasForeignKey("BrandId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Brand");
-                });
-
-            modelBuilder.Entity("CarSalesSystem.Data.Models.VehicleImage", b =>
-                {
-                    b.HasOne("CarSalesSystem.Data.Models.Advertisement", null)
-                        .WithMany("VehicleImages")
-                        .HasForeignKey("AdvertisementId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -633,15 +601,11 @@ namespace CarSalesSystem.Data.Migrations
             modelBuilder.Entity("CarSalesSystem.Data.Models.Advertisement", b =>
                 {
                     b.Navigation("Categories");
-
-                    b.Navigation("VehicleImages");
                 });
 
             modelBuilder.Entity("CarSalesSystem.Data.Models.Brand", b =>
                 {
                     b.Navigation("Models");
-
-                    b.Navigation("Vehicles");
                 });
 
             modelBuilder.Entity("CarSalesSystem.Data.Models.CarDealerShip", b =>

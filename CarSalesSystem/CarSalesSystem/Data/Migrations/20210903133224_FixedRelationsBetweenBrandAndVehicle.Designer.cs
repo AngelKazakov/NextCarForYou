@@ -4,14 +4,16 @@ using CarSalesSystem.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CarSalesSystem.Data.Migrations
 {
     [DbContext(typeof(CarSalesDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210903133224_FixedRelationsBetweenBrandAndVehicle")]
+    partial class FixedRelationsBetweenBrandAndVehicle
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,6 +55,9 @@ namespace CarSalesSystem.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("UserId1")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("VehicleId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -63,7 +68,10 @@ namespace CarSalesSystem.Data.Migrations
 
                     b.HasIndex("RegionId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.HasIndex("UserId1");
 
                     b.HasIndex("VehicleId");
 
@@ -327,34 +335,6 @@ namespace CarSalesSystem.Data.Migrations
                     b.ToTable("Vehicles");
                 });
 
-            modelBuilder.Entity("CarSalesSystem.Data.Models.VehicleImage", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("AdvertisementId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("FullPath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(32)
-                        .HasColumnType("nvarchar(32)");
-
-                    b.Property<string>("UniqueName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AdvertisementId");
-
-                    b.ToTable("Images");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -503,10 +483,14 @@ namespace CarSalesSystem.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("CarSalesSystem.Data.Models.User", null)
-                        .WithMany("Advertisements")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .WithOne()
+                        .HasForeignKey("CarSalesSystem.Data.Models.Advertisement", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("CarSalesSystem.Data.Models.User", null)
+                        .WithMany("Advertisements")
+                        .HasForeignKey("UserId1");
 
                     b.HasOne("CarSalesSystem.Data.Models.Vehicle", "Vehicle")
                         .WithMany()
@@ -572,13 +556,6 @@ namespace CarSalesSystem.Data.Migrations
                     b.Navigation("Brand");
                 });
 
-            modelBuilder.Entity("CarSalesSystem.Data.Models.VehicleImage", b =>
-                {
-                    b.HasOne("CarSalesSystem.Data.Models.Advertisement", null)
-                        .WithMany("VehicleImages")
-                        .HasForeignKey("AdvertisementId");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -633,8 +610,6 @@ namespace CarSalesSystem.Data.Migrations
             modelBuilder.Entity("CarSalesSystem.Data.Models.Advertisement", b =>
                 {
                     b.Navigation("Categories");
-
-                    b.Navigation("VehicleImages");
                 });
 
             modelBuilder.Entity("CarSalesSystem.Data.Models.Brand", b =>

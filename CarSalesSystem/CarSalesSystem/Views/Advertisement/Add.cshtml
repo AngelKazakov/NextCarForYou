@@ -1,0 +1,86 @@
+@model AdvertisementAddFormModel
+
+@{
+    ViewData["Title"] = "Add Car";
+}
+<div class="row">
+    <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
+        <form method="post">
+            <div class="form-control">
+                <div class="form-group">
+                    <select asp-for="Brand" class="form-select" aria-label="Default select example">
+                        <option selected>Select Brand</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select asp-for="Model" class="form-select" aria-label="Select Model">
+                        <option selected>Select Model</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select asp-for="EngineType" class="form-select" aria-label="Engine Type">
+                        <option selected>Engine</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select asp-for="TransmissionType" class="form-select" aria-label="Transmission Type">
+                        <option selected>Transmission</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select asp-for="EuroStandard" class="form-select" aria-label="Euro Standard">
+                        <option selected>Euro Standard</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select asp-for="Color" class="form-select" aria-label="Color">
+                        <option selected>Color</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select asp-for="RegionName" class="form-select" aria-label="Region">
+                        <option selected>Region</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select asp-for="CityName" class="form-select" aria-label="City">
+                        <option selected>City.</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select asp-for="Model" class="form-select" aria-label="Select Model">
+                        <option selected>Month</option>
+                    </select>
+                </div>
+                <div class="form-group">
+
+                    <select asp-for="Model" class="form-select" aria-label="Select Model">
+                        <option selected>Year</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Power"></label>
+                    <input asp-for="Power" class="form-control" type="text" placeholder="Horsepower" aria-label="Horsepower">
+                    <span asp-validation-for="Power" class="small text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Mileage"></label>
+                    <input asp-for="Mileage" class="form-control" type="text" placeholder="Mileage" aria-label="Mileage">
+                    <span asp-validation-for="Mileage" class="small text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Price"></label>
+                    <input asp-for="Price" class="form-control" type="text" placeholder="Price" aria-label="Price">
+                    <span asp-validation-for="Price" class="small text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Description">Description</label>
+                    <textarea class="form-control" id="exampleFormControlTextarea1" placeholder="Descripe your vehicle here..." rows="3"></textarea>
+                </div>
+                <div class="text-center">
+                    <button type="button" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
