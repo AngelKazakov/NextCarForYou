@@ -4,14 +4,16 @@ using CarSalesSystem.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CarSalesSystem.Data.Migrations
 {
     [DbContext(typeof(CarSalesDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210903145402_RemovedEnumsAndCreatedModels")]
+    partial class RemovedEnumsAndCreatedModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -135,19 +137,6 @@ namespace CarSalesSystem.Data.Migrations
                     b.HasIndex("RegionId");
 
                     b.ToTable("Cities");
-                });
-
-            modelBuilder.Entity("CarSalesSystem.Data.Models.Color", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Colors");
                 });
 
             modelBuilder.Entity("CarSalesSystem.Data.Models.Extras", b =>
@@ -325,8 +314,8 @@ namespace CarSalesSystem.Data.Migrations
                     b.Property<string>("CategoryId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("ColorId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("Color")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("EngineTypeId")
                         .HasColumnType("nvarchar(450)");
@@ -351,8 +340,6 @@ namespace CarSalesSystem.Data.Migrations
                     b.HasIndex("BrandId");
 
                     b.HasIndex("CategoryId");
-
-                    b.HasIndex("ColorId");
 
                     b.HasIndex("EngineTypeId");
 
@@ -648,10 +635,6 @@ namespace CarSalesSystem.Data.Migrations
                         .WithMany()
                         .HasForeignKey("CategoryId");
 
-                    b.HasOne("CarSalesSystem.Data.Models.Color", "Color")
-                        .WithMany("Vehicles")
-                        .HasForeignKey("ColorId");
-
                     b.HasOne("CarSalesSystem.Data.VehicleEngineType", "EngineType")
                         .WithMany()
                         .HasForeignKey("EngineTypeId");
@@ -667,8 +650,6 @@ namespace CarSalesSystem.Data.Migrations
                     b.Navigation("Brand");
 
                     b.Navigation("Category");
-
-                    b.Navigation("Color");
 
                     b.Navigation("EngineType");
 
@@ -752,11 +733,6 @@ namespace CarSalesSystem.Data.Migrations
             modelBuilder.Entity("CarSalesSystem.Data.Models.CarDealerShip", b =>
                 {
                     b.Navigation("Advertisements");
-                });
-
-            modelBuilder.Entity("CarSalesSystem.Data.Models.Color", b =>
-                {
-                    b.Navigation("Vehicles");
                 });
 
             modelBuilder.Entity("CarSalesSystem.Data.Models.ExtrasCategory", b =>

@@ -1,5 +1,12 @@
 using CarSalesSystem.Data;
 using CarSalesSystem.Infrastructure;
+using CarSalesSystem.Services;
+using CarSalesSystem.Services.Brands;
+using CarSalesSystem.Services.Categories;
+using CarSalesSystem.Services.Colors;
+using CarSalesSystem.Services.Models;
+using CarSalesSystem.Services.Regions;
+using CarSalesSystem.Services.TechnicalData;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -33,6 +40,15 @@ namespace CarSalesSystem
 
             services
                 .AddControllersWithViews();
+
+            services.AddAutoMapper(typeof(Startup));
+
+            services.AddTransient<IBrandService, BrandService>();
+            services.AddTransient<IModelService, ModelService>();
+            services.AddTransient<ICategoryService, CategoryService>();
+            services.AddTransient<IColorService, ColorService>();
+            services.AddTransient<IRegionService, RegionService>();
+            services.AddTransient<ITechnicalService, TechnicalService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

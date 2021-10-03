@@ -3,6 +3,7 @@
     public static class DataConstants
     {
         public const int AdvertisementNameMaxLength = 512;
+        public const int AdvertisementDescriptionMinLength = 10;
         public const int AdvertisementDescriptionMaxLength = 10000;
 
         public const int CarDealerShipNameMaxLength = 128;

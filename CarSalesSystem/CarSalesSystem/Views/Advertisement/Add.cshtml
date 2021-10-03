@@ -4,83 +4,236 @@
     ViewData["Title"] = "Add Car";
 }
 <div class="row">
-    <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
+    <div class="container-fluid">
         <form method="post">
-            <div class="form-control">
-                <div class="form-group">
-                    <select asp-for="Brand" class="form-select" aria-label="Default select example">
-                        <option selected>Select Brand</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <select asp-for="Model" class="form-select" aria-label="Select Model">
-                        <option selected>Select Model</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <select asp-for="EngineType" class="form-select" aria-label="Engine Type">
-                        <option selected>Engine</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <select asp-for="TransmissionType" class="form-select" aria-label="Transmission Type">
-                        <option selected>Transmission</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <select asp-for="EuroStandard" class="form-select" aria-label="Euro Standard">
-                        <option selected>Euro Standard</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <select asp-for="Color" class="form-select" aria-label="Color">
-                        <option selected>Color</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <select asp-for="RegionName" class="form-select" aria-label="Region">
-                        <option selected>Region</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <select asp-for="CityName" class="form-select" aria-label="City">
-                        <option selected>City.</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <select asp-for="Model" class="form-select" aria-label="Select Model">
-                        <option selected>Month</option>
-                    </select>
-                </div>
-                <div class="form-group">
-
-                    <select asp-for="Model" class="form-select" aria-label="Select Model">
-                        <option selected>Year</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Power"></label>
-                    <input asp-for="Power" class="form-control" type="text" placeholder="Horsepower" aria-label="Horsepower">
-                    <span asp-validation-for="Power" class="small text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Mileage"></label>
-                    <input asp-for="Mileage" class="form-control" type="text" placeholder="Mileage" aria-label="Mileage">
-                    <span asp-validation-for="Mileage" class="small text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Price"></label>
-                    <input asp-for="Price" class="form-control" type="text" placeholder="Price" aria-label="Price">
-                    <span asp-validation-for="Price" class="small text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Description">Description</label>
-                    <textarea class="form-control" id="exampleFormControlTextarea1" placeholder="Descripe your vehicle here..." rows="3"></textarea>
-                </div>
-                <div class="text-center">
-                    <button type="button" class="btn btn-primary">Save</button>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Basic Data</h5>
+                    <hr />
+                    <p class="card-text">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm">
+                                    <label>Brand</label>
+                                    <select asp-for="Brand" id="selectBrandId" class="form-control" required>
+                                        <option selected>--None--</option>
+                                        @foreach (var brand in Model.Brands)
+                                        {
+                                            <option value="@brand.Id">@brand.Name</option>
+                                        }
+                                    </select>
+                                    <br />
+                                    <label asp-for="Price">Price</label>
+                                    <input type="number" asp-for="Price" class="form-control">
+                                    <br />
+                                    <label asp-for="Mileage"></label>
+                                    <input asp-for="Mileage" class="form-control" type="number">
+                                    <span asp-validation-for="Mileage" class="small text-danger"></span>
+                                    <br />
+                                    <label asp-for="Color"></label>
+                                    <select asp-for="Color" class="form-control">
+                                        <option selected>--None--</option>
+                                        @foreach (var color in Model.Colors)
+                                        {
+                                            <option value="@color.Id">@color.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-sm">
+                                    <label>Model</label>
+                                    <select asp-for="Model" id="selectModelId" class="form-control" required>
+                                        <option selected>--None--</option>
+                                    </select>
+                                    <br />
+                                    <label>Month of Manufacture</label>
+                                    <select asp-for="Month" class="form-control" aria-label="Select Model">
+                                        <option selected>--None--</option>
+                                        <option value="1">January</option>
+                                        <option value="2">February</option>
+                                        <option value="3">March</option>
+                                        <option value="4">April</option>
+                                        <option value="5">May</option>
+                                        <option value="6">June</option>
+                                        <option value="7">July</option>
+                                        <option value="8">August</option>
+                                        <option value="9">September</option>
+                                        <option value="10">October</option>
+                                        <option value="11">November</option>
+                                        <option value="12">December</option>
+                                    </select>
+                                    <br />
+                                    <label>Region</label>
+                                    <select asp-for="RegionName" id="selectRegionId" class="form-control" aria-label="Region">
+                                        <option selected>--None--</option>
+                                        @foreach (var region in Model.Regions)
+                                        {
+                                            <option value="@region.Id">@region.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-sm">
+                                    <label>Category</label>
+                                    <select asp-for="Category" class="form-control">
+                                        <option selected>--None--</option>
+                                        @foreach (var category in Model.VehicleCategories)
+                                        {
+                                            <option value="@category.Id">@category.Name</option>
+                                        }
+                                    </select>
+                                    <br />
+                                    <label asp-for="Year">Year of Manufacture</label>
+                                    <input type="number" asp-for="Year" class="form-control">
+                                    <br />
+                                    <label>Location</label>
+                                    <select asp-for="CityName" id="selectCityId" class="form-control">
+                                        <option selected>--None--</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </p>
                 </div>
             </div>
+            <br />
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Technical Data</h5>
+                    <hr />
+                    <p class="card-text">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm">
+                                    <label>Fuel Type</label>
+                                    <select asp-for="EngineType" class="form-control">
+                                        <option selected>--None--</option>
+                                        @foreach (var engine in Model.EngineTypes)
+                                        {
+                                            <option value="@engine.Id">@engine.Name</option>
+                                        }
+                                    </select>
+                                    <br />
+                                    <label asp-for="Power">Power</label>
+                                    <input type="number" asp-for="Power" class="form-control">
+                                    <br />
+                                </div>
+                                <div class="col-sm">
+                                    <label>Transmission</label>
+                                    <select asp-for="TransmissionType" class="form-control">
+                                        <option selected>--None--</option>
+                                        @foreach (var transmission in Model.TransmissionTypes)
+                                        {
+                                            <option value="@transmission.Id">@transmission.Name</option>
+                                        }
+                                    </select>
+                                    <br />
+                                    <label>Euro Standard</label>
+                                    <select asp-for="EuroStandard"  class="form-control">
+                                        <option selected>--None--</option>
+                                        @foreach (var euroStandard in Model.EuroStandards)
+                                        {
+                                            <option value="@euroStandard.Id">@euroStandard.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </p>
+                </div>
+            </div>
+            <br />
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Extras</h5>
+                    <hr />
+                    <p class="card-text">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm">
+                                    @foreach (var item in @Model.Extras)
+                                    {
+
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                                            <label class="form-check-label" for="defaultCheck1">@item</label>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </p>
+                </div>
+            </div>
+            <br />
+
+            <div class="text-center">
+                <button type="button" class="btn btn-primary">Next</button>
+            </div>
+
         </form>
     </div>
 </div>
+
+@section scripts{
+    <script>
+        $(document).ready(function() {
+            //Dropdownlist Selectedchange event
+            $("#selectBrandId").change(function () {
+                console.log($("#selectBrandId").val());
+                $("#selectModelId").empty();
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("GetModels")',
+                    dataType: 'json',
+                    data: { brandId: $("#selectBrandId").val() },
+                    success: function(models) {
+                        // states contains the JSON formatted list
+                        // of states passed from the controller
+                        $("#selectModelId").append('<option value="">'
+                            + '--None--' + '</option>');
+                        $.each(models, function (i, model) {
+                             $("#selectModelId").append('<option value="'
+                                 + model.id + '">'
+                                 + model.name + '</option>');
+                        });
+                        $("#selectModelId").val($("#selectModelId option:first").val());
+                    },
+                    error: function(ex) {
+                        alert('Failed to retrieve models.' + ex);
+                    }
+                });
+                return false;
+            })
+        });
+
+        $(document).ready(function() {
+            //Dropdownlist Selectedchange event
+            $("#selectRegionId").change(function () {
+                console.log($("#selectRegionId").val());
+                $("#selectCityId").empty();
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("GetAllCities")',
+                    dataType: 'json',
+                    data: { regionId: $("#selectRegionId").val() },
+                    success: function(models) {
+                        // states contains the JSON formatted list
+                        // of states passed from the controller
+                        $("#selectCityId").append('<option value="">'
+                            + '--None--' + '</option>');
+                        $.each(models, function (i, model) {
+                            $("#selectCityId").append('<option value="'
+                                + model.id + '">'
+                                + model.name + '</option>');
+                        });
+                        $("#selectCityId").val($("#selectCityId option:first").val());
+                    },
+                    error: function(ex) {
+                        alert('Failed to retrieve models.' + ex);
+                    }
+                });
+                return false;
+            })
+        });
+    </script>
+}

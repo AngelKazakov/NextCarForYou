@@ -31,6 +31,16 @@ namespace CarSalesSystem.Data
 
         public DbSet<VehicleImage> Images { get; init; }
 
+        public DbSet<TransmissionType> Transmissions { get; init; }
+
+        public DbSet<VehicleEuroStandard> EuroStandards { get; init; }
+
+        public DbSet<VehicleCategory> VehicleCategories { get; init; }
+
+        public DbSet<VehicleEngineType> Engines { get; init; }
+
+        public DbSet<Color> Colors { get; init; }
+
         //TODO check deleting...
         protected override void OnModelCreating(ModelBuilder builder)
         {

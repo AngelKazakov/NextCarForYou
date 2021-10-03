@@ -20,7 +20,7 @@ namespace CarSalesSystem.Data.Models
         [Required]
         public DateTime LastModifiedOn { get; set; }
 
-        [Range(0,double.MaxValue)]
+        [Range(0, double.MaxValue)]
         public decimal Price { get; set; }
 
         [MaxLength(AdvertisementDescriptionMaxLength)]
@@ -42,5 +42,6 @@ namespace CarSalesSystem.Data.Models
         public ICollection<ExtrasCategory> Categories { get; init; } = new List<ExtrasCategory>();
 
         public ICollection<VehicleImage> VehicleImages { get; set; } = new List<VehicleImage>();
+
     }
 }
