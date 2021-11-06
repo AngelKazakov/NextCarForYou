@@ -5,8 +5,12 @@ using CarSalesSystem.Models.Category;
 using CarSalesSystem.Models.Color;
 using CarSalesSystem.Models.Engine;
 using CarSalesSystem.Models.EuroStandard;
+using CarSalesSystem.Models.ExtrasCategory;
 using CarSalesSystem.Models.Region;
 using CarSalesSystem.Models.Transmission;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using static CarSalesSystem.Data.DataConstants;
 
 namespace CarSalesSystem.Models.Advertisement
 {
@@ -53,9 +57,23 @@ namespace CarSalesSystem.Models.Advertisement
         [Required]
         public string CityName { get; set; }
 
-        public ICollection<string> Extras { get; init; } = new List<string>();
+        [Required]
+        public string Name { get; set; }
 
-        public ICollection<string> SelectedExtras { get; init; } = new List<string>();
+        [Required]
+        [StringLength(
+            AdvertisementDescriptionMaxLength,
+            MinimumLength = AdvertisementDescriptionMinLength,
+            ErrorMessage = "The field Description must be a string with a minimum length of {2}.")]
+        public string Description { get; set; }
+
+        [Required]
+        public IFormFileCollection Images { get; set; }
+
+        public ICollection<AddExtrasCategoryFormModel> Extras { get; init; } = new List<AddExtrasCategoryFormModel>();
+
+        [BindProperty]
+        public ICollection<string> SelectedExtras { get; set; } = new List<string>();
 
         public ICollection<AddBrandFormModel> Brands { get; init; } = new List<AddBrandFormModel>();
 

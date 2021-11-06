@@ -2,6 +2,7 @@
 using System.Linq;
 using CarSalesSystem.Data;
 using CarSalesSystem.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CarSalesSystem.Services.TechnicalData
 {
@@ -24,7 +25,16 @@ namespace CarSalesSystem.Services.TechnicalData
 
         public ICollection<VehicleEuroStandard> GetEuroStandards()
         {
-            return this.data.EuroStandards.OrderBy(x => x.Name).ToList();
+            return this.data.EuroStandards
+                .OrderBy(x => x.Name)
+                .ToList();
+        }
+
+        public ICollection<ExtrasCategory> GetExtrasCategories()
+        {
+            return this.data.Categories
+                .Include(i => i.Extras)
+                .ToList();
         }
     }
 }

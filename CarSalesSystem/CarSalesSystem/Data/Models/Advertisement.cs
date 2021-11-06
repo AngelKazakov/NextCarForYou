@@ -39,9 +39,10 @@ namespace CarSalesSystem.Data.Models
         [Required]
         public string UserId { get; init; }
 
-        public ICollection<ExtrasCategory> Categories { get; init; } = new List<ExtrasCategory>();
 
         public ICollection<VehicleImage> VehicleImages { get; set; } = new List<VehicleImage>();
+
+        public ICollection<AdvertisementCategory> AdvertisementCategories { get; init; } = new List<AdvertisementCategory>();
 
     }
 }

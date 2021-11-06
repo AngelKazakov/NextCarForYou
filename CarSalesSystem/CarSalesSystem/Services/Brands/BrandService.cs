@@ -11,13 +11,14 @@ namespace CarSalesSystem.Services.Brands
         private readonly CarSalesDbContext data;
 
         public BrandService(CarSalesDbContext data)
-        {
-            this.data = data;
-        }
+         => this.data = data;
+
 
         public ICollection<Brand> GetAllBrands()
         {
-            return data.Brands.OrderBy(x => x.Name).ToList();
+            return this.data.Brands
+                .OrderBy(x => x.Name)
+                .ToList();
 
         }
     }

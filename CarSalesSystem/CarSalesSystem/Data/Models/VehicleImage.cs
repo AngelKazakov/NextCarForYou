@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.VisualBasic.CompilerServices;
 
 namespace CarSalesSystem.Data.Models
 {
@@ -16,5 +17,6 @@ namespace CarSalesSystem.Data.Models
 
         [Required]
         public string FullPath { get; set; }
+
     }
 }

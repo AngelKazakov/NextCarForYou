@@ -6,6 +6,7 @@ using CarSalesSystem.Models.Category;
 using CarSalesSystem.Models.Color;
 using CarSalesSystem.Models.Engine;
 using CarSalesSystem.Models.EuroStandard;
+using CarSalesSystem.Models.ExtrasCategory;
 using CarSalesSystem.Models.Region;
 using CarSalesSystem.Models.Transmission;
 
@@ -22,6 +23,9 @@ namespace CarSalesSystem.Infrastructure
             this.CreateMap<TransmissionType, AddTransmissionFormModel>();
             this.CreateMap<VehicleEngineType, AddEngineFormModel>();
             this.CreateMap<VehicleEuroStandard, AddEuroStandardFormModel>();
+            this.CreateMap<ExtrasCategory, AddExtrasCategoryFormModel>();
+            this.CreateMap<Extras, AddExtrasFormModel>();
+
         }
     }
 }

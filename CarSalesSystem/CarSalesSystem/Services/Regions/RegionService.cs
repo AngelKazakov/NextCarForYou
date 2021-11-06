@@ -14,12 +14,17 @@ namespace CarSalesSystem.Services.Regions
 
         public ICollection<Region> GetAllRegions()
         {
-            return this.data.Regions.OrderBy(x => x.Name).ToList();
+            return this.data.Regions
+                .OrderBy(x => x.Name)
+                .ToList();
         }
 
         public ICollection<City> GetAllCities(string regionId)
         {
-            return this.data.Cities.Where(x => x.RegionId == regionId).OrderBy(x => x.Name).ToList();
+            return this.data.Cities
+                .Where(x => x.RegionId == regionId)
+                .OrderBy(x => x.Name)
+                .ToList();
         }
     }
 }

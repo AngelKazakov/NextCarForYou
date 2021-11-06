@@ -4,14 +4,16 @@ using CarSalesSystem.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CarSalesSystem.Data.Migrations
 {
     [DbContext(typeof(CarSalesDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211028162913_AddedUserDbSet")]
+    partial class AddedUserDbSet
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,7 +53,7 @@ namespace CarSalesSystem.Data.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("VehicleId")
                         .IsRequired()
@@ -63,24 +65,11 @@ namespace CarSalesSystem.Data.Migrations
 
                     b.HasIndex("RegionId");
 
+                    b.HasIndex("UserId");
+
                     b.HasIndex("VehicleId");
 
                     b.ToTable("Advertisements");
-                });
-
-            modelBuilder.Entity("CarSalesSystem.Data.Models.AdvertisementCategory", b =>
-                {
-                    b.Property<string>("AdvertisementId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ExtrasCategoryId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("AdvertisementId", "ExtrasCategoryId");
-
-                    b.HasIndex("ExtrasCategoryId");
-
-                    b.ToTable("AdvertisementCategory");
                 });
 
             modelBuilder.Entity("CarSalesSystem.Data.Models.Brand", b =>
@@ -190,12 +179,17 @@ namespace CarSalesSystem.Data.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("AdvertisementId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AdvertisementId");
 
                     b.ToTable("Categories");
                 });
@@ -247,6 +241,81 @@ namespace CarSalesSystem.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Transmissions");
+                });
+
+            modelBuilder.Entity("CarSalesSystem.Data.Models.User", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers");
                 });
 
             modelBuilder.Entity("CarSalesSystem.Data.Models.Vehicle", b =>
@@ -417,71 +486,6 @@ namespace CarSalesSystem.Data.Migrations
                     b.ToTable("AspNetRoleClaims");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.ToTable("AspNetUsers");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
                     b.Property<int>("Id")
@@ -578,6 +582,12 @@ namespace CarSalesSystem.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("CarSalesSystem.Data.Models.User", null)
+                        .WithMany("Advertisements")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("CarSalesSystem.Data.Models.Vehicle", "Vehicle")
                         .WithMany()
                         .HasForeignKey("VehicleId")
@@ -587,25 +597,6 @@ namespace CarSalesSystem.Data.Migrations
                     b.Navigation("Region");
 
                     b.Navigation("Vehicle");
-                });
-
-            modelBuilder.Entity("CarSalesSystem.Data.Models.AdvertisementCategory", b =>
-                {
-                    b.HasOne("CarSalesSystem.Data.Models.Advertisement", "Advertisement")
-                        .WithMany("AdvertisementCategories")
-                        .HasForeignKey("AdvertisementId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CarSalesSystem.Data.Models.ExtrasCategory", "ExtrasCategory")
-                        .WithMany("AdvertisementCategories")
-                        .HasForeignKey("ExtrasCategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Advertisement");
-
-                    b.Navigation("ExtrasCategory");
                 });
 
             modelBuilder.Entity("CarSalesSystem.Data.Models.City", b =>
@@ -628,6 +619,15 @@ namespace CarSalesSystem.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("CarSalesSystem.Data.Models.ExtrasCategory", b =>
+                {
+                    b.HasOne("CarSalesSystem.Data.Models.Advertisement", "Advertisement")
+                        .WithMany("Categories")
+                        .HasForeignKey("AdvertisementId");
+
+                    b.Navigation("Advertisement");
                 });
 
             modelBuilder.Entity("CarSalesSystem.Data.Models.Model", b =>
@@ -700,7 +700,7 @@ namespace CarSalesSystem.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("CarSalesSystem.Data.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -709,7 +709,7 @@ namespace CarSalesSystem.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("CarSalesSystem.Data.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -724,7 +724,7 @@ namespace CarSalesSystem.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("CarSalesSystem.Data.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -733,7 +733,7 @@ namespace CarSalesSystem.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("CarSalesSystem.Data.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -742,7 +742,7 @@ namespace CarSalesSystem.Data.Migrations
 
             modelBuilder.Entity("CarSalesSystem.Data.Models.Advertisement", b =>
                 {
-                    b.Navigation("AdvertisementCategories");
+                    b.Navigation("Categories");
 
                     b.Navigation("VehicleImages");
                 });
@@ -766,14 +766,17 @@ namespace CarSalesSystem.Data.Migrations
 
             modelBuilder.Entity("CarSalesSystem.Data.Models.ExtrasCategory", b =>
                 {
-                    b.Navigation("AdvertisementCategories");
-
                     b.Navigation("Extras");
                 });
 
             modelBuilder.Entity("CarSalesSystem.Data.Models.Region", b =>
                 {
                     b.Navigation("Cities");
+                });
+
+            modelBuilder.Entity("CarSalesSystem.Data.Models.User", b =>
+                {
+                    b.Navigation("Advertisements");
                 });
 #pragma warning restore 612, 618
         }

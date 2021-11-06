@@ -8,7 +8,6 @@ namespace CarSalesSystem.Data.Models
 {
     public class User : IdentityUser
     {
-
         [Required]
         [MaxLength(UserFirstNameMaxLength)]
         public string FirstName { get; set; }

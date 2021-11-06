@@ -10,13 +10,12 @@ namespace CarSalesSystem.Services.Models
         private readonly CarSalesDbContext data;
 
         public ModelService(CarSalesDbContext data)
-        {
-            this.data = data;
-        }
+         => this.data = data;
+
 
         public ICollection<Model> GetAllModels(string Id)
         {
-            return data.Models
+            return this.data.Models
                 .Where(x => x.BrandId == Id)
                 .OrderBy(x => x.Name)
                 .ToList();

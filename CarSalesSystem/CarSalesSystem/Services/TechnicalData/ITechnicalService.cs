@@ -9,5 +9,6 @@ namespace CarSalesSystem.Services.TechnicalData
         ICollection<VehicleEngineType> GetEngineTypes();
         ICollection<TransmissionType> GetTransmissionTypes();
         ICollection<VehicleEuroStandard> GetEuroStandards();
+        ICollection<ExtrasCategory> GetExtrasCategories();
     }
 }

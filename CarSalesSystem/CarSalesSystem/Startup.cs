@@ -10,10 +10,12 @@ using CarSalesSystem.Services.TechnicalData;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json.Schema;
 
 namespace CarSalesSystem
 {
@@ -33,13 +35,18 @@ namespace CarSalesSystem
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddDefaultIdentity<IdentityUser>(options =>
-            {
-                options.SignIn.RequireConfirmedAccount = true;
-            })
+                {
+                    options.SignIn.RequireConfirmedAccount = false;
+                    options.Password.RequireNonAlphanumeric = false;
+
+                })
                 .AddEntityFrameworkStores<CarSalesDbContext>();
 
             services
-                .AddControllersWithViews();
+                .AddControllersWithViews(options =>
+                {
+                    options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
+                });
 
             services.AddAutoMapper(typeof(Startup));
 

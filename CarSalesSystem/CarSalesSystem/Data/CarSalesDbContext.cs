@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CarSalesSystem.Data
 {
-    public class CarSalesDbContext : IdentityDbContext<User>
+    public class CarSalesDbContext : IdentityDbContext
     {
         public CarSalesDbContext(DbContextOptions<CarSalesDbContext> options)
             : base(options)
@@ -44,11 +44,14 @@ namespace CarSalesSystem.Data
         //TODO check deleting...
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            base.OnModelCreating(builder);
+
             builder.Entity<Advertisement>()
                 .Property(a => a.Price).HasColumnType("decimal");
 
 
-            base.OnModelCreating(builder);
+            builder.Entity<AdvertisementCategory>().
+                HasKey(x => new { x.AdvertisementId, x.ExtrasCategoryId });
         }
     }
 }

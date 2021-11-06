@@ -128,7 +128,7 @@
                                     </select>
                                     <br />
                                     <label>Euro Standard</label>
-                                    <select asp-for="EuroStandard"  class="form-control">
+                                    <select asp-for="EuroStandard" class="form-control">
                                         <option selected>--None--</option>
                                         @foreach (var euroStandard in Model.EuroStandards)
                                         {
@@ -149,14 +149,16 @@
                     <p class="card-text">
                         <div class="container">
                             <div class="row">
-                                <div class="col-sm">
-                                    @foreach (var item in @Model.Extras)
+                                <div class="container">
+                                    @foreach (var category in @Model.Extras)
                                     {
-
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                                            <label class="form-check-label" for="defaultCheck1">@item</label>
-                                        </div>
+                                        <div class="flex-md-row"><label><b> @category.Name </b></label></div>
+                                        @foreach (var extra in category.Extras)
+                                        {
+                                            <label class="form-check-label">
+                                                <input style="margin-left:5px" name="SelectedExtras" type="checkbox" value="@extra.Id" id="@extra.Id"> @extra.Name
+                                            </label>
+                                        }
                                     }
                                 </div>
                             </div>
@@ -167,7 +169,7 @@
             <br />
 
             <div class="text-center">
-                <button type="button" class="btn btn-primary">Next</button>
+                <button type="submit" class="btn btn-primary" id="buttonNextId" onclick="@("window.location.href='" + @Url.Action("AddStep2", "Advertisement") + "'");">Next</button>
             </div>
 
         </form>
@@ -232,7 +234,6 @@
                         alert('Failed to retrieve models.' + ex);
                     }
                 });
-                return false;
             })
         });
     </script>
