@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace CarSalesSystem.Data.Migrations
+namespace CarSalesSystem.Migrations
 {
-    public partial class AddedGenerationOptionToTransmissionTypeModel : Migration
+    public partial class ValueGeneratedOnAvertisementId : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

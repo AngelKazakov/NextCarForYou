@@ -41,6 +41,8 @@ namespace CarSalesSystem.Data
 
         public DbSet<Color> Colors { get; init; }
 
+        public DbSet<AdvertisementExtra> AdvertisementsExtras { get; init; }
+
         //TODO check deleting...
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -50,8 +52,13 @@ namespace CarSalesSystem.Data
                 .Property(a => a.Price).HasColumnType("decimal");
 
 
-            builder.Entity<AdvertisementCategory>().
-                HasKey(x => new { x.AdvertisementId, x.ExtrasCategoryId });
+            builder.Entity<AdvertisementExtra>().
+                HasKey(x => new { x.AdvertisementId, x.ExtrasId });
+
+            builder
+                .Entity<Advertisement>()
+                .Property(e => e.Id)
+                .ValueGeneratedOnAdd();
         }
     }
 }

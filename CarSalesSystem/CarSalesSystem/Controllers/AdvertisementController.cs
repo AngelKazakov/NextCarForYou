@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Security.Claims;
 using AutoMapper;
 using CarSalesSystem.Data;
 using CarSalesSystem.Data.Models;
+using CarSalesSystem.Infrastructure;
 using CarSalesSystem.Models.Advertisement;
 using CarSalesSystem.Models.Brand;
 using CarSalesSystem.Models.Category;
@@ -13,13 +18,19 @@ using CarSalesSystem.Models.ExtrasCategory;
 using CarSalesSystem.Models.Region;
 using CarSalesSystem.Models.Transmission;
 using CarSalesSystem.Services;
+using CarSalesSystem.Services.Advertisement;
 using CarSalesSystem.Services.Brands;
 using CarSalesSystem.Services.Categories;
 using CarSalesSystem.Services.Models;
 using CarSalesSystem.Services.Regions;
 using CarSalesSystem.Services.TechnicalData;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Newtonsoft.Json;
+
 
 namespace CarSalesSystem.Controllers
 {
@@ -31,6 +42,7 @@ namespace CarSalesSystem.Controllers
         private readonly IColorService colorService;
         private readonly IRegionService regionService;
         private readonly ITechnicalService technicalService;
+        private readonly IAdvertisementService advertisementService;
         private readonly IMapper mapper;
 
         public AdvertisementController(
@@ -39,7 +51,8 @@ namespace CarSalesSystem.Controllers
             ICategoryService categoryService,
             IMapper mapper, IColorService colorService,
             IRegionService regionService,
-            ITechnicalService technicalService)
+            ITechnicalService technicalService,
+            IAdvertisementService advertisementService)
         {
             this.brandService = brandService;
             this.modelService = modelService;
@@ -48,6 +61,7 @@ namespace CarSalesSystem.Controllers
             this.colorService = colorService;
             this.regionService = regionService;
             this.technicalService = technicalService;
+            this.advertisementService = advertisementService;
         }
 
         [Authorize]
@@ -70,6 +84,54 @@ namespace CarSalesSystem.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        [Authorize]
+        public IActionResult Add(AdvertisementAddFormModel advertisement)
+        {
+            TempData["advertisement" + GetUserId()] = JsonConvert.SerializeObject(advertisement);
+
+            return RedirectToAction("AddStep2");
+        }
+
+        [Authorize]
+        public IActionResult AddStep2()
+        {
+            return View();
+        }
+
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult AddStep2(AdvertisementAddFormModelStep2 advertisementStep2)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(advertisementStep2);
+            }
+
+            var userId = GetUserId();
+            var key = "advertisement" + userId;
+
+            if (TempData.ContainsKey(key))
+            {
+                AdvertisementAddFormModel advertisementAddFormModel = JsonConvert.DeserializeObject<AdvertisementAddFormModel>((string)TempData[key]);
+
+                var extrasIdList = new List<string>();
+
+                var advertisementModel = AdvertisementCustomMapper.Map(advertisementAddFormModel, advertisementStep2, userId, extrasIdList);
+
+                this.advertisementService.Save(advertisementModel, extrasIdList,advertisementStep2.Images);
+            }
+            else
+            {
+                this.ModelState.AddModelError(string.Empty, "Error creating advertisement.");
+               return View(advertisementStep2);
+            }
+
+
+            return RedirectToAction("Index", "Home");
+        }
+
         public JsonResult GetModels(string brandId)
         {
             return Json(modelService.GetAllModels(brandId));
@@ -80,19 +142,11 @@ namespace CarSalesSystem.Controllers
             return Json(regionService.GetAllCities(regionId));
         }
 
-        public IActionResult AddStep2(AdvertisementAddFormModel model2)
+        private string GetUserId()
         {
-
-            return View(model2);
+            var claimsIdentity = (ClaimsIdentity)this.User.Identity;
+            var claim = claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+            return claim.Value;
         }
-
-
-        [HttpPost]
-        [Authorize]
-        public IActionResult Add(AdvertisementAddFormModel advertisement)
-        {
-            return RedirectToAction("AddStep2", advertisement);
-        }
-
     }
 }

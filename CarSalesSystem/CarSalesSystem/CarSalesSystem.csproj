@@ -33,4 +33,9 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\Migrations\" />
+    <Folder Include="Images\" />
+  </ItemGroup>
+
 </Project>

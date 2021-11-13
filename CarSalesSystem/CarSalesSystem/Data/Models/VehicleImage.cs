@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.VisualBasic.CompilerServices;
 
 namespace CarSalesSystem.Data.Models
 {
@@ -9,13 +8,12 @@ namespace CarSalesSystem.Data.Models
         public string Id { get; init; } = Guid.NewGuid().ToString();
 
         [Required]
-        [StringLength(32)]
+        [StringLength(255)]
         public string Name { get; set; }
 
         [Required]
         public string UniqueName { get; set; }
 
-        [Required]
         public string FullPath { get; set; }
 
     }

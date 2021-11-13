@@ -17,6 +17,8 @@ namespace CarSalesSystem.Data.Models
         [Range(0, VehiclePowerMaxValue)]
         public int Power { get; set; }
 
+        public string ColorId { get; set; }
+
         public Color Color { get; set; }
 
         [Required]
@@ -24,19 +26,27 @@ namespace CarSalesSystem.Data.Models
         public int Mileage { get; set; }
 
         [Required]
-        public DateTime Year { get; set; }
+        public int Year { get; set; }
+
+        public string CategoryId { get; set; }
 
         [Required]
         public VehicleCategory Category { get; set; }
 
+        public string EngineTypeId { get; set; }
+
         [Required]
         public VehicleEngineType EngineType { get; set; }
+
+        public string TransmissionTypeId { get; set; }
 
         [Required]
         public TransmissionType TransmissionType { get; set; }
 
+        public string EuroStandardId { get; set; }
+
         public VehicleEuroStandard EuroStandard { get; set; }
 
-        
+
     }
 }

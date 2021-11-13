@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace CarSalesSystem.Data.Migrations
+namespace CarSalesSystem.Migrations
 {
     [DbContext(typeof(CarSalesDbContext))]
-    [Migration("20211031142419_FixedRelationBetweenAdvertisementAndCategory")]
-    partial class FixedRelationBetweenAdvertisementAndCategory
+    [Migration("20211112204248_RemovedRequiredAttributeFullPathOnVehicleImage")]
+    partial class RemovedRequiredAttributeFullPathOnVehicleImage
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,9 +24,14 @@ namespace CarSalesSystem.Data.Migrations
             modelBuilder.Entity("CarSalesSystem.Data.Models.Advertisement", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CarDealerShipId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("CityId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreatedOnDate")
@@ -47,10 +52,6 @@ namespace CarSalesSystem.Data.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal");
 
-                    b.Property<string>("RegionId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -63,26 +64,26 @@ namespace CarSalesSystem.Data.Migrations
 
                     b.HasIndex("CarDealerShipId");
 
-                    b.HasIndex("RegionId");
+                    b.HasIndex("CityId");
 
                     b.HasIndex("VehicleId");
 
                     b.ToTable("Advertisements");
                 });
 
-            modelBuilder.Entity("CarSalesSystem.Data.Models.AdvertisementCategory", b =>
+            modelBuilder.Entity("CarSalesSystem.Data.Models.AdvertisementExtra", b =>
                 {
                     b.Property<string>("AdvertisementId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("ExtrasCategoryId")
+                    b.Property<string>("ExtrasId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("AdvertisementId", "ExtrasCategoryId");
+                    b.HasKey("AdvertisementId", "ExtrasId");
 
-                    b.HasIndex("ExtrasCategoryId");
+                    b.HasIndex("ExtrasId");
 
-                    b.ToTable("AdvertisementCategory");
+                    b.ToTable("AdvertisementsExtras");
                 });
 
             modelBuilder.Entity("CarSalesSystem.Data.Models.Brand", b =>
@@ -171,7 +172,7 @@ namespace CarSalesSystem.Data.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("ExtrasCategoryId")
+                    b.Property<string>("CategoryId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
@@ -182,7 +183,7 @@ namespace CarSalesSystem.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ExtrasCategoryId");
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("Extras");
                 });
@@ -261,12 +262,14 @@ namespace CarSalesSystem.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CategoryId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ColorId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("EngineTypeId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("EuroStandardId")
@@ -279,10 +282,11 @@ namespace CarSalesSystem.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("TransmissionTypeId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime>("Year")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -323,7 +327,6 @@ namespace CarSalesSystem.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("FullPath")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -574,9 +577,9 @@ namespace CarSalesSystem.Data.Migrations
                         .WithMany("Advertisements")
                         .HasForeignKey("CarDealerShipId");
 
-                    b.HasOne("CarSalesSystem.Data.Models.Region", "Region")
+                    b.HasOne("CarSalesSystem.Data.Models.City", "City")
                         .WithMany()
-                        .HasForeignKey("RegionId")
+                        .HasForeignKey("CityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -586,28 +589,28 @@ namespace CarSalesSystem.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Region");
+                    b.Navigation("City");
 
                     b.Navigation("Vehicle");
                 });
 
-            modelBuilder.Entity("CarSalesSystem.Data.Models.AdvertisementCategory", b =>
+            modelBuilder.Entity("CarSalesSystem.Data.Models.AdvertisementExtra", b =>
                 {
                     b.HasOne("CarSalesSystem.Data.Models.Advertisement", "Advertisement")
-                        .WithMany("AdvertisementCategories")
+                        .WithMany("AdvertisementExtras")
                         .HasForeignKey("AdvertisementId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CarSalesSystem.Data.Models.ExtrasCategory", "ExtrasCategory")
-                        .WithMany("AdvertisementCategories")
-                        .HasForeignKey("ExtrasCategoryId")
+                    b.HasOne("CarSalesSystem.Data.Models.Extras", "Extras")
+                        .WithMany()
+                        .HasForeignKey("ExtrasId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Advertisement");
 
-                    b.Navigation("ExtrasCategory");
+                    b.Navigation("Extras");
                 });
 
             modelBuilder.Entity("CarSalesSystem.Data.Models.City", b =>
@@ -625,7 +628,7 @@ namespace CarSalesSystem.Data.Migrations
                 {
                     b.HasOne("CarSalesSystem.Data.Models.ExtrasCategory", "Category")
                         .WithMany("Extras")
-                        .HasForeignKey("ExtrasCategoryId")
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -653,7 +656,9 @@ namespace CarSalesSystem.Data.Migrations
 
                     b.HasOne("CarSalesSystem.Data.VehicleCategory", "Category")
                         .WithMany()
-                        .HasForeignKey("CategoryId");
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("CarSalesSystem.Data.Models.Color", "Color")
                         .WithMany("Vehicles")
@@ -661,7 +666,9 @@ namespace CarSalesSystem.Data.Migrations
 
                     b.HasOne("CarSalesSystem.Data.VehicleEngineType", "EngineType")
                         .WithMany()
-                        .HasForeignKey("EngineTypeId");
+                        .HasForeignKey("EngineTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("CarSalesSystem.Data.Models.VehicleEuroStandard", "EuroStandard")
                         .WithMany()
@@ -669,7 +676,9 @@ namespace CarSalesSystem.Data.Migrations
 
                     b.HasOne("CarSalesSystem.Data.Models.TransmissionType", "TransmissionType")
                         .WithMany()
-                        .HasForeignKey("TransmissionTypeId");
+                        .HasForeignKey("TransmissionTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Brand");
 
@@ -744,7 +753,7 @@ namespace CarSalesSystem.Data.Migrations
 
             modelBuilder.Entity("CarSalesSystem.Data.Models.Advertisement", b =>
                 {
-                    b.Navigation("AdvertisementCategories");
+                    b.Navigation("AdvertisementExtras");
 
                     b.Navigation("VehicleImages");
                 });
@@ -768,8 +777,6 @@ namespace CarSalesSystem.Data.Migrations
 
             modelBuilder.Entity("CarSalesSystem.Data.Models.ExtrasCategory", b =>
                 {
-                    b.Navigation("AdvertisementCategories");
-
                     b.Navigation("Extras");
                 });
 

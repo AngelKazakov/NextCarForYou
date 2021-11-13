@@ -14,8 +14,6 @@ namespace CarSalesSystem.Data.Models
         [MaxLength(CategoryNameMaxLength)]
         public string Name { get; set; }
 
-        public ICollection<AdvertisementCategory> AdvertisementCategories { get; init; } = new List<AdvertisementCategory>();
-
         public ICollection<Extras> Extras { get; init; } = new List<Extras>();
     }
 }

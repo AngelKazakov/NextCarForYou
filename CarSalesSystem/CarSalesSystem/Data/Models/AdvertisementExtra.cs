@@ -1,13 +1,13 @@
 ﻿namespace CarSalesSystem.Data.Models
 {
-    public class AdvertisementCategory
+    public class AdvertisementExtra
     {
         public string AdvertisementId { get; init; }
 
         public Advertisement Advertisement { get; set; }
 
-        public string ExtrasCategoryId { get; init; }
+        public string ExtrasId { get; init; }
 
-        public ExtrasCategory ExtrasCategory { get; set; }
+        public Extras Extras { get; set; }
     }
 }

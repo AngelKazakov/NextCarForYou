@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CarSalesSystem.Data;
 using CarSalesSystem.Data.Models;
+using CarSalesSystem.Models.Advertisement;
 using CarSalesSystem.Models.Brand;
 using CarSalesSystem.Models.Category;
 using CarSalesSystem.Models.Color;
@@ -25,7 +26,6 @@ namespace CarSalesSystem.Infrastructure
             this.CreateMap<VehicleEuroStandard, AddEuroStandardFormModel>();
             this.CreateMap<ExtrasCategory, AddExtrasCategoryFormModel>();
             this.CreateMap<Extras, AddExtrasFormModel>();
-
         }
     }
 }

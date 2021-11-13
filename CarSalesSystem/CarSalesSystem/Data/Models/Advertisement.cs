@@ -32,9 +32,9 @@ namespace CarSalesSystem.Data.Models
         public Vehicle Vehicle { get; set; }
 
         [Required]
-        public string RegionId { get; init; }
+        public string CityId { get; init; }
 
-        public Region Region { get; init; }
+        public City City { get; init; }
 
         [Required]
         public string UserId { get; init; }
@@ -42,7 +42,7 @@ namespace CarSalesSystem.Data.Models
 
         public ICollection<VehicleImage> VehicleImages { get; set; } = new List<VehicleImage>();
 
-        public ICollection<AdvertisementCategory> AdvertisementCategories { get; init; } = new List<AdvertisementCategory>();
+        public ICollection<AdvertisementExtra> AdvertisementExtras { get; init; } = new List<AdvertisementExtra>();
 
     }
 }

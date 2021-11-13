@@ -14,8 +14,9 @@ namespace CarSalesSystem.Data.Models
         public string Name { get; set; }
 
         [Required]
-        public string ExtrasCategoryId { get; init; }
+        public string CategoryId { get; init; }
 
+        
         public ExtrasCategory Category { get; init; }
     }
 }

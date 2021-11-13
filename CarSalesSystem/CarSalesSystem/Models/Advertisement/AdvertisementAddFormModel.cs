@@ -8,9 +8,7 @@ using CarSalesSystem.Models.EuroStandard;
 using CarSalesSystem.Models.ExtrasCategory;
 using CarSalesSystem.Models.Region;
 using CarSalesSystem.Models.Transmission;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using static CarSalesSystem.Data.DataConstants;
 
 namespace CarSalesSystem.Models.Advertisement
 {
@@ -52,23 +50,10 @@ namespace CarSalesSystem.Models.Advertisement
         public string EuroStandard { get; set; }
 
         [Required]
-        public string RegionName { get; set; }
+        public string RegionId { get; set; }
 
         [Required]
-        public string CityName { get; set; }
-
-        [Required]
-        public string Name { get; set; }
-
-        [Required]
-        [StringLength(
-            AdvertisementDescriptionMaxLength,
-            MinimumLength = AdvertisementDescriptionMinLength,
-            ErrorMessage = "The field Description must be a string with a minimum length of {2}.")]
-        public string Description { get; set; }
-
-        [Required]
-        public IFormFileCollection Images { get; set; }
+        public string CityId { get; set; }
 
         public ICollection<AddExtrasCategoryFormModel> Extras { get; init; } = new List<AddExtrasCategoryFormModel>();
 
