@@ -1,6 +1,6 @@
 ﻿namespace CarSalesSystem.Models.Engine
 {
-    public class AddEngineFormModel
+    public class EngineFormModel
     {
         public string Id { get; init; }
 

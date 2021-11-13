@@ -1,8 +1,90 @@
-﻿@{
+﻿@model HomeViewModel
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <div class="row">
+        <div class="container-fluid">
+            <form method="post">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Fast Search</h5>
+                        <hr />
+                        <p class="card-text">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-sm">
+                                        <label>Brand</label>
+                                        <select asp-for="SearchAdvertisementModel.Brand" id="selectBrandId" class="form-control">
+                                            <option selected>--None--</option>
+                                            @foreach (var brand in Model.SearchAdvertisementModel.Brands)
+                                            {
+                                                <option value="@brand.Id">@brand.Name</option>
+                                            }
+                                        </select>
+                                        <br />
+                                        <label asp-for="SearchAdvertisementModel.MaximumPrice">Maximum Price</label>
+                                        <input type="number" asp-for="SearchAdvertisementModel.MaximumPrice" class="form-control">
+                                        <br />
+                                        <label>Fuel Type</label>
+                                        <select asp-for="SearchAdvertisementModel.EngineType" class="form-control">
+                                            <option selected>--None--</option>
+                                            @foreach (var engine in Model.SearchAdvertisementModel.EngineTypes)
+                                            {
+                                                <option value="@engine.Id">@engine.Name</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="col-sm">
+                                        <label>Model</label>
+                                        <select asp-for="SearchAdvertisementModel.Model" id="selectModelId" class="form-control">
+                                            <option selected>--None--</option>
+                                        </select>
+                                        <br />
+                                        <label>Region</label>
+                                        <select asp-for="SearchAdvertisementModel.Region" id="selectRegionId" class="form-control">
+                                            <option selected>--None--</option>
+                                            @foreach (var region in Model.SearchAdvertisementModel.Regions)
+                                            {
+                                                <option value="@region.Id">@region.Name</option>
+                                            }
+                                        </select>
+                                        <br />
+                                        <label>Transmission</label>
+                                        <select asp-for="SearchAdvertisementModel.TransmissionType" class="form-control">
+                                            <option selected>--None--</option>
+                                            @foreach (var transmission in Model.SearchAdvertisementModel.TransmissionTypes)
+                                            {
+                                                <option value="@transmission.Id">@transmission.Name</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="col-sm">
+                                        <label asp-for="SearchAdvertisementModel.Year">Year of Manufacture</label>
+                                        <input type="number" asp-for="SearchAdvertisementModel.Year" class="form-control">
+                                        <br />
+                                        <label>Location</label>
+                                        <select asp-for="SearchAdvertisementModel.City" id="selectCityId" class="form-control">
+                                            <option selected>--None--</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <button type="submit" class="btn btn-primary btn-lg btn-block" id="buttonNextId">Search</button>
+                                </div>
+                            </div>
+                        </p>
+                    </div>
+                </div>
+                <br />
+            </form>
+        </div>
+    </div>
 </div>
+
+@section Scripts
+{
+    <script src="/js/site.js" type="text/javascript"></script>
+}

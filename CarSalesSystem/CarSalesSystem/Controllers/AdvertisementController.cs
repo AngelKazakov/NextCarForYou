@@ -69,16 +69,14 @@ namespace CarSalesSystem.Controllers
         {
             AdvertisementAddFormModel model = new AdvertisementAddFormModel()
             {
-
-                Brands = mapper.Map<ICollection<Brand>, ICollection<AddBrandFormModel>>(brandService.GetAllBrands()),
-                VehicleCategories = mapper.Map<ICollection<VehicleCategory>, ICollection<AddCategoryFormModel>>(categoryService.GetVehicleCategories()),
-                Colors = mapper.Map<ICollection<Color>, ICollection<AddColorFormModel>>(colorService.GetColors()),
-                Regions = mapper.Map<ICollection<Region>, ICollection<AddRegionFormModel>>(regionService.GetAllRegions()),
-                EngineTypes = mapper.Map<ICollection<VehicleEngineType>, ICollection<AddEngineFormModel>>(technicalService.GetEngineTypes()),
-                TransmissionTypes = mapper.Map<ICollection<TransmissionType>, ICollection<AddTransmissionFormModel>>(technicalService.GetTransmissionTypes()),
-                EuroStandards = mapper.Map<ICollection<VehicleEuroStandard>, ICollection<AddEuroStandardFormModel>>(technicalService.GetEuroStandards()),
-                Extras = mapper.Map<ICollection<ExtrasCategory>, ICollection<AddExtrasCategoryFormModel>>(technicalService.GetExtrasCategories())
-
+                Brands = mapper.Map<ICollection<Brand>, ICollection<BrandFormModel>>(brandService.GetAllBrands()),
+                VehicleCategories = mapper.Map<ICollection<VehicleCategory>, ICollection<CategoryFormModel>>(categoryService.GetVehicleCategories()),
+                Colors = mapper.Map<ICollection<Color>, ICollection<ColorFormModel>>(colorService.GetColors()),
+                Regions = mapper.Map<ICollection<Region>, ICollection<RegionFormModel>>(regionService.GetAllRegions()),
+                EngineTypes = mapper.Map<ICollection<VehicleEngineType>, ICollection<EngineFormModel>>(technicalService.GetEngineTypes()),
+                TransmissionTypes = mapper.Map<ICollection<TransmissionType>, ICollection<TransmissionFormModel>>(technicalService.GetTransmissionTypes()),
+                EuroStandards = mapper.Map<ICollection<VehicleEuroStandard>, ICollection<EuroStandardFormModel>>(technicalService.GetEuroStandards()),
+                Extras = mapper.Map<ICollection<ExtrasCategory>, ICollection<ExtrasCategoryFormModel>>(technicalService.GetExtrasCategories())
             };
 
             return View(model);
@@ -98,7 +96,6 @@ namespace CarSalesSystem.Controllers
         {
             return View();
         }
-
 
         [HttpPost]
         [Authorize]

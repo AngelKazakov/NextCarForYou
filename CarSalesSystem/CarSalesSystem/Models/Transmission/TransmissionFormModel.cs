@@ -1,6 +1,6 @@
-﻿namespace CarSalesSystem.Models.Category
+﻿namespace CarSalesSystem.Models.Transmission
 {
-    public class AddCategoryFormModel
+    public class TransmissionFormModel
     {
         public string Id { get; init; }
 

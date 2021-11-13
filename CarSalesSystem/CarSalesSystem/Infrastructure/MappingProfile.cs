@@ -17,14 +17,14 @@ namespace CarSalesSystem.Infrastructure
     {
         public MappingProfile()
         {
-            this.CreateMap<Brand, AddBrandFormModel>();
-            this.CreateMap<VehicleCategory, AddCategoryFormModel>();
-            this.CreateMap<Color, AddColorFormModel>();
-            this.CreateMap<Region, AddRegionFormModel>();
-            this.CreateMap<TransmissionType, AddTransmissionFormModel>();
-            this.CreateMap<VehicleEngineType, AddEngineFormModel>();
-            this.CreateMap<VehicleEuroStandard, AddEuroStandardFormModel>();
-            this.CreateMap<ExtrasCategory, AddExtrasCategoryFormModel>();
+            this.CreateMap<Brand, BrandFormModel>();
+            this.CreateMap<VehicleCategory, CategoryFormModel>();
+            this.CreateMap<Color, ColorFormModel>();
+            this.CreateMap<Region, RegionFormModel>();
+            this.CreateMap<TransmissionType, TransmissionFormModel>();
+            this.CreateMap<VehicleEngineType, EngineFormModel>();
+            this.CreateMap<VehicleEuroStandard, EuroStandardFormModel>();
+            this.CreateMap<ExtrasCategory, ExtrasCategoryFormModel>();
             this.CreateMap<Extras, AddExtrasFormModel>();
         }
     }

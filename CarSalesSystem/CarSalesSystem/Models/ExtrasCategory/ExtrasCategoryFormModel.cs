@@ -2,7 +2,7 @@
 
 namespace CarSalesSystem.Models.ExtrasCategory
 {
-    public class AddExtrasCategoryFormModel
+    public class ExtrasCategoryFormModel
     {
         public string Id { get; init; }
 

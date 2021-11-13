@@ -1,6 +1,6 @@
-﻿namespace CarSalesSystem.Models.Transmission
+﻿namespace CarSalesSystem.Models.Color
 {
-    public class AddTransmissionFormModel
+    public class ColorFormModel
     {
         public string Id { get; init; }
 

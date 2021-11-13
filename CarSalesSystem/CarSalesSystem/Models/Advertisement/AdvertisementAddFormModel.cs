@@ -55,26 +55,24 @@ namespace CarSalesSystem.Models.Advertisement
         [Required]
         public string CityId { get; set; }
 
-        public ICollection<AddExtrasCategoryFormModel> Extras { get; init; } = new List<AddExtrasCategoryFormModel>();
+        public ICollection<ExtrasCategoryFormModel> Extras { get; init; } = new List<ExtrasCategoryFormModel>();
 
         [BindProperty]
         public ICollection<string> SelectedExtras { get; set; } = new List<string>();
 
-        public ICollection<AddBrandFormModel> Brands { get; init; } = new List<AddBrandFormModel>();
+        public ICollection<BrandFormModel> Brands { get; init; } = new List<BrandFormModel>();
 
-        public ICollection<AddCategoryFormModel> VehicleCategories { get; init; } = new List<AddCategoryFormModel>();
+        public ICollection<CategoryFormModel> VehicleCategories { get; init; } = new List<CategoryFormModel>();
 
-        public ICollection<AddEuroStandardFormModel> EuroStandards { get; init; } = new List<AddEuroStandardFormModel>();
+        public ICollection<EuroStandardFormModel> EuroStandards { get; init; } = new List<EuroStandardFormModel>();
 
-        public ICollection<AddColorFormModel> Colors { get; init; } = new List<AddColorFormModel>();
+        public ICollection<ColorFormModel> Colors { get; init; } = new List<ColorFormModel>();
 
-        public ICollection<AddRegionFormModel> Regions { get; init; } = new List<AddRegionFormModel>();
+        public ICollection<RegionFormModel> Regions { get; init; } = new List<RegionFormModel>();
 
-        public ICollection<AddEngineFormModel> EngineTypes { get; init; } = new List<AddEngineFormModel>();
+        public ICollection<EngineFormModel> EngineTypes { get; init; } = new List<EngineFormModel>();
 
-        public ICollection<AddTransmissionFormModel> TransmissionTypes { get; init; } = new List<AddTransmissionFormModel>();
-
-        //TODO: Add images...
+        public ICollection<TransmissionFormModel> TransmissionTypes { get; init; } = new List<TransmissionFormModel>();
 
     }
 }

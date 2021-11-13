@@ -1,6 +1,6 @@
 ﻿namespace CarSalesSystem.Models.EuroStandard
 {
-    public class AddEuroStandardFormModel
+    public class EuroStandardFormModel
     {
         public string Id { get; init; }
 

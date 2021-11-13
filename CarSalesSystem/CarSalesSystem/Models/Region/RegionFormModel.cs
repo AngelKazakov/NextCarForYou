@@ -1,6 +1,6 @@
 ﻿namespace CarSalesSystem.Models.Region
 {
-    public class AddRegionFormModel
+    public class RegionFormModel
     {
         public string Id { get; init; }
 
