@@ -34,11 +34,10 @@ namespace CarSalesSystem.Data.Models
         [Required]
         public string CityId { get; init; }
 
-        public City City { get; init; }
+        public virtual City City { get; init; }
 
         [Required]
         public string UserId { get; init; }
-
 
         public ICollection<VehicleImage> VehicleImages { get; set; } = new List<VehicleImage>();
 

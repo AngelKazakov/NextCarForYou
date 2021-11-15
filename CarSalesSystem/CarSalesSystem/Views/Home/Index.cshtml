@@ -68,6 +68,14 @@
                                         <select asp-for="SearchAdvertisementModel.City" id="selectCityId" class="form-control">
                                             <option selected>--None--</option>
                                         </select>
+                                        <br />
+                                        <label>Order By</label>
+                                        <select asp-for="SearchAdvertisementModel.OrderBy" class="form-control">
+                                            <option value="@OrderByValues.Brand_Model_Price">Brand/Model/Price</option>
+                                            <option value="@OrderByValues.Price">Price</option>
+                                            <option value="@OrderByValues.Year">Year</option>
+                                            <option value="@OrderByValues.Newest">Newest</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <br />

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-using static CarSalesSystem.Data.DataConstants;
-
 namespace CarSalesSystem.Data.Models
 {
     public class Model

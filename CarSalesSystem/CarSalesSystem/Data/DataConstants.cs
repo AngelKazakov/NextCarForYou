@@ -1,4 +1,6 @@
-﻿namespace CarSalesSystem.Data
+﻿using System;
+
+namespace CarSalesSystem.Data
 {
     public static class DataConstants
     {
@@ -23,5 +25,7 @@
         public const int VehicleBrandNameMaxLength = 64;
         public const int VehicleModelNameMaxLength = 64;
         public const int VehiclePowerMaxValue = 2200;
+
+        public static string ImagesPath = Environment.CurrentDirectory + "\\Images";
     }
 }

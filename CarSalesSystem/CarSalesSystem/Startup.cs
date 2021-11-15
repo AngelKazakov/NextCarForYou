@@ -7,6 +7,7 @@ using CarSalesSystem.Services.Categories;
 using CarSalesSystem.Services.Colors;
 using CarSalesSystem.Services.Models;
 using CarSalesSystem.Services.Regions;
+using CarSalesSystem.Services.Search;
 using CarSalesSystem.Services.TechnicalData;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -58,6 +59,7 @@ namespace CarSalesSystem
             services.AddTransient<IRegionService, RegionService>();
             services.AddTransient<ITechnicalService, TechnicalService>();
             services.AddTransient<IAdvertisementService, AdvertisementService>();
+            services.AddTransient<ISearchService, SearchService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

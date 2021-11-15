@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using CarSalesSystem.Data.Enums;
 using CarSalesSystem.Models.Brand;
 using CarSalesSystem.Models.Engine;
 using CarSalesSystem.Models.Region;
@@ -25,6 +26,8 @@ namespace CarSalesSystem.Models.Search
         public string City { get; init; }
 
         public string OrderBy { get; init; }
+
+        public OrderByValues OrderByValues { get; set; }
 
         public ICollection<BrandFormModel> Brands { get; init; } = new List<BrandFormModel>();
 

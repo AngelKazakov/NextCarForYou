@@ -40,7 +40,7 @@ namespace CarSalesSystem.Infrastructure
                 Vehicle = new Vehicle()
                 {
                     Power = model.Power,
-                    BrandId = model.Brand,
+                    ModelId = model.Model,
                     ColorId = model.Color,
                     CategoryId = model.Category,
                     Year = model.Year,

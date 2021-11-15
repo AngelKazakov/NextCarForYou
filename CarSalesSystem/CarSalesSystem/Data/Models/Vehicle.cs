@@ -10,9 +10,9 @@ namespace CarSalesSystem.Data.Models
         public string Id { get; init; } = Guid.NewGuid().ToString();
 
         [Required]
-        public string BrandId { get; set; }
+        public string ModelId { get; init; }
 
-        public Brand Brand { get; init; }
+        public Model Model { get; init; }
 
         [Range(0, VehiclePowerMaxValue)]
         public int Power { get; set; }

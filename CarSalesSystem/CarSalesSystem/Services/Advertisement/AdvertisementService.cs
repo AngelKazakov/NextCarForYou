@@ -7,6 +7,7 @@ using CarSalesSystem.Data.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.Storage;
 
+using static CarSalesSystem.Data.DataConstants;
 
 namespace CarSalesSystem.Services.Advertisement
 {
@@ -55,7 +56,7 @@ namespace CarSalesSystem.Services.Advertisement
 
         private async Task SaveImages(IFormFileCollection files, string advertisementId)
         {
-            DirectoryInfo directoryInfo = Directory.CreateDirectory(Environment.CurrentDirectory + "/Images");
+            DirectoryInfo directoryInfo = Directory.CreateDirectory(ImagesPath);
 
             DirectoryInfo subDirectoryInfo = directoryInfo.CreateSubdirectory($"Advertisement{advertisementId}");
 

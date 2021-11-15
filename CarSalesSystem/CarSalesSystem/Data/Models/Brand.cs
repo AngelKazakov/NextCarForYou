@@ -14,9 +14,6 @@ namespace CarSalesSystem.Data.Models
         [MaxLength(VehicleBrandNameMaxLength)]
         public string Name { get; set; }
 
-        public ICollection<Vehicle> Vehicles { get; init; } = new List<Vehicle>();
-
         public ICollection<Model> Models { get; init; } = new List<Model>();
     }
-
 }

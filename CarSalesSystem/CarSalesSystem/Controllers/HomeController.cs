@@ -60,6 +60,12 @@ namespace CarSalesSystem.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        public IActionResult Index(HomeViewModel homeViewModel)
+        {
+            return RedirectToAction("Search", "Search", homeViewModel.SearchAdvertisementModel);
+        }
+
         public IActionResult Privacy()
         {
             return View();

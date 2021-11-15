@@ -16,6 +16,6 @@
 
         public string City { get; init; }
 
-        public byte[] Image { get; init; }
+        public byte[] Image { get; set; }
     }
 }
