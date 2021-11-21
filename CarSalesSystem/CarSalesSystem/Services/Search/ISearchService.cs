@@ -6,5 +6,7 @@ namespace CarSalesSystem.Services.Search
     public interface ISearchService
     {
         public List<SearchResultModel> SearchVehicles(SearchAdvertisementModel model);
+
+        public List<SearchResultModel> GetLastPublishedAdvertisements();
     }
 }

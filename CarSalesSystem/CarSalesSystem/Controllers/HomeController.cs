@@ -15,6 +15,7 @@ using CarSalesSystem.Models.Transmission;
 using CarSalesSystem.Services.Brands;
 using CarSalesSystem.Services.Models;
 using CarSalesSystem.Services.Regions;
+using CarSalesSystem.Services.Search;
 using CarSalesSystem.Services.TechnicalData;
 
 namespace CarSalesSystem.Controllers
@@ -25,6 +26,7 @@ namespace CarSalesSystem.Controllers
         private readonly IBrandService brandService;
         private readonly IModelService modelService;
         private readonly IRegionService regionService;
+        private readonly ISearchService searchService;
         private readonly ITechnicalService technicalService;
         private readonly IMapper mapper;
 
@@ -33,9 +35,11 @@ namespace CarSalesSystem.Controllers
             IModelService modelService,
             IRegionService regionService,
             ITechnicalService technicalService,
+            ISearchService searchService,
             IMapper mapper, ILogger<HomeController> logger)
         {
             _logger = logger;
+            this.searchService = searchService;
             this.brandService = brandService;
             this.modelService = modelService;
             this.regionService = regionService;
@@ -53,7 +57,8 @@ namespace CarSalesSystem.Controllers
                     Regions = mapper.Map<ICollection<Region>, ICollection<RegionFormModel>>(regionService.GetAllRegions()),
                     EngineTypes = mapper.Map<ICollection<VehicleEngineType>, ICollection<EngineFormModel>>(technicalService.GetEngineTypes()),
                     TransmissionTypes = mapper.Map<ICollection<TransmissionType>, ICollection<TransmissionFormModel>>(technicalService.GetTransmissionTypes()),
-                }
+                },
+                LatestPublishedAdvertisements = searchService.GetLastPublishedAdvertisements()
             };
 
 

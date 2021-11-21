@@ -16,6 +16,8 @@
 
         public string City { get; init; }
 
+        public string CreatedOn { get; init; }
+
         public byte[] Image { get; set; }
     }
 }

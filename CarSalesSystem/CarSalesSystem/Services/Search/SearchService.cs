@@ -12,6 +12,8 @@ namespace CarSalesSystem.Services.Search
 {
     public class SearchService : ISearchService
     {
+        //TODO: handle errors with try-catch
+
         private readonly CarSalesDbContext context;
 
         public SearchService(CarSalesDbContext context)
@@ -19,46 +21,12 @@ namespace CarSalesSystem.Services.Search
 
         public List<SearchResultModel> SearchVehicles(SearchAdvertisementModel model)
         {
-            List<Data.Models.Advertisement> advertisements = FindAdvertisements(model);
+            return BuildSearchResultModels(FindAdvertisements(model));
+        }
 
-            List<SearchResultModel> results = new List<SearchResultModel>();
-
-            foreach (var advertisement in advertisements)
-            {
-                Data.Models.Advertisement loadedAdvertisement = context.Advertisements.FirstOrDefault(a => a.Id == advertisement.Id);
-                context.Entry(loadedAdvertisement).Reference(a => a.City).Load();
-               // context.Entry(loadedAdvertisement).Reference(a => a.City.Region).Load();
-                context.Entry(loadedAdvertisement).Reference(a => a.Vehicle).Load();
-
-                var resultModel = new SearchResultModel()
-                {
-                    AdvertisementId = advertisement.Id,
-                    City = advertisement.City.Name,
-                    Mileage = advertisement.Vehicle.Mileage,
-                    Name = advertisement.Name,
-                    Price = advertisement.Price,
-                    Region = context.Regions.FirstOrDefault(r => r.Id == advertisement.City.RegionId).Name,
-                    Year = advertisement.Vehicle.Year,
-                };
-
-                string fullPath = ImagesPath + "/Advertisement" + advertisement.Id;
-
-                if (Directory.Exists(fullPath))
-                {
-                    DirectoryInfo directory = new DirectoryInfo(fullPath);
-
-                    FileInfo[] Images = directory.GetFiles();
-
-                    if (Images.Any())
-                    {
-                        resultModel.Image = File.ReadAllBytes(fullPath + "/" + Images[0].Name);
-                    }
-                }
-
-                results.Add(resultModel);
-            }
-
-            return results;
+        public List<SearchResultModel> GetLastPublishedAdvertisements()
+        {
+            return BuildSearchResultModels(context.Advertisements.OrderByDescending(x => x.CreatedOnDate).Take(6).ToList());
         }
 
         private List<Data.Models.Advertisement> FindAdvertisements(SearchAdvertisementModel searchModel)
@@ -131,6 +99,49 @@ namespace CarSalesSystem.Services.Search
             }
 
             return query;
+        }
+
+        private List<SearchResultModel> BuildSearchResultModels(List<Data.Models.Advertisement> advertisements)
+        {
+            var results = new List<SearchResultModel>();
+
+            foreach (var advertisement in advertisements)
+            {
+                Data.Models.Advertisement loadedAdvertisement = context.Advertisements.FirstOrDefault(a => a.Id == advertisement.Id);
+                context.Entry(loadedAdvertisement).Reference(a => a.City).Load();
+                context.Entry(loadedAdvertisement).Reference(a => a.Vehicle).Load();
+
+
+                var resultModel = new SearchResultModel()
+                {
+                    AdvertisementId = advertisement.Id,
+                    City = advertisement.City.Name,
+                    Mileage = advertisement.Vehicle.Mileage,
+                    Name = advertisement.Name,
+                    Price = advertisement.Price,
+                    Region = context.Regions.FirstOrDefault(r => r.Id == advertisement.City.RegionId).Name,
+                    Year = advertisement.Vehicle.Year,
+                    CreatedOn = advertisement.CreatedOnDate.ToString("HH:mm, dd.MM.yyyy")
+                };
+
+                string fullPath = ImagesPath + "/Advertisement" + advertisement.Id;
+
+                if (Directory.Exists(fullPath))
+                {
+                    DirectoryInfo directory = new DirectoryInfo(fullPath);
+
+                    FileInfo[] images = directory.GetFiles();
+
+                    if (images.Any())
+                    {
+                        resultModel.Image = File.ReadAllBytes(fullPath + "/" + images[0].Name);
+                    }
+                }
+
+                results.Add(resultModel);
+            }
+
+            return results;
         }
     }
 }
