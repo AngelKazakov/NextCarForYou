@@ -61,7 +61,6 @@ namespace CarSalesSystem.Controllers
                 LatestPublishedAdvertisements = searchService.GetLastPublishedAdvertisements()
             };
 
-
             return View(model);
         }
 

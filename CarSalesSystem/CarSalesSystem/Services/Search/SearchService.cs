@@ -5,7 +5,7 @@ using System.Linq;
 using CarSalesSystem.Data;
 using CarSalesSystem.Data.Enums;
 using CarSalesSystem.Models.Search;
-
+using Microsoft.EntityFrameworkCore;
 using static CarSalesSystem.Data.DataConstants;
 
 namespace CarSalesSystem.Services.Search
@@ -26,51 +26,58 @@ namespace CarSalesSystem.Services.Search
 
         public List<SearchResultModel> GetLastPublishedAdvertisements()
         {
-            return BuildSearchResultModels(context.Advertisements.OrderByDescending(x => x.CreatedOnDate).Take(6).ToList());
+            //TODO: Take 6 newest advertisements instead of 2
+            return BuildSearchResultModels(context.Advertisements.OrderByDescending(x => x.CreatedOnDate).Take(2).ToList());
         }
 
         private List<Data.Models.Advertisement> FindAdvertisements(SearchAdvertisementModel searchModel)
         {
-            var query = context.Advertisements.ToList();
+            var query = context.Advertisements
+                .Include(a => a.Vehicle.Model)
+                .Include(a => a.Vehicle.EngineType)
+                .Include(a => a.Vehicle.TransmissionType)
+                .Include(a => a.City)
+                .Include(a => a.City.Region)
+                .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(searchModel.Brand))
             {
-                query.Where(b => b.Vehicle.Model.Brand.Name == searchModel.Brand);
+                query = query.Where(b => b.Vehicle.Model.BrandId == searchModel.Brand);
             }
 
             if (!string.IsNullOrWhiteSpace(searchModel.Model))
             {
-                query.Where(m => m.Vehicle.Model.Name == searchModel.Model && m.Vehicle.Model.Brand.Name == searchModel.Brand);
+                query = query.Where(m => m.Vehicle.ModelId == searchModel.Model && m.Vehicle.Model.BrandId == searchModel.Brand);
             }
 
             if (!string.IsNullOrWhiteSpace(searchModel.EngineType))
             {
-                query.Where(e => e.Vehicle.EngineType.Name == searchModel.EngineType);
+                query = query.Where(e => e.Vehicle.EngineType.Id == searchModel.EngineType);
             }
 
             if (!string.IsNullOrWhiteSpace(searchModel.TransmissionType))
             {
-                query.Where(t => t.Vehicle.TransmissionType.Name == searchModel.TransmissionType);
+                query = query.Where(t => t.Vehicle.TransmissionType.Id == searchModel.TransmissionType);
             }
 
             if (!string.IsNullOrWhiteSpace(searchModel.City))
             {
-                query.Where(c => c.City.Name == searchModel.City && c.City.Region.Name == searchModel.Region);
+                query = query.Where(c => c.City.Id == searchModel.City && c.City.RegionId == searchModel.Region);
             }
 
             if (!string.IsNullOrWhiteSpace(searchModel.Region))
             {
-                query.Where(r => r.City.Region.Name == searchModel.Region);
+                query = query.Where(r => r.City.RegionId == searchModel.Region);
             }
 
             if (searchModel.Year >= 1930 && searchModel.Year <= DateTime.Now.Year)
             {
-                query.Where(y => y.Vehicle.Year >= searchModel.Year);
+                query = query.Where(y => y.Vehicle.Year >= searchModel.Year);
             }
 
             if (searchModel.MaximumPrice > 0)
             {
-                query.Where(p => p.Price <= searchModel.MaximumPrice);
+                query = query.Where(p => p.Price <= searchModel.MaximumPrice);
             }
 
             if (!string.IsNullOrWhiteSpace(searchModel.OrderBy))
@@ -79,26 +86,27 @@ namespace CarSalesSystem.Services.Search
 
                 if (orderBy.Equals(OrderByValues.Brand_Model_Price))
                 {
-                    query
+                    query = query
                         .OrderBy(x => x.Vehicle.Model.Brand.Name)
                         .ThenBy(x => x.Vehicle.Model.Name)
                         .ThenBy(x => x.Price);
                 }
                 else if (orderBy.Equals(OrderByValues.Price))
                 {
-                    query.OrderBy(x => x.Price);
+                    query = query.OrderBy(x => x.Price);
                 }
                 else if (orderBy.Equals(OrderByValues.Year))
                 {
-                    query.OrderByDescending(x => x.Vehicle.Year);
+                    query = query.OrderByDescending(x => x.Vehicle.Year);
                 }
                 else if (orderBy.Equals(OrderByValues.Newest))
                 {
-                    query.OrderByDescending(x => x.CreatedOnDate);
+                    query = query.OrderByDescending(x => x.CreatedOnDate);
                 }
             }
 
-            return query;
+
+            return query.ToList();
         }
 
         private List<SearchResultModel> BuildSearchResultModels(List<Data.Models.Advertisement> advertisements)

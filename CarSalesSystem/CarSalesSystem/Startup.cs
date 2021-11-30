@@ -3,6 +3,7 @@ using CarSalesSystem.Infrastructure;
 using CarSalesSystem.Services;
 using CarSalesSystem.Services.Advertisement;
 using CarSalesSystem.Services.Brands;
+using CarSalesSystem.Services.CarDealerShip;
 using CarSalesSystem.Services.Categories;
 using CarSalesSystem.Services.Colors;
 using CarSalesSystem.Services.Models;
@@ -60,6 +61,7 @@ namespace CarSalesSystem
             services.AddTransient<ITechnicalService, TechnicalService>();
             services.AddTransient<IAdvertisementService, AdvertisementService>();
             services.AddTransient<ISearchService, SearchService>();
+            services.AddTransient<ICarDealerShipService, CarDealerShipService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -46,7 +46,5 @@ namespace CarSalesSystem.Data.Models
         public string EuroStandardId { get; set; }
 
         public VehicleEuroStandard EuroStandard { get; set; }
-
-
     }
 }

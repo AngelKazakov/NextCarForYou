@@ -1,13 +1,6 @@
 ﻿using System.Collections.Generic;
 using AutoMapper;
-using CarSalesSystem.Data;
-using CarSalesSystem.Data.Models;
-using CarSalesSystem.Models.Advertisement;
-using CarSalesSystem.Models.Brand;
-using CarSalesSystem.Models.Engine;
-using CarSalesSystem.Models.Region;
 using CarSalesSystem.Models.Search;
-using CarSalesSystem.Models.Transmission;
 using CarSalesSystem.Services.Brands;
 using CarSalesSystem.Services.Models;
 using CarSalesSystem.Services.Regions;

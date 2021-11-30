@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Security.Claims;
 using AutoMapper;
 using CarSalesSystem.Data;
@@ -25,10 +21,7 @@ using CarSalesSystem.Services.Models;
 using CarSalesSystem.Services.Regions;
 using CarSalesSystem.Services.TechnicalData;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
 
 
@@ -52,7 +45,8 @@ namespace CarSalesSystem.Controllers
             IMapper mapper, IColorService colorService,
             IRegionService regionService,
             ITechnicalService technicalService,
-            IAdvertisementService advertisementService)
+            IAdvertisementService advertisementService
+           )
         {
             this.brandService = brandService;
             this.modelService = modelService;
@@ -86,7 +80,7 @@ namespace CarSalesSystem.Controllers
         [Authorize]
         public IActionResult Add(AdvertisementAddFormModel advertisement)
         {
-            TempData["advertisement" + GetUserId()] = JsonConvert.SerializeObject(advertisement);
+            TempData["advertisement" + this.User.Id()] = JsonConvert.SerializeObject(advertisement);
 
             return RedirectToAction("AddStep2");
         }
@@ -106,7 +100,7 @@ namespace CarSalesSystem.Controllers
                 return View(advertisementStep2);
             }
 
-            var userId = GetUserId();
+            var userId = this.User.Id();
             var key = "advertisement" + userId;
 
             if (TempData.ContainsKey(key))
@@ -117,16 +111,22 @@ namespace CarSalesSystem.Controllers
 
                 var advertisementModel = AdvertisementCustomMapper.Map(advertisementAddFormModel, advertisementStep2, userId, extrasIdList);
 
-                this.advertisementService.Save(advertisementModel, extrasIdList,advertisementStep2.Images);
+                this.advertisementService.Save(advertisementModel, extrasIdList, advertisementStep2.Images);
             }
             else
             {
                 this.ModelState.AddModelError(string.Empty, "Error creating advertisement.");
-               return View(advertisementStep2);
+                return View(advertisementStep2);
             }
 
 
             return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        public IActionResult Details(string advertisementId)
+        {
+            return View(advertisementService.GetAdvertisementById(advertisementId));
         }
 
         public JsonResult GetModels(string brandId)
@@ -137,13 +137,6 @@ namespace CarSalesSystem.Controllers
         public JsonResult GetAllCities(string regionId)
         {
             return Json(regionService.GetAllCities(regionId));
-        }
-
-        private string GetUserId()
-        {
-            var claimsIdentity = (ClaimsIdentity)this.User.Identity;
-            var claim = claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
-            return claim.Value;
         }
     }
 }

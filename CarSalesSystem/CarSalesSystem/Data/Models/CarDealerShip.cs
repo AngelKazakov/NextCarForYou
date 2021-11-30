@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 
 using static CarSalesSystem.Data.DataConstants;
 
@@ -12,11 +13,11 @@ namespace CarSalesSystem.Data.Models
 
         [Required]
         [MaxLength(CarDealerShipNameMaxLength)]
-        public  string Name { get; init; }
-      
+        public string Name { get; init; }
+
         [Required]
         [MaxLength(CarDealerAddressMaxLength)]
-        public  string Address { get; set; }
+        public string Address { get; set; }
 
         [Required]
         [Phone]
@@ -28,6 +29,12 @@ namespace CarSalesSystem.Data.Models
 
         [Url]
         public string Url { get; set; }
+
+        [Required]
+        public string UserId { get; set; }
+
+        [Required]
+        public IdentityUser User { get; set; }
 
         public ICollection<Advertisement> Advertisements { get; init; } = new List<Advertisement>();
 

@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using CarSalesSystem.Data;
 using CarSalesSystem.Data.Models;
+using CarSalesSystem.Infrastructure;
+using CarSalesSystem.Models.Advertisement;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
 using static CarSalesSystem.Data.DataConstants;
@@ -52,6 +56,27 @@ namespace CarSalesSystem.Services.Advertisement
                     Console.WriteLine("Error occurred.");
                 }
             }
+        }
+
+        public AdvertisementViewModel GetAdvertisementById(string advertisementId)
+        {
+            Data.Models.Advertisement advertisement =
+                context.Advertisements
+                    .Include(x => x.Vehicle)
+                    .Include(x => x.City)
+                    .Include(x => x.City.Region)
+                    .Include(x => x.Vehicle.Color)
+                    .Include(x => x.Vehicle.EuroStandard)
+                    .Include(x => x.Vehicle.EngineType)
+                    .Include(x => x.Vehicle.Category)
+                    .Include(x => x.Vehicle.TransmissionType)
+                    .Include(x => x.Vehicle.Model)
+                    .Include(x => x.AdvertisementExtras)
+                    .ThenInclude(x => x.Extras)
+                    .ThenInclude(x => x.Category)
+                    .FirstOrDefault(x => x.Id == advertisementId);
+
+            return AdvertisementCustomMapper.Map(advertisement);
         }
 
         private async Task SaveImages(IFormFileCollection files, string advertisementId)

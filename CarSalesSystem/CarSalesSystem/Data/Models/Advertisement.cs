@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-
+using Microsoft.AspNetCore.Identity;
 using static CarSalesSystem.Data.DataConstants;
 
 namespace CarSalesSystem.Data.Models
@@ -38,6 +38,9 @@ namespace CarSalesSystem.Data.Models
 
         [Required]
         public string UserId { get; init; }
+
+        [Required]
+        public IdentityUser User { get; init; }
 
         public ICollection<VehicleImage> VehicleImages { get; set; } = new List<VehicleImage>();
 
