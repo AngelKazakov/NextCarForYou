@@ -56,6 +56,12 @@ namespace CarSalesSystem.Models.Advertisement
 
         public string RegionName { get; set; }
 
+        public string DealershipName { get; set; }
+
+        public string DealershipPhone { get; set; }
+
+        public string UserPhone { get; set; }
+
         public Dictionary<string, List<string>> Extras { get; set; } = new Dictionary<string, List<string>>();
 
         public List<byte[]> Images { get; set; } = new List<byte[]>();

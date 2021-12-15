@@ -1,10 +1,26 @@
 ﻿@model AdvertisementViewModel
 
+
+
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <div class="container">
     <div class="card mb-3">
         <div class="card-body">
             <div class="container-fluid">
                 <h1 class="card-title">@Model.Name</h1>
+                @using (Html.BeginForm("DeleteAdvertisement", "Advertisement", new { Id = @Model.AdvertisementId }, FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <button type="submit" class="btn btn-danger" value="Delete"><span class="glyphicon glyphicon-trash"></span>Delete</button>
+                    <p>
+                        Trash icon on a styled link button:
+                        <a href="#" class="btn btn-info btn-lg">
+                            <span class="glyphicon glyphicon-trash"></span> Trash
+                        </a>
+                    </p>
+                }
+
                 <h3 class="text-right text-primary font-weight-bold ">€@Model.Price</h3>
                 <div id="carouselExampleControls" class="carousel slide" data-interval="false">
                     <div class="carousel-inner">
@@ -45,9 +61,17 @@
                 <div>
                     <div class="card" style="width: 18rem;">
                         <ul class="list-group list-group-flush">
-                            <li class="list-group-item"><b>Card Dealership/Private Person</b></li>
+                            @if (string.IsNullOrWhiteSpace(Model.DealershipName))
+                            {
+                                <li class="list-group-item"><b>Private Person</b></li>
+                                <li class="list-group-item"> <b>Phone: @Model.UserPhone</b></li>
+                            }
+                            else
+                            {
+                                <li class="list-group-item"><b>@Model.DealershipName</b></li>
+                                <li class="list-group-item"> <b>Phone: @Model.DealershipPhone</b></li>
+                            }
                             <li class="list-group-item"><b>City:</b> @Model.CityName, @Model.RegionName</li>
-                            <li class="list-group-item"> <b>Phone: 0888888888</b></li>
                         </ul>
                     </div>
                 </div>
@@ -77,17 +101,17 @@
                             <td>
                                 <table class="table table-bordered">
                                     <thead>
-                                    <tr>
-                                        <th scope="row">@key</th>
-                                    </tr>
+                                        <tr>
+                                            <th scope="row">@key</th>
+                                        </tr>
                                     </thead>
                                     <tbody>
-                                    @foreach (var value in extrasList)
-                                    {
-                                        <tr>
-                                            <td>• @value</td>
-                                        </tr>
-                                    }
+                                        @foreach (var value in extrasList)
+                                        {
+                                            <tr>
+                                                <td>• @value</td>
+                                            </tr>
+                                        }
                                     </tbody>
                                 </table>
                             </td>
@@ -101,8 +125,11 @@
                 <textarea readonly="readonly" class="form-control" id="exampleFormControlTextarea1" rows="3">@Model.Description</textarea>
             </div>
             <div class="card-body">
-                <a href="#" class="card-link">Card link</a>
-                <a href="#" class="card-link">Another link</a>
+                @if (!string.IsNullOrWhiteSpace(Model.DealershipName))
+                {
+                    <a href="#" class="card-link">See all advertisements in: <b>@Model.DealershipName</b></a>
+
+                }
             </div>
         </div>
     </div>

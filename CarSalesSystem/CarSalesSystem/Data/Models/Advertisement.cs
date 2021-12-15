@@ -36,6 +36,10 @@ namespace CarSalesSystem.Data.Models
 
         public virtual City City { get; init; }
 
+        public string CarDealershipId { get; init; }
+
+        public CarDealerShip CarDealerShip { get; init; }
+
         [Required]
         public string UserId { get; init; }
 

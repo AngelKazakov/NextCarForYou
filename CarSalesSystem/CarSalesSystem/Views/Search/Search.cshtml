@@ -21,7 +21,7 @@
                                     <p class="card-text">Mileage: @advertisement.Mileage km</p>
                                     <p class="card-text">City: @advertisement.City, Region: @advertisement.Region</p>
                                     <p class="card-text">Created on: @advertisement.CreatedOn</p>
-                                    <a href="#" class="btn btn-primary">See Details</a>
+                                    @Html.ActionLink("See Details", "Details", "Advertisement", new { advertisementId = @advertisement.AdvertisementId }, new { @class = "btn btn-primary" })
                                 </div>
                             </div>
                             <br />

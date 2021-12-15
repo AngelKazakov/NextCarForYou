@@ -4,14 +4,16 @@ using CarSalesSystem.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CarSalesSystem.Migrations
 {
     [DbContext(typeof(CarSalesDbContext))]
-    partial class CarSalesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211213181924_FixedRelationBetweenAdvertisementAndDealership")]
+    partial class FixedRelationBetweenAdvertisementAndDealership
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -330,7 +332,6 @@ namespace CarSalesSystem.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("AdvertisementId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("FullPath")
@@ -723,13 +724,9 @@ namespace CarSalesSystem.Migrations
 
             modelBuilder.Entity("CarSalesSystem.Data.Models.VehicleImage", b =>
                 {
-                    b.HasOne("CarSalesSystem.Data.Models.Advertisement", "Advertisement")
+                    b.HasOne("CarSalesSystem.Data.Models.Advertisement", null)
                         .WithMany("VehicleImages")
-                        .HasForeignKey("AdvertisementId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Advertisement");
+                        .HasForeignKey("AdvertisementId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

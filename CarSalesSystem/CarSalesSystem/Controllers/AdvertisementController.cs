@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using AutoMapper;
 using CarSalesSystem.Data;
@@ -21,6 +22,7 @@ using CarSalesSystem.Services.Models;
 using CarSalesSystem.Services.Regions;
 using CarSalesSystem.Services.TechnicalData;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -137,6 +139,23 @@ namespace CarSalesSystem.Controllers
         public JsonResult GetAllCities(string regionId)
         {
             return Json(regionService.GetAllCities(regionId));
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult DeleteAdvertisement(string id)
+        {
+            try
+            {
+                advertisementService.Delete(id, this.User.Id());
+
+                return RedirectToAction("Index","Home" );
+            }
+            catch (Exception exc)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error deleting data");
+            }
         }
     }
 }

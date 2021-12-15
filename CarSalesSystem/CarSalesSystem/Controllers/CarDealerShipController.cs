@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using AutoMapper;
+﻿using AutoMapper;
 using CarSalesSystem.Data.Models;
 using CarSalesSystem.Infrastructure;
 using CarSalesSystem.Models.CarDealership;

@@ -49,7 +49,8 @@ namespace CarSalesSystem.Data
             base.OnModelCreating(builder);
 
             builder.Entity<Advertisement>()
-                .Property(a => a.Price).HasColumnType("decimal");
+                .Property(a => a.Price)
+                .HasColumnType("decimal");
 
 
             builder.Entity<AdvertisementExtra>().
@@ -59,6 +60,13 @@ namespace CarSalesSystem.Data
                 .Entity<Advertisement>()
                 .Property(e => e.Id)
                 .ValueGeneratedOnAdd();
+
+            builder
+                .Entity<Advertisement>()
+                .HasMany(a => a.VehicleImages)
+                .WithOne(x => x.Advertisement)
+                .HasForeignKey(x => x.AdvertisementId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

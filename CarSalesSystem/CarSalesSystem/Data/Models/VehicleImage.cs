@@ -16,5 +16,9 @@ namespace CarSalesSystem.Data.Models
 
         public string FullPath { get; set; }
 
+        public string AdvertisementId { get; set; }
+
+        [Required]
+        public Advertisement Advertisement { get; set; }
     }
 }

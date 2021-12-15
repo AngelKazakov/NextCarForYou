@@ -58,6 +58,41 @@ namespace CarSalesSystem.Services.Advertisement
             }
         }
 
+        public void Edit(AdvertisementViewModel advertisement, string advertisementId, string userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Delete(string Id, string UserId)
+        {
+            using IDbContextTransaction transaction = context.Database.BeginTransaction();
+            try
+            {
+                string advertisementUserId = context.Advertisements.Where(x => x.Id == Id).Select(x => x.UserId)
+                    .FirstOrDefault();
+
+                if (advertisementUserId != UserId)
+                {
+                    throw new Exception("You do not have permission to delete this advertisement.");
+                }
+
+                var path = "Advertisement" + Id;
+
+                var dir = new DirectoryInfo(ImagesPath + "\\" + path);
+                dir.Attributes = dir.Attributes & ~FileAttributes.ReadOnly;
+                dir.Delete(true);
+
+                context.Advertisements.Remove(context.Advertisements.First(adv => adv.Id == Id));
+                context.SaveChanges();
+                transaction.Commit();
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                throw ex;
+            }
+        }
+
         public AdvertisementViewModel GetAdvertisementById(string advertisementId)
         {
             Data.Models.Advertisement advertisement =
@@ -71,6 +106,8 @@ namespace CarSalesSystem.Services.Advertisement
                     .Include(x => x.Vehicle.Category)
                     .Include(x => x.Vehicle.TransmissionType)
                     .Include(x => x.Vehicle.Model)
+                    .Include(x => x.CarDealerShip)
+                    .Include(x => x.User)
                     .Include(x => x.AdvertisementExtras)
                     .ThenInclude(x => x.Extras)
                     .ThenInclude(x => x.Category)

@@ -94,7 +94,14 @@ namespace CarSalesSystem.Infrastructure
                 TransmissionTypeName = advertisement.Vehicle.TransmissionType.Name,
                 VehicleId = advertisement.VehicleId,
                 Description = advertisement.Description,
+                UserPhone = advertisement.User.PhoneNumber
             };
+
+            if (advertisement.CarDealerShip != null)
+            {
+                advertisementViewModel.DealershipName = advertisement.CarDealerShip.Name;
+                advertisementViewModel.DealershipPhone = advertisement.CarDealerShip.Phone;
+            }
 
             string fullPath = ImagesPath + "/Advertisement" + advertisement.Id;
 
@@ -127,7 +134,7 @@ namespace CarSalesSystem.Infrastructure
                 }
                 else
                 {
-                    advertisementExtras.Add(key, new List<string>{advertisementExtra.Extras.Name});
+                    advertisementExtras.Add(key, new List<string> { advertisementExtra.Extras.Name });
                 }
             }
 
