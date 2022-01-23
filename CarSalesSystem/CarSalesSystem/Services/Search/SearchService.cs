@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using CarSalesSystem.Data;
 using CarSalesSystem.Data.Enums;
+using CarSalesSystem.Data.Models;
 using CarSalesSystem.Models.Search;
 using Microsoft.EntityFrameworkCore;
 using static CarSalesSystem.Data.DataConstants;
@@ -21,13 +22,13 @@ namespace CarSalesSystem.Services.Search
 
         public List<SearchResultModel> SearchVehicles(SearchAdvertisementModel model)
         {
-            return BuildSearchResultModels(FindAdvertisements(model));
+            return BuildSearchResultModels(FindAdvertisements(model)).ToList();
         }
 
         public List<SearchResultModel> GetLastPublishedAdvertisements()
         {
             //TODO: Take 6 newest advertisements instead of 2
-            return BuildSearchResultModels(context.Advertisements.OrderByDescending(x => x.CreatedOnDate).Take(2).ToList());
+            return BuildSearchResultModels(context.Advertisements.OrderByDescending(x => x.CreatedOnDate).Take(2).ToList()).ToList();
         }
 
         private List<Data.Models.Advertisement> FindAdvertisements(SearchAdvertisementModel searchModel)
@@ -109,30 +110,30 @@ namespace CarSalesSystem.Services.Search
             return query.ToList();
         }
 
-        private List<SearchResultModel> BuildSearchResultModels(List<Data.Models.Advertisement> advertisements)
+        public ICollection<SearchResultModel> BuildSearchResultModels(ICollection<Data.Models.Advertisement> advertisements)
         {
             var results = new List<SearchResultModel>();
 
             foreach (var advertisement in advertisements)
             {
-                Data.Models.Advertisement loadedAdvertisement = context.Advertisements.FirstOrDefault(a => a.Id == advertisement.Id);
-                context.Entry(loadedAdvertisement).Reference(a => a.City).Load();
-                context.Entry(loadedAdvertisement).Reference(a => a.Vehicle).Load();
-
+                Data.Models.Advertisement loadedAdvertisement = context.Advertisements
+                    .Include(c => c.City)
+                    .Include(v => v.Vehicle)
+                    .FirstOrDefault(a => a.Id == advertisement.Id);
 
                 var resultModel = new SearchResultModel()
                 {
-                    AdvertisementId = advertisement.Id,
-                    City = advertisement.City.Name,
-                    Mileage = advertisement.Vehicle.Mileage,
-                    Name = advertisement.Name,
-                    Price = advertisement.Price,
-                    Region = context.Regions.FirstOrDefault(r => r.Id == advertisement.City.RegionId).Name,
-                    Year = advertisement.Vehicle.Year,
-                    CreatedOn = advertisement.CreatedOnDate.ToString("HH:mm, dd.MM.yyyy")
+                    AdvertisementId = loadedAdvertisement.Id,
+                    City = loadedAdvertisement.City.Name,
+                    Mileage = loadedAdvertisement.Vehicle.Mileage,
+                    Name = loadedAdvertisement.Name,
+                    Price = loadedAdvertisement.Price,
+                    Region = context.Regions.FirstOrDefault(r => r.Id == loadedAdvertisement.City.RegionId).Name,
+                    Year = loadedAdvertisement.Vehicle.Year,
+                    CreatedOn = loadedAdvertisement.CreatedOnDate.ToString("HH:mm, dd.MM.yyyy")
                 };
 
-                string fullPath = ImagesPath + "/Advertisement" + advertisement.Id;
+                string fullPath = ImagesPath + "/Advertisement" + loadedAdvertisement.Id;
 
                 if (Directory.Exists(fullPath))
                 {

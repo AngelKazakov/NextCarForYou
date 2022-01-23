@@ -1,0 +1,28 @@
+﻿@model CarDealershipAddFormModel
+
+<div class="col-md-6 text-center offset-3">
+    <form method="post" asp-controller="CarDealerShip" asp-action="EditCarDealership">
+        <div class="form-group">
+            <label asp-for="Name">Dealership Name</label>
+            <input asp-for="Name" type="text" class="form-control" id="dealershipNameId" placeholder="Enter Dealership Name">
+        </div>
+        <div class="form-group">
+            <label asp-for="Address">Address</label>
+            <input asp-for="Address" type="text" class="form-control" id="dealershipAddressId" placeholder="Enter Dealership Address">
+        </div>
+        <div class="form-group">
+            <label asp-for="Phone">Phone Number</label>
+            <input asp-for="Phone" type="tel" class="form-control" id="dealershipPhoneId" placeholder="Enter Phone Number">
+        </div>
+        <div class="form-group">
+            <label asp-for="Email">Email address</label>
+            <input asp-for="Email" type="email" class="form-control" id="dealershipEmailId" aria-describedby="emailHelp" placeholder="Enter email">
+            <small id="emailHelpId" class="form-text text-muted">We'll never share your email with anyone else.</small>
+        </div>
+        <div class="form-group">
+            <label asp-for="Url">Dealership Website Address</label>
+            <input asp-for="Url" type="url" class="form-control" id="dealershipUrlId" placeholder="www.yourwebsite.com">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>

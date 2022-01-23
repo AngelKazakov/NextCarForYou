@@ -32,6 +32,8 @@ namespace CarSalesSystem.Models.Advertisement
 
         public int Year { get; set; }
 
+        public string Month { get; set; }
+
         public string CategoryId { get; set; }
 
         public string CategoryName { get; set; }

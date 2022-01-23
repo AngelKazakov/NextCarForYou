@@ -13,10 +13,10 @@ namespace CarSalesSystem.Services.Models
          => this.data = data;
 
 
-        public ICollection<Model> GetAllModels(string Id)
+        public ICollection<Model> GetAllModels(string brandId)
         {
             return this.data.Models
-                .Where(x => x.BrandId == Id)
+                .Where(x => x.BrandId == brandId)
                 .OrderBy(x => x.Name)
                 .ToList();
         }

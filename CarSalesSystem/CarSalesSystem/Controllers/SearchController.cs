@@ -34,6 +34,7 @@ namespace CarSalesSystem.Controllers
             this.searchService = searchService;
         }
 
+        [HttpGet]
         public IActionResult SearchResult()
         {
             return View();

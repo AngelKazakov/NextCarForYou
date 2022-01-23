@@ -1,11 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
-
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 using static CarSalesSystem.Data.DataConstants;
 
 namespace CarSalesSystem.Models.CarDealership
 {
     public class CarDealershipAddFormModel
     {
+        public string Id { get; set; }
+
         [Required]
         [StringLength(CarDealerShipNameMaxLength)]
         public string Name { get; init; }
@@ -23,5 +26,7 @@ namespace CarSalesSystem.Models.CarDealership
 
         [Url]
         public string Url { get; init; }
+
+        public IFormFile Image { get; init; }
     }
 }

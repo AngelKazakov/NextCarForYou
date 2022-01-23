@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using CarSalesSystem.Data;
 using CarSalesSystem.Exceptions;
+using CarSalesSystem.Models.CarDealership;
 
 namespace CarSalesSystem.Services.CarDealerShip
 {
@@ -11,7 +13,6 @@ namespace CarSalesSystem.Services.CarDealerShip
         public CarDealerShipService(CarSalesDbContext context)
         => this.context = context;
 
-
         public string CreateDealerShip(Data.Models.CarDealerShip carDealerShip)
         {
             CheckForExistingCarDealerShip(carDealerShip);
@@ -21,6 +22,57 @@ namespace CarSalesSystem.Services.CarDealerShip
 
             return carDealerShip.Id;
 
+        }
+
+        public ICollection<Data.Models.CarDealerShip> GetAllCarDealershipsByUserId(string userId)
+        {
+            var dealerships = context.CarDealerShips
+                .Where(x => x.UserId == userId)
+                .ToList();
+
+            return dealerships;
+        }
+
+        public ICollection<Data.Models.CarDealerShip> GetAllCarDealerships()
+        {
+            return context.CarDealerShips.ToList();
+        }
+
+        public CarDealershipAddFormModel GetCarDealership(string dealerId)
+        {
+            Data.Models.CarDealerShip dealerShip = context.CarDealerShips.FirstOrDefault(x => x.Id == dealerId);
+
+            CarDealershipAddFormModel dealershipAddFormModel = new CarDealershipAddFormModel
+            {
+                Name = dealerShip.Name,
+                Address = dealerShip.Address,
+                Email = dealerShip.Email,
+                Phone = dealerShip.Phone,
+                Url = dealerShip.Url,
+                Id = dealerId
+            };
+
+            return dealershipAddFormModel;
+        }
+        //TODO: Test
+        public string UpdateCarDealership(CarDealershipAddFormModel model)
+        {
+            var currentDealership = context.CarDealerShips.FirstOrDefault(x => x.Id == model.Id);
+
+            currentDealership.Name = model.Name;
+            currentDealership.Address = model.Address;
+            currentDealership.Email = model.Email;
+            currentDealership.Phone = model.Phone;
+            currentDealership.Url = model.Url;
+
+            this.context.SaveChanges();
+
+            return model.Id;
+        }
+
+        public ICollection<Data.Models.Advertisement> GetAdvertisementsByDealershipId(string dealerId)
+        {
+            return this.context.Advertisements.Where(x => x.CarDealershipId == dealerId).ToList();
         }
 
         private void CheckForExistingCarDealerShip(Data.Models.CarDealerShip carDealerShip)

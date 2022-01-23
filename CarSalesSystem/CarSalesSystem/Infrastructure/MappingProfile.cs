@@ -1,15 +1,20 @@
-﻿using AutoMapper;
+﻿using System;
+using System.IO;
+using AutoMapper;
 using CarSalesSystem.Data;
 using CarSalesSystem.Data.Models;
 using CarSalesSystem.Models.Brand;
 using CarSalesSystem.Models.CarDealership;
 using CarSalesSystem.Models.Category;
+using CarSalesSystem.Models.City;
 using CarSalesSystem.Models.Color;
 using CarSalesSystem.Models.Engine;
 using CarSalesSystem.Models.EuroStandard;
 using CarSalesSystem.Models.ExtrasCategory;
+using CarSalesSystem.Models.Model;
 using CarSalesSystem.Models.Region;
 using CarSalesSystem.Models.Transmission;
+using Microsoft.AspNetCore.Http;
 
 namespace CarSalesSystem.Infrastructure
 {
@@ -26,7 +31,15 @@ namespace CarSalesSystem.Infrastructure
             this.CreateMap<VehicleEuroStandard, EuroStandardFormModel>();
             this.CreateMap<ExtrasCategory, ExtrasCategoryFormModel>();
             this.CreateMap<Extras, AddExtrasFormModel>();
-            this.CreateMap<CarDealershipAddFormModel, CarDealerShip>();
+            this.CreateMap<CarDealershipAddFormModel, CarDealerShip>()
+                .ForMember(x => x.Id, opt => opt.Ignore())
+                .ForMember(dto => dto.ImageLogo, e =>
+                    e.MapFrom(o => FormFileToByteArrayConverter.Convert(o.Image)))
+                .ForMember(x => x.CreatedOn, e => e.MapFrom(o => DateTime.UtcNow));
+            this.CreateMap<Model, ModelFormModel>();
+            this.CreateMap<City, CityFormModel>();
+            this.CreateMap<CarDealerShip, CarDealershipViewModel>();
+            this.CreateMap<CarDealerShip, CarDealershipListingViewModel>();
         }
     }
 }

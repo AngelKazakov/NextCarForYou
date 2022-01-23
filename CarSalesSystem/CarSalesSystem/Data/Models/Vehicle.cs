@@ -10,7 +10,7 @@ namespace CarSalesSystem.Data.Models
         public string Id { get; init; } = Guid.NewGuid().ToString();
 
         [Required]
-        public string ModelId { get; init; }
+        public string ModelId { get; set; }
 
         public Model Model { get; init; }
 
@@ -24,6 +24,10 @@ namespace CarSalesSystem.Data.Models
         [Required]
         [Range(0, int.MaxValue)]
         public int Mileage { get; set; }
+
+        [Required]
+        [Range(1, 12)]
+        public int Month { get; set; }
 
         [Required]
         public int Year { get; set; }

@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using CarSalesSystem.Models.Brand;
+using CarSalesSystem.Models.CarDealership;
 using CarSalesSystem.Models.Category;
+using CarSalesSystem.Models.City;
 using CarSalesSystem.Models.Color;
 using CarSalesSystem.Models.Engine;
 using CarSalesSystem.Models.EuroStandard;
 using CarSalesSystem.Models.ExtrasCategory;
+using CarSalesSystem.Models.Model;
 using CarSalesSystem.Models.Region;
 using CarSalesSystem.Models.Transmission;
 using Microsoft.AspNetCore.Mvc;
@@ -14,48 +17,52 @@ namespace CarSalesSystem.Models.Advertisement
 {
     public class AdvertisementAddFormModel
     {
+        public string Id { get; init; }
+
         [Required]
         [Range(0, int.MaxValue)]
         public decimal Price { get; set; }
 
         [Required]
-        public string Brand { get; set; }
+        public BrandFormModel BrandFormModel { get; set; }
 
         [Required]
-        public string Model { get; set; }
+        public ModelFormModel ModelFormModel { get; set; }
 
         [Required]
         public int Power { get; set; }
 
         [Required]
-        public string Color { get; set; }
+        public ColorFormModel ColorFormModel { get; set; }
 
         [Required]
         public int Mileage { get; set; }
 
-        public string Month { get; set; }
+        public int Month { get; set; }
 
         [Required]
         public int Year { get; set; }
 
         [Required]
-        public string Category { get; set; }
+        public CategoryFormModel CategoryFormModel { get; set; }
 
         [Required]
-        public string EngineType { get; set; }
+        public EngineFormModel EngineTypeFormModel { get; set; }
 
         [Required]
-        public string TransmissionType { get; set; }
+        public TransmissionFormModel TransmissionTypeFormModel { get; set; }
 
-        public string EuroStandard { get; set; }
-
-        [Required]
-        public string RegionId { get; set; }
+        public EuroStandardFormModel EuroStandardFormModel { get; set; }
 
         [Required]
-        public string CityId { get; set; }
+        public RegionFormModel RegionFormModel { get; set; }
 
-        public ICollection<ExtrasCategoryFormModel> Extras { get; init; } = new List<ExtrasCategoryFormModel>();
+        [Required]
+        public CityFormModel CityFormModel { get; set; }
+
+        public CarDealershipFormModel DealershipFormModel { get; set; }
+
+        public ICollection<ExtrasCategoryFormModel> Extras { get; set; } = new List<ExtrasCategoryFormModel>();
 
         [BindProperty]
         public ICollection<string> SelectedExtras { get; set; } = new List<string>();
@@ -74,5 +81,10 @@ namespace CarSalesSystem.Models.Advertisement
 
         public ICollection<TransmissionFormModel> TransmissionTypes { get; init; } = new List<TransmissionFormModel>();
 
+        public ICollection<ModelFormModel> Models { get; set; } = new List<ModelFormModel>();
+
+        public ICollection<CityFormModel> Cities { get; set; } = new List<CityFormModel>();
+
+        public ICollection<CarDealershipViewModel> Dealerships { get; set; } = new List<CarDealershipViewModel>();
     }
 }

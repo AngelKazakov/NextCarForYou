@@ -4,14 +4,16 @@ using CarSalesSystem.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CarSalesSystem.Migrations
 {
     [DbContext(typeof(CarSalesDbContext))]
-    partial class CarSalesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220116140949_AddedAdvertisementIdColumnInVehicle")]
+    partial class AddedAdvertisementIdColumnInVehicle
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -66,7 +68,8 @@ namespace CarSalesSystem.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.HasIndex("VehicleId");
+                    b.HasIndex("VehicleId")
+                        .IsUnique();
 
                     b.ToTable("Advertisements");
                 });
@@ -110,9 +113,6 @@ namespace CarSalesSystem.Migrations
                         .IsRequired()
                         .HasMaxLength(512)
                         .HasColumnType("nvarchar(512)");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -268,6 +268,9 @@ namespace CarSalesSystem.Migrations
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("AdvertisementId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CategoryId")
                         .IsRequired()
@@ -606,8 +609,8 @@ namespace CarSalesSystem.Migrations
                         .IsRequired();
 
                     b.HasOne("CarSalesSystem.Data.Models.Vehicle", "Vehicle")
-                        .WithMany()
-                        .HasForeignKey("VehicleId")
+                        .WithOne("Advertisement")
+                        .HasForeignKey("CarSalesSystem.Data.Models.Advertisement", "VehicleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -822,6 +825,12 @@ namespace CarSalesSystem.Migrations
             modelBuilder.Entity("CarSalesSystem.Data.Models.Region", b =>
                 {
                     b.Navigation("Cities");
+                });
+
+            modelBuilder.Entity("CarSalesSystem.Data.Models.Vehicle", b =>
+                {
+                    b.Navigation("Advertisement")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

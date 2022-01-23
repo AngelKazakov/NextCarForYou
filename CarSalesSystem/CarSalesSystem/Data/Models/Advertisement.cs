@@ -27,16 +27,16 @@ namespace CarSalesSystem.Data.Models
         public string Description { get; set; }
 
         [Required]
-        public string VehicleId { get; init; }
+        public string VehicleId { get; set; }
 
         public Vehicle Vehicle { get; set; }
 
         [Required]
-        public string CityId { get; init; }
+        public string CityId { get; set; }
 
         public virtual City City { get; init; }
 
-        public string CarDealershipId { get; init; }
+        public string CarDealershipId { get; set; }
 
         public CarDealerShip CarDealerShip { get; init; }
 
@@ -48,7 +48,7 @@ namespace CarSalesSystem.Data.Models
 
         public ICollection<VehicleImage> VehicleImages { get; set; } = new List<VehicleImage>();
 
-        public ICollection<AdvertisementExtra> AdvertisementExtras { get; init; } = new List<AdvertisementExtra>();
+        public ICollection<AdvertisementExtra> AdvertisementExtras { get; set; } = new List<AdvertisementExtra>();
 
     }
 }

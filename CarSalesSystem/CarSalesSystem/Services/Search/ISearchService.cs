@@ -8,5 +8,7 @@ namespace CarSalesSystem.Services.Search
         public List<SearchResultModel> SearchVehicles(SearchAdvertisementModel model);
 
         public List<SearchResultModel> GetLastPublishedAdvertisements();
+
+        public ICollection<SearchResultModel> BuildSearchResultModels(ICollection<Data.Models.Advertisement> advertisements);
     }
 }

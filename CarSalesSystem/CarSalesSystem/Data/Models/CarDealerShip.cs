@@ -13,7 +13,7 @@ namespace CarSalesSystem.Data.Models
 
         [Required]
         [MaxLength(CarDealerShipNameMaxLength)]
-        public string Name { get; init; }
+        public string Name { get; set; }
 
         [Required]
         [MaxLength(CarDealerAddressMaxLength)]
@@ -35,6 +35,10 @@ namespace CarSalesSystem.Data.Models
 
         [Required]
         public IdentityUser User { get; set; }
+
+        public DateTime CreatedOn { get; init; }
+
+        public byte[] ImageLogo { get; set; }
 
         public ICollection<Advertisement> Advertisements { get; init; } = new List<Advertisement>();
 

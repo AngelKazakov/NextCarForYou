@@ -1,7 +1,8 @@
 ﻿@model AdvertisementAddFormModelStep2
 
+
 @{
-    ViewData["Title"] = "Add Car";
+    ViewData["Title"] = "Edit Car";
 }
 
 <partial name="_AdvertisementAddForm2Partial" model="@Model" />
@@ -34,34 +35,36 @@
     }
 </style>
 
-@section Scripts{
-    <script src="/js/site.js" type="text/javascript"></script>
-
+@section scripts{
     <script type="text/javascript">
         var filesToUpload = [];
         var counter = 0;
 
         jQuery(function ($) {
-            $('div').on('click', '.innerDiv', function (event) {
-                event.preventDefault();
-                var fileId = event.target.getAttribute("buttonid");
+            $('div').on('click', '.innerDiv',
+                function (event) {
+                    event.preventDefault();
+                    var fileId = event.target.getAttribute("buttonid");
 
-                // loop through the files array and check if the name of that file matches FileName
-                // and get the index of the match
-                for (var i = 0; i < filesToUpload.length; ++i) {
-                    if (filesToUpload[i].id === fileId)
-                        filesToUpload.splice(i, 1);
-                }
+                    // loop through the files array and check if the name of that file matches FileName
+                    // and get the index of the match
+                    for (var i = 0; i < filesToUpload.length; ++i) {
+                        if (filesToUpload[i].id === fileId)
+                            filesToUpload.splice(i, 1);
+                    }
 
-                $(this).parent().remove();
-            });
+                    $(this).parent().remove();
+                });
             var fileDiv = document.getElementById("upload");
             var fileInput = document.getElementById("upload-file");
 
-            fileInput.addEventListener("change", function (e) {
-                var filesVAR = this.files;
-                showThumbnail(filesVAR);
-            }, false);
+            fileInput.addEventListener("change",
+                function(e) {
+
+                    var filesVAR = this.files;
+                    showThumbnail(filesVAR);
+                },
+                false);
 
             function showThumbnail(files) {
                 for (let i = 0; i < files.length; i++) {
@@ -97,26 +100,35 @@
                     innerDiv.setAttribute('class', 'innerDiv col text-center');
                     innerDiv.appendChild(image);
                     innerDiv.appendChild(deleteButton);
+
                     pDiv.appendChild(innerDiv);
 
                     image.file = file;
                     var reader = new FileReader();
-                    reader.onload = (function (aImg) {
-                        return function (e) {
+                    reader.onload = (function(aImg) {
+                        return function(e) {
                             aImg.src = e.target.result;
                         };
                     }(image));
                     var ret = reader.readAsDataURL(file);
                     var canvas = document.createElement("canvas");
                     ctx = canvas.getContext("2d");
-                    image.onload = function () {
+                    image.onload = function() {
                         ctx.drawImage(image, 100, 100);
                     }
                 }
             }
+
         });
 
-        $('#submitOnAddButtonId').click(function () {
+        var imagesForDeletions = [];
+
+        function deleteImage(imageId) {
+            imagesForDeletions.push(imageId);
+            document.getElementById(imageId).style.display = 'none';
+        }
+
+        $('#submitOnEditButtonId').click(function () {
             var data = new FormData();
             for (var i = 0; i < filesToUpload.length; i++) {
                 data.append('Images', filesToUpload[i].file);
@@ -124,10 +136,11 @@
 
             data.append('Name', $('#Name').val());
             data.append('Description', $('#Description').val());
+            data.append('ImagesForDeletion', imagesForDeletions);
 
             $.ajax({
                 type: 'POST',
-                url: '@Url.Action("AddStep2")',
+                url: '@Url.Action("EditStep2")',
                 contentType: false,
                 processData: false,
                 headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
@@ -142,7 +155,7 @@
                     console.alert('Error: ' + JSON.stringify(errMsg));
                 }
             });
-            // return false;
-        });
+            //return false;
+         });
     </script>
-}
+} 

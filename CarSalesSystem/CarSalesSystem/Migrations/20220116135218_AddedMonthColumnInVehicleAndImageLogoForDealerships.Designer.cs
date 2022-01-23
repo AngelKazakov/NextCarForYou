@@ -4,14 +4,16 @@ using CarSalesSystem.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CarSalesSystem.Migrations
 {
     [DbContext(typeof(CarSalesDbContext))]
-    partial class CarSalesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220116135218_AddedMonthColumnInVehicleAndImageLogoForDealerships")]
+    partial class AddedMonthColumnInVehicleAndImageLogoForDealerships
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -110,9 +112,6 @@ namespace CarSalesSystem.Migrations
                         .IsRequired()
                         .HasMaxLength(512)
                         .HasColumnType("nvarchar(512)");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()

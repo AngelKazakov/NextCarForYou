@@ -6,12 +6,16 @@ namespace CarSalesSystem.Services.Advertisement
 {
     public interface IAdvertisementService
     {
-        void Save(Data.Models.Advertisement advertisement, List<string> extrasIds, IFormFileCollection images);
+        void Save(Data.Models.Advertisement advertisement, List<string> extrasIds, ICollection<IFormFile> images);
 
-        void Edit(AdvertisementViewModel advertisement, string advertisementId, string userId);
+        string Edit(AdvertisementAddFormModel advertisement, AdvertisementAddFormModelStep2 advertisementStep2, string userId);
 
         void Delete(string Id, string UserId);
 
-        AdvertisementViewModel GetAdvertisementById(string advertisementId);
+        Data.Models.Advertisement GetAdvertisementById(string advertisementId);
+
+        public AdvertisementAddFormModel GetRecordData(string advertisementId, string userId);
+
+        public AdvertisementAddFormModelStep2 GetRecordDataStep2(string advertisementId);
     }
 }

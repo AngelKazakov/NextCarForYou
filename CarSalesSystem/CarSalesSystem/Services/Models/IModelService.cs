@@ -5,6 +5,6 @@ namespace CarSalesSystem.Services.Models
 {
     public interface IModelService
     {
-        ICollection<Model> GetAllModels(string Id);
+        ICollection<Model> GetAllModels(string brandId);
     }
 }

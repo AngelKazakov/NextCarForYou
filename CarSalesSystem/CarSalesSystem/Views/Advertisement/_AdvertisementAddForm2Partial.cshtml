@@ -1,0 +1,93 @@
+﻿@model AdvertisementAddFormModelStep2
+
+@Html.AntiForgeryToken()
+
+<div class="row">
+    <div class="container-fluid">
+        <div class="alert-danger text-danger">
+            <p><b>@Html.ValidationSummary(false)</b></p>
+        </div>
+        <form id="form" method="post" enctype="multipart/form-data">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Additional Data</h5>
+                    <hr />
+                    <p class="card-text">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm">
+                                    <label asp-for="Name"></label>
+                                    <input id="Name" asp-for="Name" class="form-control" type="text">
+                                    <span asp-validation-for="Name" class="small text-danger"></span>
+                                    <br />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md">
+                                    <div class="form-group">
+                                        <label asp-for="Description">Description</label>
+                                        <textarea id="Description" asp-for="Description" class="form-control" rows="3"></textarea>
+                                        <span asp-validation-for="Description" class="small text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </p>
+                </div>
+            </div>
+            <br />
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Upload Images</h5>
+                    <hr />
+                    <p class="card-text">
+                        <div class="container">
+                            <div class="row">
+                                <div>
+                                    <div class="custom-file">
+                                        <br />
+                                        <br />
+                                        <div id="thumbnail" class="row"></div>
+                                        <input class="custom-file-input" asp-for="Images" type="file" name="Images" multiple="multiple" id="upload-file" accept="image/*" />
+                                        <label class="custom-file-label" for="upload-file">Choose file</label>
+                                    </div>
+                                    <br />
+                                    <br />
+                                </div>
+                            </div>
+                        </div>
+                    </p>
+                    <div class="row">
+                        @if (Model != null && Model.ImagesForDisplay != null)
+                        {
+                            @foreach (var image in Model.ImagesForDisplay)
+                            {
+                                if (image.Value != null)
+                                {
+                                    var base64 = Convert.ToBase64String(image.Value);
+                                    var imgSrc = string.Format("data:image;base64, {0}", base64);
+                                    <div id="@image.Key" class="col text-center">
+                                        <img src="@imgSrc" style="width: 300px !important; height: 300px !important;" class="rounded-sm mb-3" />
+                                        <a type="button" href="#" onclick="javascript: deleteImage('@image.Key');" style="position: absolute; bottom: 10px; left: 100px;  padding: .4em;width: 8.5em; margin: 0em;" class="btn btn-danger mt-3 mb-3">Delete</a>
+                                    </div>
+                                }
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="text-center">
+                <button type="button" class="btn btn-primary" onclick="history.go(-1);return false;">Back</button>
+                @if (Model != null && Model.Id != null)
+                {
+                    <button id="submitOnEditButtonId" type="button" class="btn btn-primary">Finish</button>
+                }
+                else
+                {
+                    <button id="submitOnAddButtonId" type="button" class="btn btn-primary">FinishAdd</button>
+                }
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Security.Claims;
 using AutoMapper;
 using CarSalesSystem.Data;
 using CarSalesSystem.Data.Models;
 using CarSalesSystem.Infrastructure;
 using CarSalesSystem.Models.Advertisement;
 using CarSalesSystem.Models.Brand;
+using CarSalesSystem.Models.CarDealership;
 using CarSalesSystem.Models.Category;
 using CarSalesSystem.Models.Color;
 using CarSalesSystem.Models.Engine;
@@ -17,6 +17,7 @@ using CarSalesSystem.Models.Transmission;
 using CarSalesSystem.Services;
 using CarSalesSystem.Services.Advertisement;
 using CarSalesSystem.Services.Brands;
+using CarSalesSystem.Services.CarDealerShip;
 using CarSalesSystem.Services.Categories;
 using CarSalesSystem.Services.Models;
 using CarSalesSystem.Services.Regions;
@@ -37,6 +38,7 @@ namespace CarSalesSystem.Controllers
         private readonly IColorService colorService;
         private readonly IRegionService regionService;
         private readonly ITechnicalService technicalService;
+        private readonly ICarDealerShipService dealerShipService;
         private readonly IAdvertisementService advertisementService;
         private readonly IMapper mapper;
 
@@ -47,8 +49,9 @@ namespace CarSalesSystem.Controllers
             IMapper mapper, IColorService colorService,
             IRegionService regionService,
             ITechnicalService technicalService,
+            ICarDealerShipService dealerShipService,
             IAdvertisementService advertisementService
-           )
+            )
         {
             this.brandService = brandService;
             this.modelService = modelService;
@@ -58,9 +61,11 @@ namespace CarSalesSystem.Controllers
             this.regionService = regionService;
             this.technicalService = technicalService;
             this.advertisementService = advertisementService;
+            this.dealerShipService = dealerShipService;
         }
 
         [Authorize]
+        [HttpGet]
         public IActionResult Add()
         {
             AdvertisementAddFormModel model = new AdvertisementAddFormModel()
@@ -72,7 +77,8 @@ namespace CarSalesSystem.Controllers
                 EngineTypes = mapper.Map<ICollection<VehicleEngineType>, ICollection<EngineFormModel>>(technicalService.GetEngineTypes()),
                 TransmissionTypes = mapper.Map<ICollection<TransmissionType>, ICollection<TransmissionFormModel>>(technicalService.GetTransmissionTypes()),
                 EuroStandards = mapper.Map<ICollection<VehicleEuroStandard>, ICollection<EuroStandardFormModel>>(technicalService.GetEuroStandards()),
-                Extras = mapper.Map<ICollection<ExtrasCategory>, ICollection<ExtrasCategoryFormModel>>(technicalService.GetExtrasCategories())
+                Extras = mapper.Map<ICollection<ExtrasCategory>, ICollection<ExtrasCategoryFormModel>>(technicalService.GetExtrasCategories()),
+                Dealerships = mapper.Map<ICollection<CarDealerShip>, ICollection<CarDealershipViewModel>>(dealerShipService.GetAllCarDealershipsByUserId(this.User.Id()))
             };
 
             return View(model);
@@ -88,6 +94,7 @@ namespace CarSalesSystem.Controllers
         }
 
         [Authorize]
+        [HttpGet]
         public IActionResult AddStep2()
         {
             return View();
@@ -102,6 +109,7 @@ namespace CarSalesSystem.Controllers
                 return View(advertisementStep2);
             }
 
+
             var userId = this.User.Id();
             var key = "advertisement" + userId;
 
@@ -113,6 +121,7 @@ namespace CarSalesSystem.Controllers
 
                 var advertisementModel = AdvertisementCustomMapper.Map(advertisementAddFormModel, advertisementStep2, userId, extrasIdList);
 
+                //TODO: Return advertisementId
                 this.advertisementService.Save(advertisementModel, extrasIdList, advertisementStep2.Images);
             }
             else
@@ -121,14 +130,75 @@ namespace CarSalesSystem.Controllers
                 return View(advertisementStep2);
             }
 
+            return Json(new { redirectToUrl = Url.Action("Index", "Home") });
+        }
 
-            return RedirectToAction("Index", "Home");
+        [Authorize]
+        [HttpGet]
+        public IActionResult Edit(string Id)
+        {
+            AdvertisementAddFormModel advertisementFormModel = advertisementService.GetRecordData(Id, this.User.Id());
+
+            return View(advertisementFormModel);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public IActionResult Edit(AdvertisementAddFormModel model)
+        {
+            TempData["advertisement" + this.User.Id()] = JsonConvert.SerializeObject(model);
+
+            var advertisementId = model.Id;
+
+            return RedirectToAction("EditStep2", new { Id = advertisementId });
+        }
+
+        [Authorize]
+        [HttpGet]
+        public IActionResult EditStep2(string id)
+        {
+            AdvertisementAddFormModelStep2 advertisementAddFormModel = advertisementService.GetRecordDataStep2(id);
+
+            return View(advertisementAddFormModel);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public IActionResult EditStep2(AdvertisementAddFormModelStep2 advertisementStep2)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(advertisementStep2);
+            }
+
+            var userId = this.User.Id();
+            var key = "advertisement" + userId;
+
+            string advertisementId;
+
+            if (TempData.ContainsKey(key))
+            {
+                AdvertisementAddFormModel advertisementAddFormModel = JsonConvert.DeserializeObject<AdvertisementAddFormModel>((string)TempData[key]);
+                advertisementId = advertisementAddFormModel.Id;
+
+                advertisementService.Edit(advertisementAddFormModel, advertisementStep2, userId);
+            }
+            else
+            {
+                this.ModelState.AddModelError(string.Empty, "Error creating advertisement.");
+                return View(advertisementStep2);
+            }
+
+            return Json(new { redirectToUrl = Url.Action("Details", "Advertisement", new { advertisementId = advertisementId }) });
         }
 
         [HttpGet]
         public IActionResult Details(string advertisementId)
         {
-            return View(advertisementService.GetAdvertisementById(advertisementId));
+            Advertisement advertisement = advertisementService.GetAdvertisementById(advertisementId);
+            AdvertisementViewModel advertisementViewModel = AdvertisementCustomMapper.Map(advertisement);
+
+            return View(advertisementViewModel);
         }
 
         public JsonResult GetModels(string brandId)
@@ -149,7 +219,7 @@ namespace CarSalesSystem.Controllers
             {
                 advertisementService.Delete(id, this.User.Id());
 
-                return RedirectToAction("Index","Home" );
+                return RedirectToAction("Index", "Home");
             }
             catch (Exception exc)
             {

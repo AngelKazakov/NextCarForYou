@@ -65,7 +65,7 @@
                                         <input type="number" asp-for="SearchAdvertisementModel.Year" class="form-control">
                                         <br />
                                         <label>Location</label>
-                                        <select asp-for="SearchAdvertisementModel.City" id="selec.tCityId" class="form-control">
+                                        <select asp-for="SearchAdvertisementModel.City" id="selectCityId" class="form-control">
                                             <option selected value="">--None--</option>
                                         </select>
                                         <br />
@@ -97,12 +97,14 @@
                             @foreach (var advertisement in @Model.LatestPublishedAdvertisements)
                             {
                                 {
-                                    var base64 = Convert.ToBase64String(advertisement.Image);
-                                    var imgSrc = String.Format("data:image/gif;base64,{0}", base64);
-
                                     <div class="col-auto mb-3">
                                         <div class="card" style="width: 18rem;">
-                                            <img class="card-img-top mx-auto d-block m-3" src="@imgSrc" style="height: 250px; width: 250px;" alt="Card image cap">
+                                            @if (advertisement.Image != null)
+                                            {
+                                                var base64 = Convert.ToBase64String(advertisement.Image);
+                                                var imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                                                <img class="card-img-top mx-auto d-block m-3" src="@imgSrc" style="height: 250px; width: 250px;" alt="Card image cap">
+                                            }
                                             <div class="card-body">
                                                 <h3 class="card-title">@advertisement.Name</h3>
                                                 <h5 class="card-text">Price: €@advertisement.Price</h5>
