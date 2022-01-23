@@ -121,16 +121,19 @@ namespace CarSalesSystem.Controllers
 
                 var advertisementModel = AdvertisementCustomMapper.Map(advertisementAddFormModel, advertisementStep2, userId, extrasIdList);
 
-                //TODO: Return advertisementId
-                this.advertisementService.Save(advertisementModel, extrasIdList, advertisementStep2.Images);
+                var advertisementId = this.advertisementService.Save(advertisementModel, extrasIdList, advertisementStep2.Images);
+
+                // return RedirectToAction("Details", advertisementId);
+                return Json(new { redirectToUrl = Url.Action("Details", "Advertisement", new { advertisementId = advertisementId }) });
+
             }
             else
             {
                 this.ModelState.AddModelError(string.Empty, "Error creating advertisement.");
+
                 return View(advertisementStep2);
             }
 
-            return Json(new { redirectToUrl = Url.Action("Index", "Home") });
         }
 
         [Authorize]

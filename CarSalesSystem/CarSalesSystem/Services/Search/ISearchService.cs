@@ -10,5 +10,7 @@ namespace CarSalesSystem.Services.Search
         public List<SearchResultModel> GetLastPublishedAdvertisements();
 
         public ICollection<SearchResultModel> BuildSearchResultModels(ICollection<Data.Models.Advertisement> advertisements);
+
+        public ICollection<SearchResultModel> FindAdvertisementsByUserId(string userId);
     }
 }

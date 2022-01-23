@@ -67,7 +67,7 @@ namespace CarSalesSystem.Services.Advertisement
             this.technicalService = technicalService;
         }
 
-        public void Save(Data.Models.Advertisement advertisement, List<string> extrasIds, ICollection<IFormFile> images)
+        public string Save(Data.Models.Advertisement advertisement, List<string> extrasIds, ICollection<IFormFile> images)
         {
             using IDbContextTransaction transaction = context.Database.BeginTransaction();
             try
@@ -93,6 +93,8 @@ namespace CarSalesSystem.Services.Advertisement
                 context.SaveChanges();
 
                 transaction.Commit();
+
+                return advertisementId;
             }
             catch (Exception ex)
             {

@@ -6,7 +6,7 @@ namespace CarSalesSystem.Services.Advertisement
 {
     public interface IAdvertisementService
     {
-        void Save(Data.Models.Advertisement advertisement, List<string> extrasIds, ICollection<IFormFile> images);
+        string Save(Data.Models.Advertisement advertisement, List<string> extrasIds, ICollection<IFormFile> images);
 
         string Edit(AdvertisementAddFormModel advertisement, AdvertisementAddFormModelStep2 advertisementStep2, string userId);
 

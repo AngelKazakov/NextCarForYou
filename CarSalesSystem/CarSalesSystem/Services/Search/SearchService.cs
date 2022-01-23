@@ -152,5 +152,13 @@ namespace CarSalesSystem.Services.Search
 
             return results;
         }
+
+        public ICollection<SearchResultModel> FindAdvertisementsByUserId(string userId)
+        {
+            ICollection<Data.Models.Advertisement> advertisements =
+                context.Advertisements.Where(x => x.UserId == userId).ToList();
+
+            return BuildSearchResultModels(advertisements);
+        }
     }
 }
