@@ -1,0 +1,186 @@
+﻿@model DetailedSearchAdvertisementModel
+
+<form method="post">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Fast Search</h5>
+            <hr />
+            <p class="card-text">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm">
+                            <label>Brand</label>
+                            <select asp-for="Brand" id="selectBrandId" class="form-control">
+                                <option selected value="">--None--</option>
+                                @foreach (var brand in Model.Brands)
+                                {
+                                    <option value="@brand.Id">@brand.Name</option>
+                                }
+                            </select>
+                            <br />
+                            <label>Second Brand</label>
+                            <select asp-for="Brand2" id="selectBrand2Id" class="form-control">
+                                <option selected value="">--None--</option>
+                                @foreach (var brand in Model.Brands)
+                                {
+                                    <option value="@brand.Id">@brand.Name</option>
+                                }
+                            </select>
+                            <br />
+                            <label asp-for="MinPrice">Minimum Price</label>
+                            <input type="number" asp-for="MinPrice" class="form-control">
+                            <br />
+                            <label asp-for="Year">Start Year of Manufacture</label>
+                            <input type="number" asp-for="Year" class="form-control">
+                            <br />
+                            <label>Region</label>
+                            <select asp-for="Region" id="selectRegionId" class="form-control">
+                                <option selected value="">--None--</option>
+                                @foreach (var region in Model.Regions)
+                                {
+                                    <option value="@region.Id">@region.Name</option>
+                                }
+                            </select>
+                            <br />
+                            <label>Maximum Mileage</label>
+                            <input type="number" asp-for="MaxMileage" class="form-control">
+                        </div>
+                        <div class="col-sm">
+                            <label>Model</label>
+                            <select asp-for="Model" id="selectModelId" class="form-control">
+                                <option selected value="">--None--</option>
+                            </select>
+                            <br />
+                            <label>Second Model</label>
+                            <select asp-for="Model2" id="selectModel2Id" class="form-control">
+                                <option selected value="">--None--</option>
+                            </select>
+                            <br />
+                            <label asp-for="MaximumPrice">Maximum Price</label>
+                            <input type="number" asp-for="MaximumPrice" class="form-control">
+                            <br />
+                            <label asp-for="MaxYear">End Year of Manufacture</label>
+                            <input type="number" asp-for="MaxYear" class="form-control">
+
+                            <br />
+                            <label>Location</label>
+                            <select asp-for="City" id="selectCityId" class="form-control">
+                                <option selected value="">--None--</option>
+                            </select>
+
+                            <br />
+                            <label>Category</label>
+                            <select asp-for="Category" class="form-control">
+                                <option selected value="">--None--</option>
+                                @foreach (var category in Model.VehicleCategories)
+                                {
+                                    <option value="@category.Id">@category.Name</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-sm">
+                            <label>Order By</label>
+                            <select asp-for="OrderBy" class="form-control">
+                                <option value="@OrderByValues.Brand_Model_Price">Brand/Model/Price</option>
+                                <option value="@OrderByValues.Price">Price</option>
+                                <option value="@OrderByValues.Year">Year</option>
+                                <option value="@OrderByValues.Newest">Newest</option>
+                            </select>
+                            <br />
+                            <label>Fuel Type</label>
+                            <select asp-for="EngineType" class="form-control">
+                                <option selected value="">--None--</option>
+                                @foreach (var engine in Model.EngineTypes)
+                                {
+                                    <option value="@engine.Id">@engine.Name</option>
+                                }
+                            </select>
+                            <br />
+                            <label>Transmission</label>
+                            <select asp-for="TransmissionType" class="form-control">
+                                <option selected value="">--None--</option>
+                                @foreach (var transmission in Model.TransmissionTypes)
+                                {
+                                    <option value="@transmission.Id">@transmission.Name</option>
+                                }
+                            </select>
+                            <br />
+                            <label>Euro Standard</label>
+                            <select asp-for="EuroStandard" class="form-control">
+                                <option selected value="">--None--</option>
+                                @foreach (var euro in Model.EuroStandards)
+                                {
+                                    <option value="@euro.Id">@euro.Name</option>
+                                }
+                            </select>
+                            <br />
+                            <label>Color</label>
+                            <select asp-for="Color" class="form-control">
+                                <option selected value="">--None--</option>
+                                @foreach (var color in Model.Colors)
+                                {
+                                    <option value="@color.Id">@color.Name</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title"><b>Extras</b></h5>
+                            <hr />
+                            <p class="card-text">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="container">
+                                            @foreach (var category in @Model.Extras)
+                                            {
+                                                <div class="flex-md-row"><label><b> @category.Name </b></label></div>
+                                                @foreach (var extra in category.Extras)
+                                                {
+                                                    <label class="form-check-label">
+                                                        <input checked="@extra.Checked" style="margin-left:5px" name="SelectedExtras" type="checkbox" value="@extra.Id" id="@extra.Id"> @extra.Name
+                                                    </label>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </p>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title"><b>Others</b></h5>
+                            <hr />
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-check">
+                                            <input asp-for="AdvertisementsWithImagesOnly" class="form-check-input" type="checkbox" value="true" id="flexCheckDefault">
+                                            <label class="form-check-label" for="flexCheckDefault">
+                                                Advertisements with images only
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        @Html.RadioButtonFor(model => model.AdvertisementOwnerSearchCriteria, AdvertisementOwnerSearchCriteria.All) @Html.Label(" All advertisements")
+                                        <br/>
+                                        @Html.RadioButtonFor(model => model.AdvertisementOwnerSearchCriteria, AdvertisementOwnerSearchCriteria.Dealer) @Html.Label(" Advertisements of registered dealerships")
+                                        <br/>
+                                        @Html.RadioButtonFor(model => model.AdvertisementOwnerSearchCriteria, AdvertisementOwnerSearchCriteria.Private) @Html.Label(" Advertisements of private individuals")
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <input type="submit" class="btn btn-lg btn-primary text-center" value="Search" onclick="location.href = '@Url.Action("DetailedSearch", "Search")'" />
+                    </div>
+                </div>
+            </p>
+        </div>
+    </div>
+</form>

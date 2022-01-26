@@ -25,6 +25,7 @@ namespace CarSalesSystem.Data
         public const int VehicleBrandNameMaxLength = 64;
         public const int VehicleModelNameMaxLength = 64;
         public const int VehiclePowerMaxValue = 2200;
+        public const int VehicleMaxYear = 2100;
 
         public static readonly string ImagesPath = Environment.CurrentDirectory + "\\Images";
     }

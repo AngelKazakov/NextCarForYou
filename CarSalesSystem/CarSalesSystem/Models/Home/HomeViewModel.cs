@@ -7,6 +7,6 @@ namespace CarSalesSystem.Models.Home
     {
         public SearchAdvertisementModel SearchAdvertisementModel { get; init; }
 
-        public List<SearchResultModel> LatestPublishedAdvertisements { get; init; }
+        public ICollection<SearchResultModel> LatestPublishedAdvertisements { get; init; }
     }
 }

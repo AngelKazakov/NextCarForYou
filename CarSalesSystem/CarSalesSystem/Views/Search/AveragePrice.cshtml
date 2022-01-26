@@ -1,0 +1,63 @@
+﻿@model AveragePriceModel
+
+<form method="post">
+    <h4>Average price for vehicle:</h4>
+    <div class="form-row">
+        <div class="form-group col-md-3">
+            <label>Brand</label>
+            <select asp-for="Brand" id="selectBrandId" class="form-control">
+                <option selected value="">--None--</option>
+                @foreach (var brand in Model.Brands)
+                {
+                    <option value="@brand.Id">@brand.Name</option>
+                }
+            </select>
+        </div>
+        <div class="form-group col-md-3">
+            <label>Model</label>
+            <select asp-for="Model" id="selectModelId" class="form-control">
+                <option selected value="">--None--</option>
+                @if (Model.Model != null)
+                {
+                    foreach (var modelItem in Model.Models)
+                    {
+                        <option value="@modelItem.Id">@modelItem.Name</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="form-group col-md-3">
+            <label>Transmission</label>
+            <select asp-for="TransmissionType" id="transmissionId" class="form-control">
+                <option selected value="">--None--</option>
+                @foreach (var trans in Model.Transmissions)
+                {
+                    <option value="@trans.Id">@trans.Name</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-3">
+            <label asp-for="Year">Start Year of Manufacture</label>
+            <input type="number" asp-for="Year" class="form-control">
+        </div>
+        <div class="form-group col-md-3">
+            <label>Engine</label>
+            <select asp-for="EngineType" id="engineTypeId" class="form-control">
+                <option selected value="">--None--</option>
+                @foreach (var engine in Model.Engines)
+                {
+                    <option value="@engine.Id">@engine.Name</option>
+                }
+            </select>
+        </div>
+    </div>
+    <input type="submit" class="btn btn-lg btn-primary text-center" value="Compare" onclick="location.href = '@Url.Action("AveragePrice", "Search")'" />
+</form>
+<br />
+<form>
+    <div class="form-control">
+        <label class="" asp-for="AveragePrice"><b>Average price of this vehicle: @Model.AveragePrice</b></label>
+    </div>
+</form>

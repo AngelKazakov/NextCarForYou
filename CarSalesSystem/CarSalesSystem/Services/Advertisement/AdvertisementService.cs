@@ -191,6 +191,7 @@ namespace CarSalesSystem.Services.Advertisement
                     .ThenInclude(x => x.Category)
                     .FirstOrDefault(x => x.Id == advertisementId);
 
+
             return advertisement;
         }
 

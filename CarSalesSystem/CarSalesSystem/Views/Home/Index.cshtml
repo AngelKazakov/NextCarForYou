@@ -82,6 +82,11 @@
                                 <div class="row">
                                     <button type="submit" class="btn btn-primary btn-lg btn-block" id="buttonNextId">Search</button>
                                 </div>
+                                <br/>
+                                <div class="float-md-right">
+                                    @*<a class="btn btn-dark" value="Detailed Search" href="@("window.location.href='" + @Url.Action("DetailedSearch", "Search") + "'");" />*@
+                                    @Html.ActionLink("Detailed Search", "DetailedSearch", "Search", null, new { @class = "page-scroll", style = "font-weight:bold;" })
+                                </div>
                             </div>
                         </p>
                     </div>
