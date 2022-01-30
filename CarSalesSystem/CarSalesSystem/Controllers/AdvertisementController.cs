@@ -123,7 +123,6 @@ namespace CarSalesSystem.Controllers
 
                 var advertisementId = this.advertisementService.Save(advertisementModel, extrasIdList, advertisementStep2.Images);
 
-                // return RedirectToAction("Details", advertisementId);
                 return Json(new { redirectToUrl = Url.Action("Details", "Advertisement", new { advertisementId = advertisementId }) });
 
             }

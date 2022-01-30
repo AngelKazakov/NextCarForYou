@@ -4,17 +4,18 @@
     <h4>Average price for vehicle:</h4>
     <div class="form-row">
         <div class="form-group col-md-3">
-            <label>Brand</label>
+            <label asp-for="Brand">Brand<span class="text-danger"> *</span></label>
             <select asp-for="Brand" id="selectBrandId" class="form-control">
-                <option selected value="">--None--</option>
+                <option value="">--None--</option>
                 @foreach (var brand in Model.Brands)
                 {
                     <option value="@brand.Id">@brand.Name</option>
                 }
             </select>
+            <span asp-validation-for="Brand" class="text-danger"></span>
         </div>
         <div class="form-group col-md-3">
-            <label>Model</label>
+            <label asp-for="Model">Model<span class="text-danger"> *</span></label>
             <select asp-for="Model" id="selectModelId" class="form-control">
                 <option selected value="">--None--</option>
                 @if (Model.Model != null)
@@ -25,9 +26,10 @@
                     }
                 }
             </select>
+            <span asp-validation-for="Model" class="text-danger"></span>
         </div>
         <div class="form-group col-md-3">
-            <label>Transmission</label>
+            <label asp-for="TransmissionType">Transmission<span class="text-danger"> *</span></label>
             <select asp-for="TransmissionType" id="transmissionId" class="form-control">
                 <option selected value="">--None--</option>
                 @foreach (var trans in Model.Transmissions)
@@ -35,15 +37,17 @@
                     <option value="@trans.Id">@trans.Name</option>
                 }
             </select>
+            <span asp-validation-for="TransmissionType" class="text-danger"></span>
         </div>
     </div>
     <div class="form-row">
         <div class="form-group col-md-3">
-            <label asp-for="Year">Start Year of Manufacture</label>
+            <label asp-for="Year">Start Year of Manufacture<span class="text-danger"> *</span></label>
             <input type="number" asp-for="Year" class="form-control">
+            <span asp-validation-for="Year" class="text-danger"></span>
         </div>
         <div class="form-group col-md-3">
-            <label>Engine</label>
+            <label asp-for="EngineType">Engine<span class="text-danger"> *</span></label>
             <select asp-for="EngineType" id="engineTypeId" class="form-control">
                 <option selected value="">--None--</option>
                 @foreach (var engine in Model.Engines)
@@ -51,13 +55,54 @@
                     <option value="@engine.Id">@engine.Name</option>
                 }
             </select>
+            <span asp-validation-for="EngineType" class="text-danger"></span>
         </div>
     </div>
     <input type="submit" class="btn btn-lg btn-primary text-center" value="Compare" onclick="location.href = '@Url.Action("AveragePrice", "Search")'" />
 </form>
-<br />
-<form>
+@if (@Model.Advertisements.Count > 0)
+{
+    <br />
     <div class="form-control">
         <label class="" asp-for="AveragePrice"><b>Average price of this vehicle: @Model.AveragePrice</b></label>
     </div>
-</form>
+    <br />
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Current offers for similar Cars</h5>
+            <hr class="border-primary" />
+            <div class="container mt-4">
+                <div class="row  d-flex justify-content-center">
+                    @foreach (var advertisement in @Model.Advertisements)
+                    {
+                        {
+                            <div class="col-auto mb-3">
+                                <div class="card" style="width: 18rem;">
+                                    @if (advertisement.Image != null)
+                                    {
+                                        var base64 = Convert.ToBase64String(advertisement.Image);
+                                        var imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                                        <img class="card-img-top mx-auto d-block m-3" src="@imgSrc" style="height: 250px; width: 250px;" alt="Card image cap">
+                                    }
+                                    <div class="card-body">
+                                        <h3 class="card-title">@advertisement.Name</h3>
+                                        <h5 class="card-text">Price: €@advertisement.Price</h5>
+                                        <p class="card-text">Mileage: @advertisement.Mileage km</p>
+                                        <p class="card-text">City: @advertisement.City, Region: @advertisement.Region</p>
+                                        <p class="card-text">Created on: @advertisement.CreatedOn</p>
+                                        @Html.ActionLink("See Details", "Details", "Advertisement", new { advertisementId = @advertisement.AdvertisementId }, new { @class = "btn btn-primary" })
+                                    </div>
+                                </div>
+                                <br />
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+        @if (@Model.Advertisements.Count > 0)
+        {
+            <input type="submit" class="btn btn-lg btn-primary text-center" value="See more" onclick="location.href = '@Url.Action("Search", "Search")'" />
+        }
+    </div>
+}

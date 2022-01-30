@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using CarSalesSystem.Data;
 using CarSalesSystem.Data.Enums;
-using CarSalesSystem.Migrations;
 using CarSalesSystem.Models.Search;
 using Microsoft.EntityFrameworkCore;
 
@@ -93,18 +91,6 @@ namespace CarSalesSystem.Services.Search
 
         public AveragePriceModel AveragePricesByGivenBrandAndModel(AveragePriceModel priceModel)
         {
-            var advertisementsAveragePrice = context.Advertisements
-                .Where(x =>
-                    x.Vehicle.Model.BrandId == priceModel.Brand
-                    && x.Vehicle.ModelId == priceModel.Model
-                    && x.Vehicle.Year == priceModel.Year
-                    && x.Vehicle.EngineTypeId == priceModel.EngineType
-                    && x.Vehicle.TransmissionTypeId == priceModel.TransmissionType)
-                .DefaultIfEmpty()
-                .Average(p => p == null ? 0 : p.Price);
-
-            priceModel.AveragePrice = Convert.ToDecimal(advertisementsAveragePrice.ToString("0.##"));
-
             var searchModel = new DetailedSearchAdvertisementModel()
             {
                 Model = priceModel.Model,
@@ -114,7 +100,13 @@ namespace CarSalesSystem.Services.Search
                 EngineType = priceModel.EngineType
             };
 
-            priceModel.Advertisements = BuildSearchResultModels(FindAdvertisements(searchModel, true).Take(3).ToList());
+            ICollection<Data.Models.Advertisement> advertisements = FindAdvertisements(searchModel, true).ToList();
+
+            var advertisementsAveragePrice = advertisements.DefaultIfEmpty().Average(p => p == null ? 0 : p.Price);
+
+            priceModel.AveragePrice = Convert.ToDecimal(advertisementsAveragePrice.ToString("0.##"));
+
+            priceModel.Advertisements = BuildSearchResultModels(advertisements.Take(3).ToList());
 
             return priceModel;
         }

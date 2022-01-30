@@ -1,22 +1,30 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using CarSalesSystem.Models.Brand;
 using CarSalesSystem.Models.Engine;
 using CarSalesSystem.Models.Model;
 using CarSalesSystem.Models.Transmission;
 
+using static CarSalesSystem.Data.DataConstants;
+
 namespace CarSalesSystem.Models.Search
 {
     public class AveragePriceModel
     {
-        public string Brand { get; set; }
+        [Required(ErrorMessage = ErrorMessageRequiredField)]
+        public string Brand { get; init; }
 
-        public string Model { get; set; }
+        [Required(ErrorMessage = ErrorMessageRequiredField)]
+        public string Model { get; init; }
 
-        public int Year { get; set; }
+        [Required(ErrorMessage = ErrorMessageRequiredField)]
+        public int Year { get; init; }
 
-        public string EngineType { get; set; }
+        [Required(ErrorMessage = ErrorMessageRequiredField)]
+        public string EngineType { get; init; }
 
-        public string TransmissionType { get; set; }
+        [Required(ErrorMessage = ErrorMessageRequiredField)]
+        public string TransmissionType { get; init; }
 
         public decimal AveragePrice { get; set; }
 

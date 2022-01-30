@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using AutoMapper;
 using CarSalesSystem.Data;
@@ -112,13 +112,25 @@ namespace CarSalesSystem.Controllers
         [HttpPost]
         public IActionResult AveragePrice(AveragePriceModel priceModel)
         {
-            AveragePriceModel model = searchService.AveragePricesByGivenBrandAndModel(priceModel);
-            model.Brands = mapper.Map<ICollection<Brand>, ICollection<BrandFormModel>>(brandService.GetAllBrands());
-            model.Engines = mapper.Map<ICollection<VehicleEngineType>, ICollection<EngineFormModel>>(technicalService.GetEngineTypes());
-            model.Transmissions = mapper.Map<ICollection<TransmissionType>, ICollection<TransmissionFormModel>>(technicalService.GetTransmissionTypes());
-            model.Models = mapper.Map<ICollection<Model>, ICollection<ModelFormModel>>(modelService.GetAllModels(model.Brand));
+            priceModel.Brands = mapper.Map<ICollection<Brand>, ICollection<BrandFormModel>>(brandService.GetAllBrands());
+            priceModel.Engines = mapper.Map<ICollection<VehicleEngineType>, ICollection<EngineFormModel>>(technicalService.GetEngineTypes());
+            priceModel.Transmissions = mapper.Map<ICollection<TransmissionType>, ICollection<TransmissionFormModel>>(technicalService.GetTransmissionTypes());
+            priceModel.Models = mapper.Map<ICollection<Model>, ICollection<ModelFormModel>>(modelService.GetAllModels(priceModel.Brand));
 
-            return View(model);
+            if (!ModelState.IsValid)
+            {
+                return View(priceModel);
+            }
+
+            if (priceModel.Year < 1930 || priceModel.Year > DateTime.UtcNow.Year)
+            {
+                ModelState.AddModelError(nameof(priceModel.Year), $"Incorrect year. Year should be between 1930 and {DateTime.UtcNow.Year}");
+                return View(priceModel);
+            }
+
+            priceModel = searchService.AveragePricesByGivenBrandAndModel(priceModel);
+
+            return View(priceModel);
         }
     }
 }
