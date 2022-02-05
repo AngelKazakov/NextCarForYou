@@ -4,6 +4,7 @@ using AutoMapper;
 using CarSalesSystem.Data;
 using CarSalesSystem.Data.Models;
 using CarSalesSystem.Infrastructure;
+using CarSalesSystem.Models.Advertisement;
 using CarSalesSystem.Models.Brand;
 using CarSalesSystem.Models.Category;
 using CarSalesSystem.Models.Color;
@@ -110,7 +111,7 @@ namespace CarSalesSystem.Controllers
         }
 
         [HttpPost]
-        public IActionResult AveragePrice(AveragePriceModel priceModel)
+        public IActionResult AveragePrice(AveragePriceModel priceModel, string command)
         {
             priceModel.Brands = mapper.Map<ICollection<Brand>, ICollection<BrandFormModel>>(brandService.GetAllBrands());
             priceModel.Engines = mapper.Map<ICollection<VehicleEngineType>, ICollection<EngineFormModel>>(technicalService.GetEngineTypes());
@@ -130,7 +131,12 @@ namespace CarSalesSystem.Controllers
 
             priceModel = searchService.AveragePricesByGivenBrandAndModel(priceModel);
 
-            return View(priceModel);
+            if (command == "Compare")
+            {
+                return View(priceModel);
+            }
+
+            return View("Search", priceModel.Advertisements);
         }
     }
 }

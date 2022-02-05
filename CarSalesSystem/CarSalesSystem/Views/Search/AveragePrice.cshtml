@@ -58,51 +58,62 @@
             <span asp-validation-for="EngineType" class="text-danger"></span>
         </div>
     </div>
-    <input type="submit" class="btn btn-lg btn-primary text-center" value="Compare" onclick="location.href = '@Url.Action("AveragePrice", "Search")'" />
-</form>
-@if (@Model.Advertisements.Count > 0)
-{
-    <br />
-    <div class="form-control">
-        <label class="" asp-for="AveragePrice"><b>Average price of this vehicle: @Model.AveragePrice</b></label>
-    </div>
-    <br />
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Current offers for similar Cars</h5>
-            <hr class="border-primary" />
-            <div class="container mt-4">
-                <div class="row  d-flex justify-content-center">
-                    @foreach (var advertisement in @Model.Advertisements)
-                    {
+    <input type="submit" class="btn btn-lg btn-primary text-center"  name="command" value="Compare" onclick="location.href = '@Url.Action("AveragePrice", "Search")'" />
+
+    @if (@Model.Advertisements.Count > 0)
+    {
+        <br />
+        <div>
+            <h4><b class="text-xl-center">Average price of this vehicle: @Model.AveragePrice</b></h4>
+        </div>
+        <br />
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Current offers for similar Cars</h5>
+                <hr class="border-primary" />
+                <div class="container mt-4">
+                    <div class="row  d-flex justify-content-center">
+                        @for (int i = 0; i < @Model.Advertisements.Count; i++)
                         {
-                            <div class="col-auto mb-3">
-                                <div class="card" style="width: 18rem;">
-                                    @if (advertisement.Image != null)
-                                    {
-                                        var base64 = Convert.ToBase64String(advertisement.Image);
-                                        var imgSrc = String.Format("data:image/gif;base64,{0}", base64);
-                                        <img class="card-img-top mx-auto d-block m-3" src="@imgSrc" style="height: 250px; width: 250px;" alt="Card image cap">
-                                    }
-                                    <div class="card-body">
-                                        <h3 class="card-title">@advertisement.Name</h3>
-                                        <h5 class="card-text">Price: €@advertisement.Price</h5>
-                                        <p class="card-text">Mileage: @advertisement.Mileage km</p>
-                                        <p class="card-text">City: @advertisement.City, Region: @advertisement.Region</p>
-                                        <p class="card-text">Created on: @advertisement.CreatedOn</p>
-                                        @Html.ActionLink("See Details", "Details", "Advertisement", new { advertisementId = @advertisement.AdvertisementId }, new { @class = "btn btn-primary" })
+                            {
+                                if (i == 3)
+                                {
+                                    break;
+                                }
+                                var advertisement = @Model.Advertisements.ElementAt(i);
+                                <div class="col-auto mb-3">
+                                    <div class="card" style="width: 18rem;">
+                                        @if (advertisement.Image != null)
+                                        {
+                                            var base64 = Convert.ToBase64String(advertisement.Image);
+                                            var imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                                            <img class="card-img-top mx-auto d-block m-3" src="@imgSrc" style="height: 250px; width: 250px;" alt="Card image cap">
+                                        }
+                                        <div class="card-body">
+                                            <h3 class="card-title">@advertisement.Name</h3>
+                                            <h5 class="card-text">Price: €@advertisement.Price</h5>
+                                            <p class="card-text">Mileage: @advertisement.Mileage km</p>
+                                            <p class="card-text">City: @advertisement.City, Region: @advertisement.Region</p>
+                                            <p class="card-text">Created on: @advertisement.CreatedOn</p>
+                                            @Html.ActionLink("See Details", "Details", "Advertisement", new { advertisementId = @advertisement.AdvertisementId }, new { @class = "btn btn-primary" })
+                                        </div>
                                     </div>
+                                    <br />
                                 </div>
-                                <br />
-                            </div>
+                            }
                         }
-                    }
+                    </div>
                 </div>
             </div>
+            @if (@Model.Advertisements.Count > 3)
+            {
+                <input type="submit" class="btn btn-lg btn-primary text-center" name="command" value="See More"/>
+            }
         </div>
-        @if (@Model.Advertisements.Count > 0)
-        {
-            <input type="submit" class="btn btn-lg btn-primary text-center" value="See more" onclick="location.href = '@Url.Action("Search", "Search")'" />
-        }
-    </div>
-}
+    }
+    else if (@Model.Brand != null && @Model.Model != null && @Model.TransmissionType != null && @Model.EngineType != null)
+    {
+        <br />
+        <h3>No advertisements found.</h3>
+    }
+</form>

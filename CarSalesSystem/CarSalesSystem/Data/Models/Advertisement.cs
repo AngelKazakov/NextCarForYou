@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
+
 using static CarSalesSystem.Data.DataConstants;
 
 namespace CarSalesSystem.Data.Models

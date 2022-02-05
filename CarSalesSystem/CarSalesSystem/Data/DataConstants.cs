@@ -26,6 +26,8 @@ namespace CarSalesSystem.Data
         public const int VehicleModelNameMaxLength = 64;
         public const int VehiclePowerMaxValue = 2200;
         public const int VehicleMaxYear = 2100;
+        public const string ErrorMessageRequiredField = "The field is required.";
+
 
         public static readonly string ImagesPath = Environment.CurrentDirectory + "\\Images";
     }

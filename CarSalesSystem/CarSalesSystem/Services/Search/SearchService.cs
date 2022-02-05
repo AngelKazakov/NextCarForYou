@@ -49,33 +49,36 @@ namespace CarSalesSystem.Services.Search
                     .Include(v => v.Vehicle)
                     .FirstOrDefault(a => a.Id == advertisement.Id);
 
-                var resultModel = new SearchResultModel()
+                if (loadedAdvertisement != null)
                 {
-                    AdvertisementId = loadedAdvertisement.Id,
-                    City = loadedAdvertisement.City.Name,
-                    Mileage = loadedAdvertisement.Vehicle.Mileage,
-                    Name = loadedAdvertisement.Name,
-                    Price = loadedAdvertisement.Price,
-                    Region = context.Regions.FirstOrDefault(r => r.Id == loadedAdvertisement.City.RegionId).Name,
-                    Year = loadedAdvertisement.Vehicle.Year,
-                    CreatedOn = loadedAdvertisement.CreatedOnDate.ToString("HH:mm, dd.MM.yyyy")
-                };
-
-                string fullPath = ImagesPath + "/Advertisement" + loadedAdvertisement.Id;
-
-                if (Directory.Exists(fullPath))
-                {
-                    DirectoryInfo directory = new DirectoryInfo(fullPath);
-
-                    FileInfo[] images = directory.GetFiles();
-
-                    if (images.Any())
+                    var resultModel = new SearchResultModel()
                     {
-                        resultModel.Image = File.ReadAllBytes(fullPath + "/" + images[0].Name);
-                    }
-                }
+                        AdvertisementId = loadedAdvertisement.Id,
+                        City = loadedAdvertisement.City.Name,
+                        Mileage = loadedAdvertisement.Vehicle.Mileage,
+                        Name = loadedAdvertisement.Name,
+                        Price = loadedAdvertisement.Price,
+                        Region = context.Regions.FirstOrDefault(r => r.Id == loadedAdvertisement.City.RegionId)?.Name,
+                        Year = loadedAdvertisement.Vehicle.Year,
+                        CreatedOn = loadedAdvertisement.CreatedOnDate.ToString("HH:mm, dd.MM.yyyy")
+                    };
 
-                results.Add(resultModel);
+                    string fullPath = ImagesPath + "/Advertisement" + loadedAdvertisement.Id;
+
+                    if (Directory.Exists(fullPath))
+                    {
+                        DirectoryInfo directory = new DirectoryInfo(fullPath);
+
+                        FileInfo[] images = directory.GetFiles();
+
+                        if (images.Any())
+                        {
+                            resultModel.Image = File.ReadAllBytes(fullPath + "/" + images[0].Name);
+                        }
+                    }
+
+                    results.Add(resultModel);
+                }
             }
 
             return results;
@@ -106,7 +109,7 @@ namespace CarSalesSystem.Services.Search
 
             priceModel.AveragePrice = Convert.ToDecimal(advertisementsAveragePrice.ToString("0.##"));
 
-            priceModel.Advertisements = BuildSearchResultModels(advertisements.Take(3).ToList());
+            priceModel.Advertisements = BuildSearchResultModels(advertisements.ToList());
 
             return priceModel;
         }
@@ -262,7 +265,6 @@ namespace CarSalesSystem.Services.Search
                     query = query.OrderByDescending(x => x.CreatedOnDate);
                 }
             }
-
             return query.ToList();
         }
     }
