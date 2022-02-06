@@ -1,4 +1,5 @@
 using CarSalesSystem.Data;
+using CarSalesSystem.Data.Models;
 using CarSalesSystem.Infrastructure;
 using CarSalesSystem.Services;
 using CarSalesSystem.Services.Advertisement;
@@ -36,7 +37,7 @@ namespace CarSalesSystem
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddDefaultIdentity<IdentityUser>(options =>
+            services.AddDefaultIdentity<User>(options =>
                 {
                     options.SignIn.RequireConfirmedAccount = false;
                     options.Password.RequireNonAlphanumeric = false;

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CarSalesSystem.Data
 {
-    public class CarSalesDbContext : IdentityDbContext
+    public class CarSalesDbContext : IdentityDbContext<User>
     {
         public CarSalesDbContext(DbContextOptions<CarSalesDbContext> options)
             : base(options)
@@ -42,6 +42,8 @@ namespace CarSalesSystem.Data
         public DbSet<Color> Colors { get; init; }
 
         public DbSet<AdvertisementExtra> AdvertisementsExtras { get; init; }
+
+        public DbSet<UserFavAdvertisement> UserFavAdvertisementsExtras { get; init; }
 
         //TODO check deleting...
         protected override void OnModelCreating(ModelBuilder builder)

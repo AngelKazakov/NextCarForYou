@@ -34,7 +34,7 @@ namespace CarSalesSystem.Data.Models
         public string UserId { get; set; }
 
         [Required]
-        public IdentityUser User { get; set; }
+        public User User { get; set; }
 
         public DateTime CreatedOn { get; init; }
 

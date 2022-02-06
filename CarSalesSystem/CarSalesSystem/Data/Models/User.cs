@@ -16,6 +16,8 @@ namespace CarSalesSystem.Data.Models
         [MaxLength(UserLastNameMaxLength)]
         public string LastName { get; set; }
 
+        public ICollection<UserFavAdvertisement> FavAdvertisements { get; set;}
+
         public ICollection<Advertisement> Advertisements { get; init; } = new List<Advertisement>();
     }
 }

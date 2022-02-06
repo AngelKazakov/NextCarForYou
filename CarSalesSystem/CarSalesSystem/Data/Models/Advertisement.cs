@@ -45,7 +45,7 @@ namespace CarSalesSystem.Data.Models
         public string UserId { get; init; }
 
         [Required]
-        public IdentityUser User { get; init; }
+        public User User { get; init; }
 
         public ICollection<VehicleImage> VehicleImages { get; set; } = new List<VehicleImage>();
 
