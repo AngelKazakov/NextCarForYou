@@ -3,6 +3,7 @@ using CarSalesSystem.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using AutoMapper;
 using CarSalesSystem.Data;
 using CarSalesSystem.Data.Models;
@@ -84,17 +85,24 @@ namespace CarSalesSystem.Controllers
         }
 
         [HttpPost]
-        public IActionResult Contact(ContactFormView contactModel)
+        public async Task<IActionResult> Contact(ContactFormView contactModel)
         {
             if (!ModelState.IsValid)
             {
                 return View(contactModel);
             }
 
-            var message = new Message(new string[] { "drake166@abv.bg" }, "About", contactModel.Message);
-            emailSender.SendEmail(message);
+            var message = new Message(new string[] { "drake166@abv.bg" }, "About", contactModel.Message)
+            {
+                SenderName = contactModel.SenderName,
+                SenderEmail = contactModel.Email,
+                SenderPhone = contactModel.PhoneNumber
+            };
+            await emailSender.SendEmailAsync(message);
 
-            return RedirectToAction("Index");
+            TempData["Success"] = "Thank you for contacting us. We will get in touch with you soon.";
+
+            return RedirectToAction("Contact");
         }
 
         [HttpGet]

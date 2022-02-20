@@ -1,6 +1,10 @@
 ﻿@model ContactFormView
 
 <div class="col-md-6 text-center offset-3">
+    @if (TempData["Success"] != null)
+    {
+        <p class="alert alert-success" id="successMessage">@TempData["Success"]</p>
+    }
     <form method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="Contact">
         <div class="form-group">
             <label asp-for="SenderName">Your Name</label>
@@ -19,9 +23,9 @@
             <span asp-validation-for="PhoneNumber" class="text-danger"></span>
         </div>
         <div class="form-group">
-            <label asp-for="Message">Dealership Website Address</label>
-            <input asp-for="Message" type="text" class="form-control" id="messageId">
-            <span asp-validation-for="Message" class="text-danger"></span> 
+            <label asp-for="Message">Message</label>
+            <textarea asp-for="Message" type="text" class="form-control" id="messageId"> </textarea>
+            <span asp-validation-for="Message" class="text-danger"></span>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>

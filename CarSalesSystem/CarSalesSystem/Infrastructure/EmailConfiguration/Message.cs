@@ -12,6 +12,12 @@ namespace CarSalesSystem.Infrastructure.EmailConfiguration
 
         public string Content { get; set; }
 
+        public string SenderName { get; set; }
+
+        public string SenderPhone { get; set; }
+
+        public string SenderEmail { get; set; }
+
         public Message(ICollection<string> to,string subject,string content)
         {
             this.To = new List<MailboxAddress>();
