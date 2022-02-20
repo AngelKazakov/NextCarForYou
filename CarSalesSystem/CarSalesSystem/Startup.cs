@@ -1,16 +1,19 @@
 using CarSalesSystem.Data;
 using CarSalesSystem.Data.Models;
 using CarSalesSystem.Infrastructure;
+using CarSalesSystem.Infrastructure.EmailConfiguration;
 using CarSalesSystem.Services;
 using CarSalesSystem.Services.Advertisement;
 using CarSalesSystem.Services.Brands;
 using CarSalesSystem.Services.CarDealerShip;
 using CarSalesSystem.Services.Categories;
 using CarSalesSystem.Services.Colors;
+using CarSalesSystem.Services.Email;
 using CarSalesSystem.Services.Models;
 using CarSalesSystem.Services.Regions;
 using CarSalesSystem.Services.Search;
 using CarSalesSystem.Services.TechnicalData;
+using CarSalesSystem.Services.User;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -34,6 +37,12 @@ namespace CarSalesSystem
         {
             services.AddDbContext<CarSalesDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            var emailConfig = Configuration
+                .GetSection("EmailConfiguration")
+                .Get<EmailConfiguration>();
+            services.AddSingleton(emailConfig);
+            services.AddScoped<IEmailSender, EmailSender>();
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -62,6 +71,7 @@ namespace CarSalesSystem
             services.AddTransient<IAdvertisementService, AdvertisementService>();
             services.AddTransient<ISearchService, SearchService>();
             services.AddTransient<ICarDealerShipService, CarDealerShipService>();
+            services.AddTransient<IUserService, UserService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

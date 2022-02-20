@@ -4,7 +4,6 @@ using AutoMapper;
 using CarSalesSystem.Data;
 using CarSalesSystem.Data.Models;
 using CarSalesSystem.Infrastructure;
-using CarSalesSystem.Models.Advertisement;
 using CarSalesSystem.Models.Brand;
 using CarSalesSystem.Models.Category;
 using CarSalesSystem.Models.Color;

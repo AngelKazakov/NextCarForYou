@@ -43,7 +43,7 @@ namespace CarSalesSystem.Data
 
         public DbSet<AdvertisementExtra> AdvertisementsExtras { get; init; }
 
-        public DbSet<UserFavAdvertisement> UserFavAdvertisementsExtras { get; init; }
+        public DbSet<UserFavAdvertisement> UserFavAdvertisements { get; init; }
 
         //TODO check deleting...
         protected override void OnModelCreating(ModelBuilder builder)
@@ -53,6 +53,7 @@ namespace CarSalesSystem.Data
             builder.Entity<Advertisement>()
                 .Property(a => a.Price)
                 .HasColumnType("decimal");
+
 
 
             builder.Entity<AdvertisementExtra>().
@@ -69,6 +70,14 @@ namespace CarSalesSystem.Data
                 .WithOne(x => x.Advertisement)
                 .HasForeignKey(x => x.AdvertisementId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<UserFavAdvertisement>().HasKey(x => new { x.AdvertisementId, x.UserId });
+
+            builder.Entity<UserFavAdvertisement>()
+                .HasOne(b => b.User)
+                .WithMany(b => b.FavAdvertisements)
+                .HasForeignKey(b => b.AdvertisementId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
         }
     }
 }

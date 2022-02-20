@@ -10,15 +10,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarSalesSystem.Migrations
 {
     [DbContext(typeof(CarSalesDbContext))]
-    [Migration("20220206144024_CustomUserDefinition")]
-    partial class CustomUserDefinition
+    [Migration("20220208201452_AddedTableUserFavoriteAdvertisements")]
+    partial class AddedTableUserFavoriteAdvertisements
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.10")
+                .HasAnnotation("ProductVersion", "5.0.12")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("CarSalesSystem.Data.Models.Advertisement", b =>
@@ -343,22 +343,21 @@ namespace CarSalesSystem.Migrations
 
             modelBuilder.Entity("CarSalesSystem.Data.Models.UserFavAdvertisement", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("AdvertisementId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
+                    b.Property<string>("AdvertisementId1")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
-                    b.HasIndex("AdvertisementId");
+                    b.HasKey("AdvertisementId", "UserId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("AdvertisementId1");
 
-                    b.ToTable("UserFavAdvertisementsExtras");
+                    b.ToTable("UserFavAdvertisements");
                 });
 
             modelBuilder.Entity("CarSalesSystem.Data.Models.Vehicle", b =>
@@ -717,13 +716,16 @@ namespace CarSalesSystem.Migrations
 
             modelBuilder.Entity("CarSalesSystem.Data.Models.UserFavAdvertisement", b =>
                 {
-                    b.HasOne("CarSalesSystem.Data.Models.Advertisement", "Advertisement")
-                        .WithMany()
-                        .HasForeignKey("AdvertisementId");
-
                     b.HasOne("CarSalesSystem.Data.Models.User", "User")
                         .WithMany("FavAdvertisements")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("AdvertisementId")
+                        .IsRequired();
+
+                    b.HasOne("CarSalesSystem.Data.Models.Advertisement", "Advertisement")
+                        .WithMany()
+                        .HasForeignKey("AdvertisementId1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Advertisement");
 

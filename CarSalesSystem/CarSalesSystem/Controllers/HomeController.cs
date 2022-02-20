@@ -6,13 +6,16 @@ using System.Diagnostics;
 using AutoMapper;
 using CarSalesSystem.Data;
 using CarSalesSystem.Data.Models;
+using CarSalesSystem.Infrastructure.EmailConfiguration;
 using CarSalesSystem.Models.Brand;
+using CarSalesSystem.Models.Contact;
 using CarSalesSystem.Models.Engine;
 using CarSalesSystem.Models.Home;
 using CarSalesSystem.Models.Region;
 using CarSalesSystem.Models.Search;
 using CarSalesSystem.Models.Transmission;
 using CarSalesSystem.Services.Brands;
+using CarSalesSystem.Services.Email;
 using CarSalesSystem.Services.Models;
 using CarSalesSystem.Services.Regions;
 using CarSalesSystem.Services.Search;
@@ -29,6 +32,7 @@ namespace CarSalesSystem.Controllers
         private readonly ISearchService searchService;
         private readonly ITechnicalService technicalService;
         private readonly IMapper mapper;
+        private readonly IEmailSender emailSender;
 
         public HomeController(
             IBrandService brandService,
@@ -36,9 +40,11 @@ namespace CarSalesSystem.Controllers
             IRegionService regionService,
             ITechnicalService technicalService,
             ISearchService searchService,
-            IMapper mapper, ILogger<HomeController> logger)
+            IMapper mapper, ILogger<HomeController> logger,
+            IEmailSender emailSender)
         {
             _logger = logger;
+            this.emailSender = emailSender;
             this.searchService = searchService;
             this.brandService = brandService;
             this.modelService = modelService;
@@ -47,6 +53,7 @@ namespace CarSalesSystem.Controllers
             this.mapper = mapper;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
             HomeViewModel model = new HomeViewModel()
@@ -70,6 +77,27 @@ namespace CarSalesSystem.Controllers
             return RedirectToAction("Search", "Search", homeViewModel.SearchAdvertisementModel);
         }
 
+        [HttpGet]
+        public IActionResult Contact()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Contact(ContactFormView contactModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(contactModel);
+            }
+
+            var message = new Message(new string[] { "drake166@abv.bg" }, "About", contactModel.Message);
+            emailSender.SendEmail(message);
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
         public IActionResult Privacy()
         {
             return View();

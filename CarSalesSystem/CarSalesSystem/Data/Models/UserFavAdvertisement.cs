@@ -1,11 +1,7 @@
-﻿using Microsoft.AspNetCore.SignalR;
-
-namespace CarSalesSystem.Data.Models
+﻿namespace CarSalesSystem.Data.Models
 {
     public class UserFavAdvertisement
     {
-        public string Id { get; init; }
-
         public string AdvertisementId { get; init; }
 
         public Advertisement Advertisement { get; init; }
