@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CarSalesSystem.Data;
@@ -37,7 +36,7 @@ namespace CarSalesSystem.Services.CarDealerShip
 
         public async Task<ICollection<Data.Models.CarDealerShip>> GetAllCarDealershipsAsync()
         {
-            return await context.CarDealerShips.ToListAsync();
+            return await context.CarDealerShips.OrderBy(x => x.Name).ToListAsync();
         }
 
         public async Task<CarDealershipAddFormModel> GetCarDealershipAsync(string dealerId)
@@ -91,7 +90,7 @@ namespace CarSalesSystem.Services.CarDealerShip
                 throw new DuplicateCarDealerShipException($"Car dealership with email: {carDealerShip.Email} already exists.");
             }
 
-            if (context.CarDealerShips.Any(x => x.Url == carDealerShip.Url))
+            if (!string.IsNullOrEmpty(carDealerShip.Url) && context.CarDealerShips.Any(x => x.Url == carDealerShip.Url))
             {
                 throw new DuplicateCarDealerShipException($"Car dealership with website: {carDealerShip.Url} already exists.");
             }

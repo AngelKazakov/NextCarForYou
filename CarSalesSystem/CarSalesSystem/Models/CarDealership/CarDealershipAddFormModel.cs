@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 using static CarSalesSystem.Data.DataConstants;
 
@@ -28,5 +27,9 @@ namespace CarSalesSystem.Models.CarDealership
         public string Url { get; init; }
 
         public IFormFile Image { get; init; }
+
+        public string ImageId { get; init; }
+
+        public byte[] ImageForDisplay { get; init; }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using CarSalesSystem.Data.Models;
+using CarSalesSystem.Exceptions;
 using CarSalesSystem.Infrastructure;
 using CarSalesSystem.Models.CarDealership;
 using CarSalesSystem.Services.CarDealerShip;
@@ -44,13 +45,19 @@ namespace CarSalesSystem.Controllers
             {
                 return View(dealership);
             }
-            //
-            //TODO: Handle exceptions in front-end for existing dealership with same properties
 
             CarDealerShip carDealerShip = mapper.Map<CarDealershipAddFormModel, CarDealerShip>(dealership);
             carDealerShip.UserId = this.User.Id();
 
-            var dealershipId = await carDealerShipService.CreateDealerShipAsync(carDealerShip);
+            try
+            {
+                var dealershipId = await carDealerShipService.CreateDealerShipAsync(carDealerShip);
+            }
+            catch (DuplicateCarDealerShipException e)
+            {
+               ModelState.AddModelError("",e.Message);
+               return View(dealership);
+            }
 
             TempData["Success"] = $"You successfully created dealership with name '{dealership.Name}'.";
 

@@ -6,34 +6,36 @@
         <p class="alert alert-success" id="successMessage">@TempData["Success"]</p>
     }
     <form method="post" enctype="multipart/form-data" asp-controller="CarDealerShip" asp-action="CreateDealership">
+        <div class="text-danger">
+            @Html.ValidationSummary(true)
+        </div>
         <div class="form-group">
             <label asp-for="Name">Dealership Name</label>
-            <input asp-for="Name" type="text" class="form-control" id="dealershipNameId" placeholder="Enter Dealership Name">
+            <input asp-for="Name" type="text" class="form-control" id="dealershipNameId" max="@DataConstants.CarDealerShipNameMaxLength" placeholder="Enter Dealership Name" required>
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
         <div class="form-group">
             <label asp-for="Address">Address</label>
-            <input asp-for="Address" type="text" class="form-control" id="dealershipAddressId" placeholder="Enter Dealership Address">
+            <input asp-for="Address" type="text" class="form-control" id="dealershipAddressId" placeholder="Enter Dealership Address" required>
             <span asp-validation-for="Address" class="text-danger"></span>
         </div>
         <div class="form-group">
             <label asp-for="Phone">Phone Number</label>
-            <input asp-for="Phone" type="tel" class="form-control" id="dealershipPhoneId" placeholder="Enter Phone Number">
+            <input asp-for="Phone" type="tel" class="form-control" id="dealershipPhoneId" placeholder="Enter Phone Number" required>
             <span asp-validation-for="Phone" class="text-danger"></span>
         </div>
         <div class="form-group">
             <label asp-for="Email">Email address</label>
-            <input asp-for="Email" type="email" class="form-control" id="dealershipEmailId" aria-describedby="emailHelp" placeholder="Enter email">
+            <input asp-for="Email" type="email" class="form-control" id="dealershipEmailId" aria-describedby="emailHelp" placeholder="Enter email" required>
             <small id="emailHelpId" class="form-text text-muted">We'll never share your email with anyone else.</small>
             <span asp-validation-for="Email" class="text-danger"></span>
         </div>
         <div class="form-group">
             <label asp-for="Url">Dealership Website Address</label>
-            <input asp-for="Url" type="url" class="form-control" id="dealershipUrlId" placeholder="www.yourwebsite.com">
+            <input asp-for="Url" type="url" class="form-control" pattern="https?://.+" id="dealershipUrlId" placeholder="www.yourwebsite.com">
             <span asp-validation-for="Url" class="text-danger"></span>
         </div>
         <div class="form-group">
-            @*<section>*@
             <label>Upload Logo</label>
             <div>
                 <div class="custom-file">
@@ -46,32 +48,31 @@
                 <br />
                 <br />
             </div>
-            @*</section>*@
         </div>
-        @*<div class="row">
-            @if (Model != null && Model.ImagesForDisplay != null)
+        <div class="row">
+            @if (Model != null && Model.ImageForDisplay != null && Model.ImageForDisplay.Any())
             {
-            @foreach (var image in Model.ImagesForDisplay)
-            {
-            if (image.Value != null)
-            {
-            var base64 = Convert.ToBase64String(image.Value);
-            var imgSrc = string.Format("data:image;base64, {0}", base64);
-            <div class="col text-center">
-            <img src="@imgSrc" style="width: 300px !important; height: 300px !important;" class="rounded-sm mb-3" />
-            <a type="button" onClick="delete_image()" id="@image.Key" style="position: absolute; bottom: 10px; left: 100px;  padding: .4em;width: 8.5em; margin: 0em;" class="btn btn-danger mt-3 mb-3">Delete</a>
-            </div>
+                var base64 = Convert.ToBase64String(Model.ImageForDisplay);
+                var imgSrc = string.Format("data:image;base64, {0}", base64);
+                <div class="col text-center">
+                    <img src="@imgSrc" style="width: 300px !important; height: 300px !important;" class="rounded-sm mb-3" />
+                    <a type="button" onClick="delete_image()" id="@Model.ImageId" style="position: absolute; bottom: 10px; left: 100px;  padding: .4em;width: 8.5em; margin: 0em;" class="btn btn-danger mt-3 mb-3">Delete</a>
+                </div>
             }
-            }
-            }
-            </div>*@
+        </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>
 
 <style>
-    img {
+    /*img {
         width: 60%;
+        float: left;
+    }*/
+
+    img {
+        width: 300px;
+        height: 300px;
         float: left;
     }
 
@@ -92,3 +93,83 @@
         width: 100%
     }
 </style>
+
+@section Scripts
+{
+<script type="text/javascript">
+    var filesToUpload = [];
+    var fileId = 'carDealershipImageLogoId';
+    var divImageId = 'carDealershipImageDivId';
+    //var counter = 0;
+
+    jQuery(function ($) {
+        $('div').on('click', '.innerDiv', function (event) {
+            event.preventDefault();
+            $(this).parent().remove();
+        });
+        var fileDiv = document.getElementById("upload");
+        var fileInput = document.getElementById("upload-file");
+
+        fileInput.addEventListener("change", function (e) {
+            var previousFile = document.getElementById(divImageId);
+            if (previousFile !== null) {
+                previousFile.remove();
+            }
+
+            var filesVar = this.files;
+            showThumbnail(filesVar);
+        }, false);
+
+        function showThumbnail(files) {
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+                console.log(file);
+                var thumbnail = document.getElementById("thumbnail");
+                var pDiv = document.createElement("div");
+                var image = document.createElement("img");
+                var div = document.createElement("div");
+                var innerDiv = document.createElement("div");
+                var deleteButton = document.createElement("button");
+
+                thumbnail.appendChild(pDiv);
+
+                image.setAttribute('class', 'imgKLIK5 rounded-sm mb-3 rounded mx-auto d-block');
+                image.setAttribute('fileid', fileId);
+                image.setAttribute('id', fileId);
+
+                filesToUpload.push({
+                    id: fileId,
+                    file: file
+                });
+
+                div.setAttribute('class', 'row');
+
+                deleteButton.setAttribute('class', 'btn btn-danger mt-3 mb-3');
+                deleteButton.setAttribute('buttonId', fileId);
+                deleteButton.setAttribute('style', 'position: absolute; top: 230px; left: 100px;  padding: .4em;width: 8.5em; margin: 0em;');
+                deleteButton.textContent = 'Delete';
+
+                innerDiv.setAttribute('class', 'innerDiv col text-center');
+                innerDiv.setAttribute('id', divImageId);
+                innerDiv.appendChild(image);
+                innerDiv.appendChild(deleteButton);
+                pDiv.appendChild(innerDiv);
+
+                image.file = file;
+                var reader = new FileReader();
+                reader.onload = (function (aImg) {
+                    return function (e) {
+                        aImg.src = e.target.result;
+                    };
+                }(image));
+                var ret = reader.readAsDataURL(file);
+                var canvas = document.createElement("canvas");
+                ctx = canvas.getContext("2d");
+                image.onload = function () {
+                    ctx.drawImage(image, 100, 100);
+                }
+            }
+        }
+    });
+</script>
+}
