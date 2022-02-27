@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using CarSalesSystem.Data;
 using CarSalesSystem.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CarSalesSystem.Services.Brands
 {
@@ -12,11 +14,11 @@ namespace CarSalesSystem.Services.Brands
         public BrandService(CarSalesDbContext data)
          => this.data = data;
 
-        public ICollection<Brand> GetAllBrands()
+        public async Task<ICollection<Brand>> GetAllBrandsAsync()
         {
-            return this.data.Brands
+            return await this.data.Brands
                 .OrderBy(x => x.Name)
-                .ToList();
+                .ToListAsync();
         }
     }
 }

@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using CarSalesSystem.Data;
 using CarSalesSystem.Exceptions;
 using CarSalesSystem.Models.CarDealership;
+using Microsoft.EntityFrameworkCore;
 
 namespace CarSalesSystem.Services.CarDealerShip
 {
@@ -13,34 +16,33 @@ namespace CarSalesSystem.Services.CarDealerShip
         public CarDealerShipService(CarSalesDbContext context)
         => this.context = context;
 
-        public string CreateDealerShip(Data.Models.CarDealerShip carDealerShip)
+        public async Task<string> CreateDealerShipAsync(Data.Models.CarDealerShip carDealerShip)
         {
             CheckForExistingCarDealerShip(carDealerShip);
 
             context.CarDealerShips.Add(carDealerShip);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
 
             return carDealerShip.Id;
-
         }
 
-        public ICollection<Data.Models.CarDealerShip> GetAllCarDealershipsByUserId(string userId)
+        public async Task<ICollection<Data.Models.CarDealerShip>> GetAllCarDealershipsByUserIdAsync(string userId)
         {
-            var dealerships = context.CarDealerShips
+            var dealerships = await context.CarDealerShips
                 .Where(x => x.UserId == userId)
-                .ToList();
+                .ToListAsync();
 
             return dealerships;
         }
 
-        public ICollection<Data.Models.CarDealerShip> GetAllCarDealerships()
+        public async Task<ICollection<Data.Models.CarDealerShip>> GetAllCarDealershipsAsync()
         {
-            return context.CarDealerShips.ToList();
+            return await context.CarDealerShips.ToListAsync();
         }
 
-        public CarDealershipAddFormModel GetCarDealership(string dealerId)
+        public async Task<CarDealershipAddFormModel> GetCarDealershipAsync(string dealerId)
         {
-            Data.Models.CarDealerShip dealerShip = context.CarDealerShips.FirstOrDefault(x => x.Id == dealerId);
+            Data.Models.CarDealerShip dealerShip = await context.CarDealerShips.FirstOrDefaultAsync(x => x.Id == dealerId);
 
             CarDealershipAddFormModel dealershipAddFormModel = new CarDealershipAddFormModel
             {
@@ -54,10 +56,12 @@ namespace CarSalesSystem.Services.CarDealerShip
 
             return dealershipAddFormModel;
         }
+
         //TODO: Test
-        public string UpdateCarDealership(CarDealershipAddFormModel model)
+        public async Task<string> UpdateCarDealershipAsync(CarDealershipAddFormModel model)
         {
-            var currentDealership = context.CarDealerShips.FirstOrDefault(x => x.Id == model.Id);
+            //TODO: Check for null
+            var currentDealership = await context.CarDealerShips.FirstOrDefaultAsync(x => x.Id == model.Id);
 
             currentDealership.Name = model.Name;
             currentDealership.Address = model.Address;
@@ -65,14 +69,14 @@ namespace CarSalesSystem.Services.CarDealerShip
             currentDealership.Phone = model.Phone;
             currentDealership.Url = model.Url;
 
-            this.context.SaveChanges();
+            await this.context.SaveChangesAsync();
 
             return model.Id;
         }
 
-        public ICollection<Data.Models.Advertisement> GetAdvertisementsByDealershipId(string dealerId)
+        public async Task<ICollection<Data.Models.Advertisement>> GetAdvertisementsByDealershipIdAsync(string dealerId)
         {
-            return this.context.Advertisements.Where(x => x.CarDealershipId == dealerId).ToList();
+            return await this.context.Advertisements.Where(x => x.CarDealershipId == dealerId).ToListAsync();
         }
 
         private void CheckForExistingCarDealerShip(Data.Models.CarDealerShip carDealerShip)

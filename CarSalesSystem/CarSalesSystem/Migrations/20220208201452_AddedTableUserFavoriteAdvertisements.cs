@@ -18,12 +18,6 @@ namespace CarSalesSystem.Migrations
                 {
                     table.PrimaryKey("PK_UserFavAdvertisements", x => new { x.AdvertisementId, x.UserId });
                     table.ForeignKey(
-                        name: "FK_UserFavAdvertisements_Advertisements_AdvertisementId1",
-                        column: x => x.AdvertisementId1,
-                        principalTable: "Advertisements",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_UserFavAdvertisements_AspNetUsers_AdvertisementId",
                         column: x => x.AdvertisementId,
                         principalTable: "AspNetUsers",

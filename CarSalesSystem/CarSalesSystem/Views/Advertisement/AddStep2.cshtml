@@ -117,6 +117,13 @@
         });
 
         $('#submitOnAddButtonId').click(function () {
+           
+            if($("#addStep2Form")[0].checkValidity() === false) 
+            {
+                $("#addStep2Form")[0].reportValidity();
+                return;
+            } 
+
             var data = new FormData();
             for (var i = 0; i < filesToUpload.length; i++) {
                 data.append('Images', filesToUpload[i].file);
@@ -133,7 +140,43 @@
                 headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
                 data: data,
                 success: function (response) {
-                    window.location.href = response.redirectToUrl;
+                    if (response.isValid) {
+                        window.location.href = response.redirectToUrl;
+                    } else {
+                        if (response.errorMessage !== undefined) {
+                            var alertErrorMessageDiv = document.getElementById("alertErrorMessage");
+                            alertErrorMessageDiv.removeAttribute("hidden");
+                            var errorMessageDiv = document.getElementById("errorMessage");
+                            errorMessageDiv.textContent = response.errorMessage;
+                            return;
+                        }
+                        var errors = response.errors;
+                        console.log(errors);
+                        for (var error in errors) 
+                        {
+                           var innerError = errors[error];
+                           var span;
+                           for (var prop in innerError) {
+                               var key = prop;
+                               var value = innerError[prop];
+                               if (prop === "propertyName" && value === "Name") {
+                                   span = document.getElementById("spanNameId");
+                               }
+                               else if (key === "errorMessage" && span !== undefined) {
+                                   span.textContent = value;
+                               }
+
+                               if (prop === "propertyName" && value === "Description") {
+                                   span = document.getElementById("spanDescriptionId");
+                               }
+                               else if (key === "errorMessage" && span !== undefined) {
+                                   span.textContent = value;
+                               }
+                               
+                           }
+                        }
+                        $("#addStep2Form").data = response.model;
+                    }
                 },
                 failure: function(errMsg) {
                     console.alert('Error: ' + JSON.stringify(errMsg));
@@ -144,5 +187,6 @@
             });
             // return false;
         });
+       
     </script>
 }

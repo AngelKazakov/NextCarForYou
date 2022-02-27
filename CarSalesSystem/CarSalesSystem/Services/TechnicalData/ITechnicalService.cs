@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using CarSalesSystem.Data;
 using CarSalesSystem.Data.Models;
 
@@ -6,9 +7,12 @@ namespace CarSalesSystem.Services.TechnicalData
 {
     public interface ITechnicalService
     {
-        ICollection<VehicleEngineType> GetEngineTypes();
-        ICollection<TransmissionType> GetTransmissionTypes();
-        ICollection<VehicleEuroStandard> GetEuroStandards();
-        ICollection<ExtrasCategory> GetExtrasCategories();
+        Task<ICollection<VehicleEngineType>> GetEngineTypesAsync();
+
+        Task<ICollection<TransmissionType>> GetTransmissionTypesAsync();
+
+        Task<ICollection<VehicleEuroStandard>> GetEuroStandardsAsync();
+
+        Task<ICollection<ExtrasCategory>> GetExtrasCategoriesAsync();
     }
 }

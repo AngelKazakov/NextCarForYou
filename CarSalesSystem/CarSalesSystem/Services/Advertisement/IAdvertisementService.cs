@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using CarSalesSystem.Models.Advertisement;
 using Microsoft.AspNetCore.Http;
 
@@ -6,16 +7,16 @@ namespace CarSalesSystem.Services.Advertisement
 {
     public interface IAdvertisementService
     {
-        string Save(Data.Models.Advertisement advertisement, List<string> extrasIds, ICollection<IFormFile> images);
+        Task<string> SaveAsync(Data.Models.Advertisement advertisement, List<string> extrasIds, ICollection<IFormFile> images);
 
-        string Edit(AdvertisementAddFormModel advertisement, AdvertisementAddFormModelStep2 advertisementStep2, string userId);
+        Task<string> EditAsync(AdvertisementAddFormModel advertisement, AdvertisementAddFormModelStep2 advertisementStep2, string userId);
 
-        void Delete(string Id, string UserId);
+        Task DeleteAsync(string Id, string UserId);
 
-        Data.Models.Advertisement GetAdvertisementById(string advertisementId);
+       Task< Data.Models.Advertisement> GetAdvertisementByIdAsync(string advertisementId);
 
-        public AdvertisementAddFormModel GetRecordData(string advertisementId, string userId);
+        public Task< AdvertisementAddFormModel> GetRecordDataAsync(string advertisementId, string userId);
 
-        public AdvertisementAddFormModelStep2 GetRecordDataStep2(string advertisementId);
+        public Task< AdvertisementAddFormModelStep2> GetRecordDataStep2Async(string advertisementId);
     }
 }

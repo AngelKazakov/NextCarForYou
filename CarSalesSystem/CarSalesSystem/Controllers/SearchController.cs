@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
 using CarSalesSystem.Data;
 using CarSalesSystem.Data.Models;
@@ -22,6 +23,7 @@ using CarSalesSystem.Services.Regions;
 using CarSalesSystem.Services.Search;
 using CarSalesSystem.Services.TechnicalData;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace CarSalesSystem.Controllers
 {
@@ -35,6 +37,7 @@ namespace CarSalesSystem.Controllers
         private readonly IColorService colorService;
         private readonly IRegionService regionService;
         private readonly ITechnicalService technicalService;
+        private readonly IMemoryCache memoryCache;
 
         public SearchController(
             ISearchService searchService,
@@ -43,7 +46,8 @@ namespace CarSalesSystem.Controllers
             ICategoryService categoryService,
             IColorService colorService,
             IRegionService regionService,
-            ITechnicalService technicalService, IModelService modelService)
+            ITechnicalService technicalService, IModelService modelService,
+            IMemoryCache memoryCache)
         {
             this.searchService = searchService;
             this.mapper = mapper;
@@ -53,82 +57,100 @@ namespace CarSalesSystem.Controllers
             this.regionService = regionService;
             this.technicalService = technicalService;
             this.modelService = modelService;
+            this.memoryCache = memoryCache;
         }
 
         [HttpGet]
-        public IActionResult Search(SearchAdvertisementModel searchModel)
+        public async Task<IActionResult> Search(SearchAdvertisementModel searchModel)
         {
-            ICollection<SearchResultModel> models = searchService.SearchVehicles(searchModel);
+            ICollection<SearchResultModel> models = await searchService.SearchVehiclesAsync(searchModel);
 
             return View(models);
         }
 
         [HttpGet]
-        public IActionResult DetailedSearch()
+        public async Task<IActionResult> DetailedSearch()
         {
             DetailedSearchAdvertisementModel model = new DetailedSearchAdvertisementModel()
             {
-                Brands = mapper.Map<ICollection<Brand>, ICollection<BrandFormModel>>(brandService.GetAllBrands()),
-                VehicleCategories = mapper.Map<ICollection<VehicleCategory>, ICollection<CategoryFormModel>>(categoryService.GetVehicleCategories()),
-                Colors = mapper.Map<ICollection<Color>, ICollection<ColorFormModel>>(colorService.GetColors()),
-                Regions = mapper.Map<ICollection<Region>, ICollection<RegionFormModel>>(regionService.GetAllRegions()),
-                EngineTypes = mapper.Map<ICollection<VehicleEngineType>, ICollection<EngineFormModel>>(technicalService.GetEngineTypes()),
-                TransmissionTypes = mapper.Map<ICollection<TransmissionType>, ICollection<TransmissionFormModel>>(technicalService.GetTransmissionTypes()),
-                EuroStandards = mapper.Map<ICollection<VehicleEuroStandard>, ICollection<EuroStandardFormModel>>(technicalService.GetEuroStandards()),
-                Extras = mapper.Map<ICollection<ExtrasCategory>, ICollection<ExtrasCategoryFormModel>>(technicalService.GetExtrasCategories()),
+                Brands = mapper.Map<ICollection<Brand>, ICollection<BrandFormModel>>(await brandService.GetAllBrandsAsync()),
+                Regions = mapper.Map<ICollection<Region>, ICollection<RegionFormModel>>(await regionService.GetAllRegionsAsync()),
+                TransmissionTypes = mapper.Map<ICollection<TransmissionType>, ICollection<TransmissionFormModel>>(await technicalService.GetTransmissionTypesAsync()),
+                EngineTypes = mapper.Map<ICollection<VehicleEngineType>, ICollection<EngineFormModel>>(await technicalService.GetEngineTypesAsync()),
+                VehicleCategories = mapper.Map<ICollection<VehicleCategory>, ICollection<CategoryFormModel>>(await categoryService.GetVehicleCategoriesAsync()),
+                Colors = mapper.Map<ICollection<Color>, ICollection<ColorFormModel>>(await colorService.GetColorsAsync()),
+                EuroStandards = mapper.Map<ICollection<VehicleEuroStandard>, ICollection<EuroStandardFormModel>>(await technicalService.GetEuroStandardsAsync()),
+                Extras = mapper.Map<ICollection<ExtrasCategory>, ICollection<ExtrasCategoryFormModel>>(await technicalService.GetExtrasCategoriesAsync()),
             };
 
             return View(model);
         }
 
         [HttpPost]
-        public IActionResult DetailedSearch(DetailedSearchAdvertisementModel detailedModel)
+        public async Task<IActionResult> DetailedSearch(DetailedSearchAdvertisementModel detailedModel)
         {
-            ICollection<SearchResultModel> detailedResultModels = searchService.DetailedSearchVehicles(detailedModel);
+            ICollection<SearchResultModel> detailedResultModels = await searchService.DetailedSearchVehiclesAsync(detailedModel);
 
             return View("Search", detailedResultModels);
         }
 
-        public IActionResult SearchMyAdvertisements()
+        public async Task<IActionResult> SearchMyAdvertisements()
         {
-            ICollection<SearchResultModel> models = searchService.FindAdvertisementsByUserId(this.User.Id());
+            var cacheKey = "myAdvertisementsCacheKey";
+
+            //checks if cache entries exists
+            if (!memoryCache.TryGetValue(cacheKey, out ICollection<SearchResultModel> models))
+            {
+                //calling the server
+                models = await searchService.FindAdvertisementsByUserIdAsync(this.User.Id());
+
+                //setting up cache options
+                var cacheExpiryOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTime.Now.AddSeconds(30),
+                    Priority = CacheItemPriority.High,
+                    SlidingExpiration = TimeSpan.FromSeconds(20)
+                };
+                //setting cache entries
+                memoryCache.Set(cacheKey, models, cacheExpiryOptions);
+            }
 
             return View("Search", models);
         }
 
         [HttpGet]
-        public IActionResult AveragePrice()
+        public async Task<IActionResult> AveragePrice()
         {
             AveragePriceModel model = new AveragePriceModel()
             {
-                Brands = mapper.Map<ICollection<Brand>, ICollection<BrandFormModel>>(brandService.GetAllBrands()),
-                Engines = mapper.Map<ICollection<VehicleEngineType>, ICollection<EngineFormModel>>(technicalService.GetEngineTypes()),
-                Transmissions = mapper.Map<ICollection<TransmissionType>, ICollection<TransmissionFormModel>>(technicalService.GetTransmissionTypes()),
+                Brands = mapper.Map<ICollection<Brand>, ICollection<BrandFormModel>>(await brandService.GetAllBrandsAsync()),
+                Engines = mapper.Map<ICollection<VehicleEngineType>, ICollection<EngineFormModel>>(await technicalService.GetEngineTypesAsync()),
+                Transmissions = mapper.Map<ICollection<TransmissionType>, ICollection<TransmissionFormModel>>(await technicalService.GetTransmissionTypesAsync()),
             };
 
             return View(model);
         }
 
         [HttpPost]
-        public IActionResult AveragePrice(AveragePriceModel priceModel, string command)
+        public async Task<IActionResult> AveragePrice(AveragePriceModel priceModel, string command)
         {
-            priceModel.Brands = mapper.Map<ICollection<Brand>, ICollection<BrandFormModel>>(brandService.GetAllBrands());
-            priceModel.Engines = mapper.Map<ICollection<VehicleEngineType>, ICollection<EngineFormModel>>(technicalService.GetEngineTypes());
-            priceModel.Transmissions = mapper.Map<ICollection<TransmissionType>, ICollection<TransmissionFormModel>>(technicalService.GetTransmissionTypes());
-            priceModel.Models = mapper.Map<ICollection<Model>, ICollection<ModelFormModel>>(modelService.GetAllModels(priceModel.Brand));
+            priceModel.Brands = mapper.Map<ICollection<Brand>, ICollection<BrandFormModel>>(await brandService.GetAllBrandsAsync());
+            priceModel.Engines = mapper.Map<ICollection<VehicleEngineType>, ICollection<EngineFormModel>>(await technicalService.GetEngineTypesAsync());
+            priceModel.Transmissions = mapper.Map<ICollection<TransmissionType>, ICollection<TransmissionFormModel>>(await technicalService.GetTransmissionTypesAsync());
+            priceModel.Models = mapper.Map<ICollection<Model>, ICollection<ModelFormModel>>(await modelService.GetAllModelsAsync(priceModel.Brand));
 
             if (!ModelState.IsValid)
             {
                 return View(priceModel);
             }
 
-            if (priceModel.Year < 1930 || priceModel.Year > DateTime.UtcNow.Year)
+            if (priceModel.Year < DataConstants.VehicleMinYear || priceModel.Year > DateTime.UtcNow.Year)
             {
-                ModelState.AddModelError(nameof(priceModel.Year), $"Incorrect year. Year should be between 1930 and {DateTime.UtcNow.Year}");
+                ModelState.AddModelError(nameof(priceModel.Year), $"Incorrect year. Year should be between {DataConstants.VehicleMinYear} and {DateTime.UtcNow.Year}");
                 return View(priceModel);
             }
 
-            priceModel = searchService.AveragePricesByGivenBrandAndModel(priceModel);
+            priceModel = await searchService.AveragePricesByGivenBrandAndModelAsync(priceModel);
 
             if (command == "Compare")
             {

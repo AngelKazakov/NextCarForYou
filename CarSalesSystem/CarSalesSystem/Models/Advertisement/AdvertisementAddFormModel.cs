@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using CarSalesSystem.Data;
 using CarSalesSystem.Models.Brand;
 using CarSalesSystem.Models.CarDealership;
 using CarSalesSystem.Models.Category;
@@ -20,27 +21,32 @@ namespace CarSalesSystem.Models.Advertisement
         public string Id { get; init; }
 
         [Required]
-        [Range(0, int.MaxValue)]
+        [Range(1, int.MaxValue, ErrorMessage = DataConstants.ErrorMessagePriceField)]
         public decimal Price { get; set; }
 
-        [Required]
+        [Required] 
         public BrandFormModel BrandFormModel { get; set; }
 
         [Required]
         public ModelFormModel ModelFormModel { get; set; }
 
         [Required]
+        [Range(DataConstants.VehiclePowerMinValue, DataConstants.VehiclePowerMaxValue, ErrorMessage = DataConstants.ErrorMessageVehiclePowerField)]
         public int Power { get; set; }
 
         [Required]
         public ColorFormModel ColorFormModel { get; set; }
 
         [Required]
+        [Range(0, int.MaxValue, ErrorMessage = DataConstants.ErrorMessageMileageField)]
         public int Mileage { get; set; }
 
+        [Required(ErrorMessage = DataConstants.ErrorMessageRequiredField)]
+        [Range(1, 12)]
         public int Month { get; set; }
 
         [Required]
+        [Range(DataConstants.VehicleMinYear, DataConstants.VehicleMaxYear)]
         public int Year { get; set; }
 
         [Required]
@@ -52,6 +58,7 @@ namespace CarSalesSystem.Models.Advertisement
         [Required]
         public TransmissionFormModel TransmissionTypeFormModel { get; set; }
 
+        [Required]
         public EuroStandardFormModel EuroStandardFormModel { get; set; }
 
         [Required]

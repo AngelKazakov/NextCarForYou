@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using CarSalesSystem.Data;
 
 namespace CarSalesSystem.Services.Categories
 {
     public interface ICategoryService
     {
-        ICollection<VehicleCategory> GetVehicleCategories();
+       Task< ICollection<VehicleCategory>> GetVehicleCategoriesAsync();
     }
 }

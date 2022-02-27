@@ -4,10 +4,11 @@
 
 <div class="row">
     <div class="container-fluid">
-        <div class="alert-danger text-danger">
-            <p><b>@Html.ValidationSummary(false)</b></p>
+        <div id="alertErrorMessage" class="alert alert-danger alert-dismissible" hidden>
+            <strong>Error!</strong> <div id="errorMessage"></div>
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
         </div>
-        <form id="form" method="post" enctype="multipart/form-data">
+        <form id="addStep2Form" method="post" enctype="multipart/form-data">
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Additional Data</h5>
@@ -17,8 +18,8 @@
                             <div class="row">
                                 <div class="col-sm">
                                     <label asp-for="Name"></label>
-                                    <input id="Name" asp-for="Name" class="form-control" type="text">
-                                    <span asp-validation-for="Name" class="small text-danger"></span>
+                                    <input id="Name" asp-for="Name" class="form-control" minlength="@DataConstants.AdvertisementNameMinLength" maxlength="@DataConstants.AdvertisementNameMaxLength" type="text" required />
+                                    <span id="spanNameId" asp-validation-for="Name" class="text-danger"></span>
                                     <br />
                                 </div>
                             </div>
@@ -26,8 +27,8 @@
                                 <div class="col-md">
                                     <div class="form-group">
                                         <label asp-for="Description">Description</label>
-                                        <textarea id="Description" asp-for="Description" class="form-control" rows="3"></textarea>
-                                        <span asp-validation-for="Description" class="small text-danger"></span>
+                                        <textarea id="Description" asp-for="Description" aria-valuetext="" class="form-control" minlength="@DataConstants.AdvertisementDescriptionMinLength" maxlength="@DataConstants.AdvertisementDescriptionMaxLength" rows="3" required></textarea>
+                                        <span id="spanDescriptionId" asp-validation-for="Description" class="text-danger"></span>
                                     </div>
                                 </div>
                             </div>
@@ -85,7 +86,7 @@
                 }
                 else
                 {
-                    <button id="submitOnAddButtonId" type="button" class="btn btn-primary">FinishAdd</button>
+                    <button id="submitOnAddButtonId" type="button" class="btn btn-primary">Finish</button>
                 }
             </div>
         </form>

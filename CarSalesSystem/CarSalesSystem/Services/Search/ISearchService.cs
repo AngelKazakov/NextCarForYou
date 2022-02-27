@@ -1,21 +1,22 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using CarSalesSystem.Models.Search;
 
 namespace CarSalesSystem.Services.Search
 {
     public interface ISearchService
     {
-        public ICollection<SearchResultModel> SearchVehicles(SearchAdvertisementModel model);
 
-        public ICollection<SearchResultModel> DetailedSearchVehicles(DetailedSearchAdvertisementModel detailedModel);
+        public Task<ICollection<SearchResultModel>> SearchVehiclesAsync(SearchAdvertisementModel model);
 
-        public ICollection<SearchResultModel> GetLastPublishedAdvertisements();
+        public Task<ICollection<SearchResultModel>> DetailedSearchVehiclesAsync(DetailedSearchAdvertisementModel detailedModel);
 
-        public ICollection<SearchResultModel> BuildSearchResultModels(ICollection<Data.Models.Advertisement> advertisements);
+        public Task<ICollection<SearchResultModel>> GetLastPublishedAdvertisementsAsync();
 
-        public ICollection<SearchResultModel> FindAdvertisementsByUserId(string userId);
+        public Task<ICollection<SearchResultModel>> BuildSearchResultModelsAsync(ICollection<Data.Models.Advertisement> advertisements);
 
-        public AveragePriceModel AveragePricesByGivenBrandAndModel(AveragePriceModel priceModel);
+        public Task<ICollection<SearchResultModel>> FindAdvertisementsByUserIdAsync(string userId);
 
+        public Task<AveragePriceModel> AveragePricesByGivenBrandAndModelAsync(AveragePriceModel priceModel);
     }
 }

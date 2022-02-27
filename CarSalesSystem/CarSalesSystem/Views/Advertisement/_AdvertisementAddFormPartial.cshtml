@@ -13,42 +13,47 @@
                                 <div class="col-sm">
                                     <label>Brand</label>
                                     <select asp-for="BrandFormModel.Id" id="selectBrandId" class="form-control" required>
-                                        <option selected>--None--</option>
+                                        <option value="" selected>--None--</option>
                                         @foreach (var brand in Model.Brands)
                                         {
                                             <option value="@brand.Id">@brand.Name</option>
                                         }
                                     </select>
+                                    @*@Html.DropDownListFor(model => model.BrandFormModel.Id, new SelectList(Model.Brands, "Id", "Name"), new { id = "selectBrandId", @class = "form-control"})*@
+                                    <span asp-validation-for="BrandFormModel.Name" class="text-danger"></span>
                                     <br />
                                     <label asp-for="Price">Price</label>
-                                    <input type="number" asp-for="Price" class="form-control">
+                                    <input type="number" asp-for="Price" min="1" class="form-control" required>
+                                    <span asp-validation-for="Price" class="text-danger"></span>
                                     <br />
                                     <label asp-for="Mileage"></label>
-                                    <input asp-for="Mileage" class="form-control" type="number">
-                                    <span asp-validation-for="Mileage" class="small text-danger"></span>
+                                    <input asp-for="Mileage" class="form-control" min="0" max="@int.MaxValue" type="number" required>
+                                    <span asp-validation-for="Mileage" class="text-danger"></span>
                                     <br />
                                     <label asp-for="ColorFormModel.Id">Color</label>
-                                    <select asp-for="ColorFormModel.Id" class="form-control">
-                                        <option selected>--None--</option>
+                                    <select asp-for="ColorFormModel.Id" class="form-control" required>
+                                        <option value="" selected>--None--</option>
                                         @foreach (var color in Model.Colors)
                                         {
                                             <option value="@color.Id">@color.Name</option>
                                         }
                                     </select>
+                                    <span asp-validation-for="ColorFormModel.Name" class="text-danger"></span>
                                 </div>
                                 <div class="col-sm">
                                     <label>Model</label>
                                     <select asp-for="ModelFormModel.Id" id="selectModelId" class="form-control" required>
-                                        <option selected>--None--</option>
+                                        <option value="" selected>--None--</option>
                                         @foreach (var vehicleModel in @Model.Models)
                                         {
                                             <option value="@vehicleModel.Id">@vehicleModel.Name</option>
                                         }
                                     </select>
+                                    <span asp-validation-for="ModelFormModel.Name" class="text-danger"></span>
                                     <br />
                                     <label>Month of Manufacture</label>
-                                    <select asp-for="Month" class="form-control" aria-label="Select Model">
-                                        <option selected>--None--</option>
+                                    <select asp-for="Month" class="form-control" aria-label="Select Model" required>
+                                        <option value="" selected>--None--</option>
                                         <option value="1">January</option>
                                         <option value="2">February</option>
                                         <option value="3">March</option>
@@ -62,15 +67,17 @@
                                         <option value="11">November</option>
                                         <option value="12">December</option>
                                     </select>
+                                    <span asp-validation-for="Month" class="text-danger"></span>
                                     <br />
                                     <label>Region</label>
-                                    <select asp-for="RegionFormModel.Id" id="selectRegionId" class="form-control" aria-label="Region">
+                                    <select asp-for="RegionFormModel.Id" id="selectRegionId" class="form-control" aria-label="Region" required>
                                         <option selected value="">--None--</option>
                                         @foreach (var region in Model.Regions)
                                         {
                                             <option value="@region.Id">@region.Name</option>
                                         }
                                     </select>
+                                    <span asp-validation-for="RegionFormModel.Name" class="text-danger"></span>
                                     <br />
                                     <label>Car Dealerships</label>
                                     <select asp-for="DealershipFormModel.Id" id="selectDealershipId" class="form-control">
@@ -83,25 +90,27 @@
                                 </div>
                                 <div class="col-sm">
                                     <label>Category</label>
-                                    <select asp-for="CategoryFormModel.Id" class="form-control">
-                                        <option selected>--None--</option>
+                                    <select asp-for="CategoryFormModel.Id" class="form-control" required>
+                                        <option value="" selected>--None--</option>
                                         @foreach (var category in Model.VehicleCategories)
                                         {
                                             <option value="@category.Id">@category.Name</option>
                                         }
                                     </select>
+                                    <span asp-validation-for="CategoryFormModel.Name" class="text-danger"></span>
                                     <br />
                                     <label asp-for="Year">Year of Manufacture</label>
-                                    <input type="number" asp-for="Year" class="form-control">
+                                    <input type="number" asp-for="Year" class="form-control" min="@DataConstants.VehicleMinYear" max="@DateTime.UtcNow.Year" required>
                                     <br />
                                     <label>Location</label>
-                                    <select asp-for="CityFormModel.Id" id="selectCityId" class="form-control">
-                                        <option selected>--None--</option>
+                                    <select asp-for="CityFormModel.Id" id="selectCityId" class="form-control" required>
+                                        <option value="" selected>--None--</option>
                                         @foreach (var city in @Model.Cities)
                                         {
                                             <option value="@city.Id"> @city.Name</option>
                                         }
                                     </select>
+                                    <span asp-validation-for="CityFormModel.Name" class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
@@ -118,36 +127,40 @@
                             <div class="row">
                                 <div class="col-sm">
                                     <label>Fuel Type</label>
-                                    <select asp-for="EngineTypeFormModel.Id" class="form-control">
-                                        <option selected>--None--</option>
+                                    <select asp-for="EngineTypeFormModel.Id" class="form-control" required>
+                                        <option value="" selected>--None--</option>
                                         @foreach (var engine in Model.EngineTypes)
                                         {
                                             <option value="@engine.Id">@engine.Name</option>
                                         }
                                     </select>
+                                    <span asp-validation-for="EngineTypeFormModel.Name" class="text-danger"></span>
                                     <br />
                                     <label asp-for="Power">Power</label>
-                                    <input type="number" asp-for="Power" class="form-control">
+                                    <input type="number" asp-for="Power" class="form-control" min="@DataConstants.VehiclePowerMinValue" max="@DataConstants.VehiclePowerMaxValue" required>
+                                    <span asp-validation-for="Power" class="text-danger"></span>
                                     <br />
                                 </div>
                                 <div class="col-sm">
                                     <label>Transmission</label>
-                                    <select asp-for="TransmissionTypeFormModel.Id" class="form-control">
-                                        <option selected>--None--</option>
+                                    <select asp-for="TransmissionTypeFormModel.Id" class="form-control" required>
+                                        <option value="" selected>--None--</option>
                                         @foreach (var transmission in Model.TransmissionTypes)
                                         {
                                             <option value="@transmission.Id">@transmission.Name</option>
                                         }
                                     </select>
+                                    <span asp-validation-for="TransmissionTypeFormModel.Name" class="text-danger"></span>
                                     <br />
                                     <label>Euro Standard</label>
-                                    <select asp-for="EuroStandardFormModel.Id" class="form-control">
-                                        <option selected>--None--</option>
+                                    <select asp-for="EuroStandardFormModel.Id" class="form-control" required>
+                                        <option value="" selected>--None--</option>
                                         @foreach (var euroStandard in Model.EuroStandards)
                                         {
                                             <option value="@euroStandard.Id">@euroStandard.Name</option>
                                         }
                                     </select>
+                                    <span asp-validation-for="EuroStandardFormModel.Name" class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
@@ -181,7 +194,6 @@
             </div>
             <br />
             <div class="text-center">
-                @*<button type="submit" class="btn btn-primary" id="buttonNextId" onclick="@("window.location.href='" + @Url.Action("AddStep2", "Advertisement") + "'");">Next</button>*@
                 <button type="submit" class="btn btn-primary" id="buttonNextId">Next</button>
             </div>
         </form>

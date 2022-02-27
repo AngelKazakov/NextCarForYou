@@ -16,7 +16,6 @@ using CarSalesSystem.Services.TechnicalData;
 using CarSalesSystem.Services.User;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -61,6 +60,7 @@ namespace CarSalesSystem
                 });
 
             services.AddAutoMapper(typeof(Startup));
+            services.AddMemoryCache();
 
             services.AddTransient<IBrandService, BrandService>();
             services.AddTransient<IModelService, ModelService>();

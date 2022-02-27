@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using CarSalesSystem.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace CarSalesSystem.Services.Categories
 {
@@ -11,10 +13,9 @@ namespace CarSalesSystem.Services.Categories
         public CategoryService(CarSalesDbContext data)
         => this.data = data;
 
-
-        public ICollection<VehicleCategory> GetVehicleCategories()
+        public async Task<ICollection<VehicleCategory>> GetVehicleCategoriesAsync()
         {
-            return this.data.VehicleCategories.ToList();
+            return await this.data.VehicleCategories.OrderBy(x => x.Name).ToListAsync();
         }
     }
 }

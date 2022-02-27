@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
-
-using static CarSalesSystem.Data.DataConstants;
+using CarSalesSystem.Data;
 
 namespace CarSalesSystem.Models.Advertisement
 {
@@ -10,14 +9,14 @@ namespace CarSalesSystem.Models.Advertisement
     {
         public string Id { get; init; }
 
-        [Required]
+        [Required(ErrorMessage = DataConstants.ErrorMessageRequiredField)]
         public string Name { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = DataConstants.ErrorMessageRequiredField)]
         [StringLength(
-            AdvertisementDescriptionMaxLength,
-            MinimumLength = AdvertisementDescriptionMinLength,
-            ErrorMessage = "The field Description must be a string with a minimum length of {2}.")]
+           DataConstants.AdvertisementDescriptionMaxLength,
+            MinimumLength = DataConstants.AdvertisementDescriptionMinLength,
+            ErrorMessage = DataConstants.ErrorMessageDescriptionField)]
         public string Description { get; set; }
 
         public ICollection<IFormFile> Images { get; set; } = new List<IFormFile>();

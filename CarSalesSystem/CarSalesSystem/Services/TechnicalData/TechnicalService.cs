@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using CarSalesSystem.Data;
 using CarSalesSystem.Data.Models;
 using Microsoft.EntityFrameworkCore;
@@ -13,28 +14,28 @@ namespace CarSalesSystem.Services.TechnicalData
         public TechnicalService(CarSalesDbContext data)
          => this.data = data;
 
-        public ICollection<VehicleEngineType> GetEngineTypes()
+        public async Task<ICollection<VehicleEngineType>> GetEngineTypesAsync()
         {
-            return this.data.Engines.ToList();
+            return await this.data.Engines.OrderBy(x => x.Name).ToListAsync();
         }
 
-        public ICollection<TransmissionType> GetTransmissionTypes()
+        public async Task<ICollection<TransmissionType>> GetTransmissionTypesAsync()
         {
-            return this.data.Transmissions.ToList();
+            return await this.data.Transmissions.OrderBy(x => x.Name).ToListAsync();
         }
 
-        public ICollection<VehicleEuroStandard> GetEuroStandards()
+        public async Task<ICollection<VehicleEuroStandard>> GetEuroStandardsAsync()
         {
-            return this.data.EuroStandards
+            return await this.data.EuroStandards
                 .OrderBy(x => x.Name)
-                .ToList();
+                .ToListAsync();
         }
 
-        public ICollection<ExtrasCategory> GetExtrasCategories()
+        public async Task<ICollection<ExtrasCategory>> GetExtrasCategoriesAsync()
         {
-            return this.data.Categories
+            return await this.data.Categories
                 .Include(i => i.Extras)
-                .ToList();
+                .ToListAsync();
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using AutoMapper;
 using CarSalesSystem.Data;
 using CarSalesSystem.Data.Models;
@@ -14,7 +13,6 @@ using CarSalesSystem.Models.ExtrasCategory;
 using CarSalesSystem.Models.Model;
 using CarSalesSystem.Models.Region;
 using CarSalesSystem.Models.Transmission;
-using Microsoft.AspNetCore.Http;
 
 namespace CarSalesSystem.Infrastructure
 {

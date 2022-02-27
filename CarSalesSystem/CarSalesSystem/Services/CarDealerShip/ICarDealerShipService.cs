@@ -1,20 +1,21 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using CarSalesSystem.Models.CarDealership;
 
 namespace CarSalesSystem.Services.CarDealerShip
 {
     public interface ICarDealerShipService
     {
-        string CreateDealerShip(Data.Models.CarDealerShip carDealerShip);
+        public Task<string> CreateDealerShipAsync(Data.Models.CarDealerShip carDealerShip);
 
-        public ICollection<Data.Models.CarDealerShip> GetAllCarDealershipsByUserId(string userId);
+        public Task<ICollection<Data.Models.CarDealerShip>> GetAllCarDealershipsByUserIdAsync(string userId);
 
-        public ICollection<Data.Models.CarDealerShip> GetAllCarDealerships();
+        public Task<ICollection<Data.Models.CarDealerShip>> GetAllCarDealershipsAsync();
 
-        public CarDealershipAddFormModel GetCarDealership(string dealerId);
+        public Task<CarDealershipAddFormModel> GetCarDealershipAsync(string dealerId);
 
-        public string UpdateCarDealership(CarDealershipAddFormModel model);
+        public Task<string> UpdateCarDealershipAsync(CarDealershipAddFormModel model);
 
-        public ICollection<Data.Models.Advertisement> GetAdvertisementsByDealershipId(string dealerId);
+        public Task<ICollection<Data.Models.Advertisement>> GetAdvertisementsByDealershipIdAsync(string dealerId);
     }
 }

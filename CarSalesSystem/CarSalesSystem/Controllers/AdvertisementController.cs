@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using AutoMapper;
+using System.Linq;
+using System.Threading.Tasks;
 using CarSalesSystem.Data;
 using CarSalesSystem.Data.Models;
 using CarSalesSystem.Infrastructure;
@@ -25,6 +26,7 @@ using CarSalesSystem.Services.TechnicalData;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
 using Newtonsoft.Json;
 
 
@@ -60,25 +62,26 @@ namespace CarSalesSystem.Controllers
             this.colorService = colorService;
             this.regionService = regionService;
             this.technicalService = technicalService;
+            this.technicalService = technicalService;
             this.advertisementService = advertisementService;
             this.dealerShipService = dealerShipService;
         }
 
         [Authorize]
         [HttpGet]
-        public IActionResult Add()
+        public async Task<IActionResult> Add()
         {
             AdvertisementAddFormModel model = new AdvertisementAddFormModel()
             {
-                Brands = mapper.Map<ICollection<Brand>, ICollection<BrandFormModel>>(brandService.GetAllBrands()),
-                VehicleCategories = mapper.Map<ICollection<VehicleCategory>, ICollection<CategoryFormModel>>(categoryService.GetVehicleCategories()),
-                Colors = mapper.Map<ICollection<Color>, ICollection<ColorFormModel>>(colorService.GetColors()),
-                Regions = mapper.Map<ICollection<Region>, ICollection<RegionFormModel>>(regionService.GetAllRegions()),
-                EngineTypes = mapper.Map<ICollection<VehicleEngineType>, ICollection<EngineFormModel>>(technicalService.GetEngineTypes()),
-                TransmissionTypes = mapper.Map<ICollection<TransmissionType>, ICollection<TransmissionFormModel>>(technicalService.GetTransmissionTypes()),
-                EuroStandards = mapper.Map<ICollection<VehicleEuroStandard>, ICollection<EuroStandardFormModel>>(technicalService.GetEuroStandards()),
-                Extras = mapper.Map<ICollection<ExtrasCategory>, ICollection<ExtrasCategoryFormModel>>(technicalService.GetExtrasCategories()),
-                Dealerships = mapper.Map<ICollection<CarDealerShip>, ICollection<CarDealershipViewModel>>(dealerShipService.GetAllCarDealershipsByUserId(this.User.Id()))
+                Brands = mapper.Map<ICollection<Brand>, ICollection<BrandFormModel>>(await brandService.GetAllBrandsAsync()),
+                VehicleCategories = mapper.Map<ICollection<VehicleCategory>, ICollection<CategoryFormModel>>(await categoryService.GetVehicleCategoriesAsync()),
+                Colors = mapper.Map<ICollection<Color>, ICollection<ColorFormModel>>(await colorService.GetColorsAsync()),
+                Regions = mapper.Map<ICollection<Region>, ICollection<RegionFormModel>>(await regionService.GetAllRegionsAsync()),
+                EngineTypes = mapper.Map<ICollection<VehicleEngineType>, ICollection<EngineFormModel>>(await technicalService.GetEngineTypesAsync()),
+                TransmissionTypes = mapper.Map<ICollection<TransmissionType>, ICollection<TransmissionFormModel>>(await technicalService.GetTransmissionTypesAsync()),
+                EuroStandards = mapper.Map<ICollection<VehicleEuroStandard>, ICollection<EuroStandardFormModel>>(await technicalService.GetEuroStandardsAsync()),
+                Extras = mapper.Map<ICollection<ExtrasCategory>, ICollection<ExtrasCategoryFormModel>>(await technicalService.GetExtrasCategoriesAsync()),
+                Dealerships = mapper.Map<ICollection<CarDealerShip>, ICollection<CarDealershipViewModel>>(await dealerShipService.GetAllCarDealershipsByUserIdAsync(this.User.Id()))
             };
 
             return View(model);
@@ -88,6 +91,11 @@ namespace CarSalesSystem.Controllers
         [Authorize]
         public IActionResult Add(AdvertisementAddFormModel advertisement)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(advertisement);
+            }
+
             TempData["advertisement" + this.User.Id()] = JsonConvert.SerializeObject(advertisement);
 
             return RedirectToAction("AddStep2");
@@ -102,13 +110,14 @@ namespace CarSalesSystem.Controllers
 
         [HttpPost]
         [Authorize]
-        public IActionResult AddStep2(AdvertisementAddFormModelStep2 advertisementStep2)
+        public async Task<IActionResult> AddStep2(AdvertisementAddFormModelStep2 advertisementStep2)
         {
             if (!ModelState.IsValid)
             {
-                return View(advertisementStep2);
+                var errors = ModelState.Keys.Where(k => ModelState[k].Errors.Count > 0)
+                    .Select(k => new { propertyName = k, errorMessage = ModelState[k].Errors[0].ErrorMessage });
+                return Json(new { IsValid = false, model = advertisementStep2, errors });
             }
-
 
             var userId = this.User.Id();
             var key = "advertisement" + userId;
@@ -121,25 +130,22 @@ namespace CarSalesSystem.Controllers
 
                 var advertisementModel = AdvertisementCustomMapper.Map(advertisementAddFormModel, advertisementStep2, userId, extrasIdList);
 
-                var advertisementId = this.advertisementService.Save(advertisementModel, extrasIdList, advertisementStep2.Images);
+                string advertisementId = await this.advertisementService.SaveAsync(advertisementModel, extrasIdList, advertisementStep2.Images);
 
-                return Json(new { redirectToUrl = Url.Action("Details", "Advertisement", new { advertisementId = advertisementId }) });
-
-            }
-            else
-            {
-                this.ModelState.AddModelError(string.Empty, "Error creating advertisement.");
-
-                return View(advertisementStep2);
+                return Json(new { IsValid = true, redirectToUrl = Url.Action("Details", "Advertisement", new { advertisementId = advertisementId }) });
             }
 
+            var errorMessage = "Error creating advertisement. Please try again.";
+            this.ModelState.AddModelError(string.Empty, errorMessage);
+
+            return Json(new { isValid = false, model = advertisementStep2, errorMessage });
         }
 
         [Authorize]
         [HttpGet]
-        public IActionResult Edit(string Id)
+        public async Task<IActionResult> Edit(string Id)
         {
-            AdvertisementAddFormModel advertisementFormModel = advertisementService.GetRecordData(Id, this.User.Id());
+            AdvertisementAddFormModel advertisementFormModel = await advertisementService.GetRecordDataAsync(Id, this.User.Id());
 
             return View(advertisementFormModel);
         }
@@ -148,6 +154,11 @@ namespace CarSalesSystem.Controllers
         [HttpPost]
         public IActionResult Edit(AdvertisementAddFormModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
             TempData["advertisement" + this.User.Id()] = JsonConvert.SerializeObject(model);
 
             var advertisementId = model.Id;
@@ -157,16 +168,16 @@ namespace CarSalesSystem.Controllers
 
         [Authorize]
         [HttpGet]
-        public IActionResult EditStep2(string id)
+        public async Task<IActionResult> EditStep2(string id)
         {
-            AdvertisementAddFormModelStep2 advertisementAddFormModel = advertisementService.GetRecordDataStep2(id);
+            AdvertisementAddFormModelStep2 advertisementAddFormModel = await advertisementService.GetRecordDataStep2Async(id);
 
             return View(advertisementAddFormModel);
         }
 
         [Authorize]
         [HttpPost]
-        public IActionResult EditStep2(AdvertisementAddFormModelStep2 advertisementStep2)
+        public async Task<IActionResult> EditStep2(AdvertisementAddFormModelStep2 advertisementStep2)
         {
             if (!ModelState.IsValid)
             {
@@ -183,7 +194,7 @@ namespace CarSalesSystem.Controllers
                 AdvertisementAddFormModel advertisementAddFormModel = JsonConvert.DeserializeObject<AdvertisementAddFormModel>((string)TempData[key]);
                 advertisementId = advertisementAddFormModel.Id;
 
-                advertisementService.Edit(advertisementAddFormModel, advertisementStep2, userId);
+                await advertisementService.EditAsync(advertisementAddFormModel, advertisementStep2, userId);
             }
             else
             {
@@ -195,9 +206,9 @@ namespace CarSalesSystem.Controllers
         }
 
         [HttpGet]
-        public IActionResult Details(string advertisementId)
+        public async Task<IActionResult> Details(string advertisementId)
         {
-            Advertisement advertisement = advertisementService.GetAdvertisementById(advertisementId);
+            Advertisement advertisement = await advertisementService.GetAdvertisementByIdAsync(advertisementId);
             AdvertisementViewModel advertisementViewModel = AdvertisementCustomMapper.Map(advertisement);
 
             return View(advertisementViewModel);
@@ -215,11 +226,11 @@ namespace CarSalesSystem.Controllers
 
         [HttpPost]
         [Authorize]
-        public IActionResult DeleteAdvertisement(string id)
+        public async Task<IActionResult> DeleteAdvertisement(string id)
         {
             try
             {
-                advertisementService.Delete(id, this.User.Id());
+                await advertisementService.DeleteAsync(id, this.User.Id());
 
                 return RedirectToAction("Index", "Home");
             }

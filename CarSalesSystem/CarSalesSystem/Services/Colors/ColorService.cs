@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using CarSalesSystem.Data;
 using CarSalesSystem.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CarSalesSystem.Services.Colors
 {
@@ -12,9 +14,9 @@ namespace CarSalesSystem.Services.Colors
         public ColorService(CarSalesDbContext data)
           => this.data = data;
 
-        public ICollection<Color> GetColors()
+        public async Task<ICollection<Color>> GetColorsAsync()
         {
-            return this.data.Colors.ToList();
+            return await this.data.Colors.OrderBy(x => x.Name).ToListAsync();
         }
     }
 }

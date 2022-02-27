@@ -1,27 +1,36 @@
 ﻿@model CarDealershipAddFormModel
 
 <div class="col-md-6 text-center offset-3">
+    @if (TempData["Success"] != null)
+    {
+        <p class="alert alert-success" id="successMessage">@TempData["Success"]</p>
+    }
     <form method="post" enctype="multipart/form-data" asp-controller="CarDealerShip" asp-action="CreateDealership">
         <div class="form-group">
             <label asp-for="Name">Dealership Name</label>
             <input asp-for="Name" type="text" class="form-control" id="dealershipNameId" placeholder="Enter Dealership Name">
+            <span asp-validation-for="Name" class="text-danger"></span>
         </div>
         <div class="form-group">
             <label asp-for="Address">Address</label>
             <input asp-for="Address" type="text" class="form-control" id="dealershipAddressId" placeholder="Enter Dealership Address">
+            <span asp-validation-for="Address" class="text-danger"></span>
         </div>
         <div class="form-group">
             <label asp-for="Phone">Phone Number</label>
             <input asp-for="Phone" type="tel" class="form-control" id="dealershipPhoneId" placeholder="Enter Phone Number">
+            <span asp-validation-for="Phone" class="text-danger"></span>
         </div>
         <div class="form-group">
             <label asp-for="Email">Email address</label>
             <input asp-for="Email" type="email" class="form-control" id="dealershipEmailId" aria-describedby="emailHelp" placeholder="Enter email">
             <small id="emailHelpId" class="form-text text-muted">We'll never share your email with anyone else.</small>
+            <span asp-validation-for="Email" class="text-danger"></span>
         </div>
         <div class="form-group">
             <label asp-for="Url">Dealership Website Address</label>
             <input asp-for="Url" type="url" class="form-control" id="dealershipUrlId" placeholder="www.yourwebsite.com">
+            <span asp-validation-for="Url" class="text-danger"></span>
         </div>
         <div class="form-group">
             @*<section>*@
@@ -40,21 +49,21 @@
             @*</section>*@
         </div>
         @*<div class="row">
-                @if (Model != null && Model.ImagesForDisplay != null)
-                {
-                    @foreach (var image in Model.ImagesForDisplay)
-                    {
-                        if (image.Value != null)
-                        {
-                            var base64 = Convert.ToBase64String(image.Value);
-                            var imgSrc = string.Format("data:image;base64, {0}", base64);
-                            <div class="col text-center">
-                                <img src="@imgSrc" style="width: 300px !important; height: 300px !important;" class="rounded-sm mb-3" />
-                                <a type="button" onClick="delete_image()" id="@image.Key" style="position: absolute; bottom: 10px; left: 100px;  padding: .4em;width: 8.5em; margin: 0em;" class="btn btn-danger mt-3 mb-3">Delete</a>
-                            </div>
-                        }
-                    }
-                }
+            @if (Model != null && Model.ImagesForDisplay != null)
+            {
+            @foreach (var image in Model.ImagesForDisplay)
+            {
+            if (image.Value != null)
+            {
+            var base64 = Convert.ToBase64String(image.Value);
+            var imgSrc = string.Format("data:image;base64, {0}", base64);
+            <div class="col text-center">
+            <img src="@imgSrc" style="width: 300px !important; height: 300px !important;" class="rounded-sm mb-3" />
+            <a type="button" onClick="delete_image()" id="@image.Key" style="position: absolute; bottom: 10px; left: 100px;  padding: .4em;width: 8.5em; margin: 0em;" class="btn btn-danger mt-3 mb-3">Delete</a>
+            </div>
+            }
+            }
+            }
             </div>*@
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-using static CarSalesSystem.Data.DataConstants;
-
 namespace CarSalesSystem.Data.Models
 {
     public class Vehicle
@@ -14,7 +12,7 @@ namespace CarSalesSystem.Data.Models
 
         public Model Model { get; init; }
 
-        [Range(0, VehiclePowerMaxValue)]
+        [Range(DataConstants.VehiclePowerMinValue, DataConstants.VehiclePowerMaxValue)]
         public int Power { get; set; }
 
         public string ColorId { get; set; }
@@ -30,6 +28,7 @@ namespace CarSalesSystem.Data.Models
         public int Month { get; set; }
 
         [Required]
+        [Range(DataConstants.VehicleMinYear, DataConstants.VehicleMaxYear)]
         public int Year { get; set; }
 
         public string CategoryId { get; set; }

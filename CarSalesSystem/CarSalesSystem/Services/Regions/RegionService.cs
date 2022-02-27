@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using CarSalesSystem.Data;
 using CarSalesSystem.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CarSalesSystem.Services.Regions
 {
@@ -12,11 +14,11 @@ namespace CarSalesSystem.Services.Regions
         public RegionService(CarSalesDbContext data)
            => this.data = data;
 
-        public ICollection<Region> GetAllRegions()
+        public async Task<ICollection<Region>> GetAllRegionsAsync()
         {
-            return this.data.Regions
+            return await this.data.Regions
                 .OrderBy(x => x.Name)
-                .ToList();
+                .ToListAsync();
         }
 
         public ICollection<City> GetAllCities(string regionId)
@@ -25,6 +27,14 @@ namespace CarSalesSystem.Services.Regions
                 .Where(x => x.RegionId == regionId)
                 .OrderBy(x => x.Name)
                 .ToList();
+        }
+
+        public async Task<ICollection<City>> GetAllCitiesAsync(string regionId)
+        {
+            return await this.data.Cities
+                .Where(x => x.RegionId == regionId)
+                .OrderBy(x => x.Name)
+                .ToListAsync();
         }
     }
 }

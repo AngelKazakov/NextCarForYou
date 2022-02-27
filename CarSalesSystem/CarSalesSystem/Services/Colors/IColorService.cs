@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using CarSalesSystem.Data.Models;
 
 namespace CarSalesSystem.Services
 {
     public interface IColorService
     {
-        ICollection<Color> GetColors();
+       Task< ICollection<Color>> GetColorsAsync();
     }
 }

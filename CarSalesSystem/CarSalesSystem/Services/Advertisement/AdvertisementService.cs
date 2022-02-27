@@ -48,11 +48,11 @@ namespace CarSalesSystem.Services.Advertisement
 
         public AdvertisementService(CarSalesDbContext context,
             IBrandService brandService,
-             ITechnicalService technicalService,
+            ITechnicalService technicalService,
             ICategoryService categoryService,
             IRegionService regionService,
-             IColorService colorService,
-             IModelService modelService,
+            IColorService colorService,
+            IModelService modelService,
             ICarDealerShipService dealerShipService,
             IMapper mapper)
         {
@@ -67,13 +67,13 @@ namespace CarSalesSystem.Services.Advertisement
             this.technicalService = technicalService;
         }
 
-        public string Save(Data.Models.Advertisement advertisement, List<string> extrasIds, ICollection<IFormFile> images)
+        public async Task<string> SaveAsync(Data.Models.Advertisement advertisement, List<string> extrasIds, ICollection<IFormFile> images)
         {
-            using IDbContextTransaction transaction = context.Database.BeginTransaction();
+            await using IDbContextTransaction transaction = await context.Database.BeginTransactionAsync();
             try
             {
                 this.context.Advertisements.Add(advertisement);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
 
                 var advertisementId = advertisement.Id;
 
@@ -88,45 +88,45 @@ namespace CarSalesSystem.Services.Advertisement
                     context.AdvertisementsExtras.Add(advertisementExtra);
                 }
 
-                SaveImages(images, advertisementId, advertisement.VehicleImages).GetAwaiter().GetResult();
+                await SaveImagesAsync(images, advertisementId, advertisement.VehicleImages);
 
-                context.SaveChanges();
+                await context.SaveChangesAsync();
 
-                transaction.Commit();
+                await transaction.CommitAsync();
 
                 return advertisementId;
             }
             catch (Exception ex)
             {
-                transaction.Rollback();
+                await transaction.RollbackAsync();
                 Console.WriteLine("Error occurred.");
                 throw ex;
             }
         }
 
-        public string Edit(AdvertisementAddFormModel advertisementStep1, AdvertisementAddFormModelStep2 advertisementStep2, string userId)
+        public async Task<string> EditAsync(AdvertisementAddFormModel advertisementStep1, AdvertisementAddFormModelStep2 advertisementStep2, string userId)
         {
-            var currentAdvertisement = context.Advertisements
+            var currentAdvertisement = await context.Advertisements
                 .Include(x => x.Vehicle)
                 .Include(x => x.VehicleImages)
                 .Include(x => x.AdvertisementExtras)
-                .FirstOrDefault(x => x.Id == advertisementStep1.Id);
+                .FirstOrDefaultAsync(x => x.Id == advertisementStep1.Id);
 
             if (currentAdvertisement == null)
             {
                 throw new Exception("Record not found.");
             }
 
-            using IDbContextTransaction transaction = context.Database.BeginTransaction();
+            using IDbContextTransaction transaction = await context.Database.BeginTransactionAsync();
             try
             {
-                UpdateAdvertisement(currentAdvertisement, advertisementStep1, advertisementStep2);
-                context.SaveChanges();
-                transaction.Commit();
+                await UpdateAdvertisement(currentAdvertisement, advertisementStep1, advertisementStep2);
+                await context.SaveChangesAsync();
+                await transaction.CommitAsync();
             }
             catch (Exception ex)
             {
-                transaction.Rollback();
+                await transaction.RollbackAsync();
                 Console.WriteLine(ex);
                 throw ex;
             }
@@ -134,15 +134,15 @@ namespace CarSalesSystem.Services.Advertisement
             return currentAdvertisement.Id;
         }
 
-        public void Delete(string Id, string UserId)
+        public async Task DeleteAsync(string Id, string UserId)
         {
-            using IDbContextTransaction transaction = context.Database.BeginTransaction();
+            using IDbContextTransaction transaction = await context.Database.BeginTransactionAsync();
             try
             {
-                string advertisementUserId = context.Advertisements
+                string advertisementUserId = await context.Advertisements
                     .Where(x => x.Id == Id)
                     .Select(x => x.UserId)
-                    .FirstOrDefault();
+                    .FirstOrDefaultAsync();
 
                 if (advertisementUserId != UserId)
                 {
@@ -152,7 +152,7 @@ namespace CarSalesSystem.Services.Advertisement
                 Data.Models.Advertisement advertisement = context.Advertisements.Include(x => x.Vehicle).First(adv => adv.Id == Id);
                 context.Advertisements.Remove(advertisement);
                 context.Vehicles.Remove(advertisement.Vehicle);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
 
                 var path = "Advertisement" + Id;
 
@@ -160,19 +160,19 @@ namespace CarSalesSystem.Services.Advertisement
                 dir.Attributes = dir.Attributes & ~FileAttributes.ReadOnly;
                 dir.Delete(true);
 
-                transaction.Commit();
+                await transaction.CommitAsync();
             }
             catch (Exception ex)
             {
-                transaction.Rollback();
+                await transaction.RollbackAsync();
                 throw ex;
             }
         }
 
-        public Data.Models.Advertisement GetAdvertisementById(string advertisementId)
+        public async Task<Data.Models.Advertisement> GetAdvertisementByIdAsync(string advertisementId)
         {
             Data.Models.Advertisement advertisement =
-                context.Advertisements
+              await context.Advertisements
                     .Include(x => x.Vehicle)
                     .Include(x => x.Vehicle.Model.Brand)
                     .Include(x => x.City)
@@ -189,15 +189,15 @@ namespace CarSalesSystem.Services.Advertisement
                     .Include(x => x.AdvertisementExtras)
                     .ThenInclude(x => x.Extras)
                     .ThenInclude(x => x.Category)
-                    .FirstOrDefault(x => x.Id == advertisementId);
+                    .FirstOrDefaultAsync(x => x.Id == advertisementId);
 
 
             return advertisement;
         }
 
-        public AdvertisementAddFormModel GetRecordData(string advertisementId, string userId)
+        public async Task<AdvertisementAddFormModel> GetRecordDataAsync(string advertisementId, string userId)
         {
-            var model = GetAdvertisementById(advertisementId);
+            var model = await GetAdvertisementByIdAsync(advertisementId);
 
             var advertisementAddFormModel = new AdvertisementAddFormModel
             {
@@ -217,17 +217,17 @@ namespace CarSalesSystem.Services.Advertisement
                 EuroStandardFormModel = new EuroStandardFormModel { Name = model.Vehicle.EuroStandard.Name, Id = model.Vehicle.EuroStandardId },
                 Year = model.Vehicle.Year,
                 Month = model.Vehicle.Month,
-                Colors = mapper.Map<ICollection<Color>, ICollection<ColorFormModel>>(colorService.GetColors()),
-                EngineTypes = mapper.Map<ICollection<VehicleEngineType>, ICollection<EngineFormModel>>(technicalService.GetEngineTypes()),
-                EuroStandards = mapper.Map<ICollection<VehicleEuroStandard>, ICollection<EuroStandardFormModel>>(technicalService.GetEuroStandards()),
-                Regions = mapper.Map<ICollection<Region>, ICollection<RegionFormModel>>(regionService.GetAllRegions()),
-                VehicleCategories = mapper.Map<ICollection<VehicleCategory>, ICollection<CategoryFormModel>>(categoryService.GetVehicleCategories()),
-                TransmissionTypes = mapper.Map<ICollection<TransmissionType>, ICollection<TransmissionFormModel>>(technicalService.GetTransmissionTypes()),
-                Brands = mapper.Map<ICollection<Brand>, ICollection<BrandFormModel>>(brandService.GetAllBrands()),
-                Models = mapper.Map<ICollection<Model>, ICollection<ModelFormModel>>(modelService.GetAllModels(model.Vehicle.Model.BrandId)),
-                Cities = mapper.Map<ICollection<City>, ICollection<CityFormModel>>(regionService.GetAllCities(model.City.RegionId)),
-                Extras = mapper.Map<ICollection<ExtrasCategory>, ICollection<ExtrasCategoryFormModel>>(technicalService.GetExtrasCategories()),
-                Dealerships = mapper.Map<ICollection<Data.Models.CarDealerShip>, ICollection<CarDealershipViewModel>>(dealerShipService.GetAllCarDealershipsByUserId(userId))
+                Colors = mapper.Map<ICollection<Color>, ICollection<ColorFormModel>>(await colorService.GetColorsAsync()),
+                EngineTypes = mapper.Map<ICollection<VehicleEngineType>, ICollection<EngineFormModel>>(await technicalService.GetEngineTypesAsync()),
+                EuroStandards = mapper.Map<ICollection<VehicleEuroStandard>, ICollection<EuroStandardFormModel>>(await technicalService.GetEuroStandardsAsync()),
+                Regions = mapper.Map<ICollection<Region>, ICollection<RegionFormModel>>(await regionService.GetAllRegionsAsync()),
+                VehicleCategories = mapper.Map<ICollection<VehicleCategory>, ICollection<CategoryFormModel>>(await categoryService.GetVehicleCategoriesAsync()),
+                TransmissionTypes = mapper.Map<ICollection<TransmissionType>, ICollection<TransmissionFormModel>>(await technicalService.GetTransmissionTypesAsync()),
+                Brands = mapper.Map<ICollection<Brand>, ICollection<BrandFormModel>>(await brandService.GetAllBrandsAsync()),
+                Models = mapper.Map<ICollection<Model>, ICollection<ModelFormModel>>(await modelService.GetAllModelsAsync(model.Vehicle.Model.BrandId)),
+                Cities = mapper.Map<ICollection<City>, ICollection<CityFormModel>>(await regionService.GetAllCitiesAsync(model.City.RegionId)),
+                Extras = mapper.Map<ICollection<ExtrasCategory>, ICollection<ExtrasCategoryFormModel>>(await technicalService.GetExtrasCategoriesAsync()),
+                Dealerships = mapper.Map<ICollection<Data.Models.CarDealerShip>, ICollection<CarDealershipViewModel>>(await dealerShipService.GetAllCarDealershipsByUserIdAsync(userId))
             };
 
 
@@ -247,10 +247,9 @@ namespace CarSalesSystem.Services.Advertisement
             return advertisementAddFormModel;
         }
 
-        public AdvertisementAddFormModelStep2 GetRecordDataStep2(string advertisementId)
+        public async Task<AdvertisementAddFormModelStep2> GetRecordDataStep2Async(string advertisementId)
         {
-            Data.Models.Advertisement model = GetAdvertisementById(advertisementId);
-
+            Data.Models.Advertisement model = await GetAdvertisementByIdAsync(advertisementId);
 
             var advertisementAddFormModel2 = new AdvertisementAddFormModelStep2
             {
@@ -264,7 +263,7 @@ namespace CarSalesSystem.Services.Advertisement
             {
                 if (!string.IsNullOrWhiteSpace(vehicleImage.FullPath))
                 {
-                    idsToImages.Add(vehicleImage.Id, File.ReadAllBytes(vehicleImage.FullPath));
+                    idsToImages.Add(vehicleImage.Id, await File.ReadAllBytesAsync(vehicleImage.FullPath));
                 }
             }
 
@@ -273,9 +272,9 @@ namespace CarSalesSystem.Services.Advertisement
             return advertisementAddFormModel2;
         }
 
-        private void DeleteFileFromFileSystem(string id)
+        private async Task DeleteFileFromFileSystemAsync(string id)
         {
-            var file = context.Images.FirstOrDefault(x => x.Id == id);
+            var file = await context.Images.FirstOrDefaultAsync(x => x.Id == id);
 
             if (file == null) return;
 
@@ -284,10 +283,10 @@ namespace CarSalesSystem.Services.Advertisement
                 File.Delete(file.FullPath);
             }
             context.Images.Remove(file);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
-        private async Task SaveImages(ICollection<IFormFile> files, string advertisementId, ICollection<VehicleImage> vehicleImages)
+        private async Task SaveImagesAsync(ICollection<IFormFile> files, string advertisementId, ICollection<VehicleImage> vehicleImages)
         {
             DirectoryInfo directoryInfo = Directory.CreateDirectory(ImagesPath);
 
@@ -304,17 +303,17 @@ namespace CarSalesSystem.Services.Advertisement
             {
                 if (formFile.Length > 0)
                 {
-                    var fileName = images.GetValueOrDefault(formFile.FileName).UniqueName + Path.GetExtension(formFile.FileName).ToLower();
+                    var fileName = images.GetValueOrDefault(formFile.FileName)!.UniqueName + Path.GetExtension(formFile.FileName).ToLower();
                     string fullPath = Path.Combine(subDirectoryInfo.FullName, fileName);
                     await using var stream = new FileStream(fullPath, FileMode.Create, FileAccess.Write);
                     await formFile.CopyToAsync(stream);
 
-                    images.GetValueOrDefault(formFile.FileName).FullPath = fullPath;
+                    images.GetValueOrDefault(formFile.FileName)!.FullPath = fullPath;
                 }
             }
         }
 
-        private void UpdateAdvertisement(Data.Models.Advertisement advertisement,
+        private async Task UpdateAdvertisement(Data.Models.Advertisement advertisement,
             AdvertisementAddFormModel addModelStep1, AdvertisementAddFormModelStep2 addModelStep2)
         {
             advertisement.Vehicle.ModelId = addModelStep1.ModelFormModel.Id;
@@ -375,7 +374,7 @@ namespace CarSalesSystem.Services.Advertisement
                 img.AdvertisementId = advertisement.Id;
             }
 
-            SaveImages(addModelStep2.Images, addModelStep1.Id, vehicleImages).GetAwaiter().GetResult();
+            await SaveImagesAsync(addModelStep2.Images, addModelStep1.Id, vehicleImages);
 
             context.Images.AddRange(vehicleImages);
 
@@ -385,7 +384,7 @@ namespace CarSalesSystem.Services.Advertisement
 
                 foreach (var imgId in imagesForDelete)
                 {
-                    DeleteFileFromFileSystem(imgId);
+                    await DeleteFileFromFileSystemAsync(imgId);
                 }
             }
         }

@@ -2,6 +2,7 @@
 
 <div class="col-md-6 text-center offset-3">
     <form method="post" asp-controller="CarDealerShip" asp-action="EditCarDealership">
+        <input type="hidden" value="@Model.Id" name="Id"/> 
         <div class="form-group">
             <label asp-for="Name">Dealership Name</label>
             <input asp-for="Name" type="text" class="form-control" id="dealershipNameId" placeholder="Enter Dealership Name">
