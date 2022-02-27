@@ -1,0 +1,102 @@
+﻿@model CarDealershipAddFormModel
+
+<div class="col-md-6 text-center offset-3">
+    @if (TempData["Success"] != null)
+    {
+        <p class="alert alert-success" id="successMessage">@TempData["Success"]</p>
+    }
+    <form method="post" id="CarDealershipFormIdPartial" enctype="multipart/form-data" asp-controller="CarDealerShip" asp-action="CreateDealership">
+        @Html.ValidationSummary(true)
+        <input type="hidden" value="@Model?.Id" name="Id" />
+        <div class="text-danger">
+            @Html.ValidationSummary(true)
+        </div>
+        <div class="form-group">
+            <label asp-for="Name">Dealership Name</label>
+            <input asp-for="Name" type="text" class="form-control" id="dealershipNameId" max="@DataConstants.CarDealerShipNameMaxLength" placeholder="Enter Dealership Name" required>
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Address">Address</label>
+            <input asp-for="Address" type="text" class="form-control" id="dealershipAddressId" placeholder="Enter Dealership Address" required>
+            <span asp-validation-for="Address" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Phone">Phone Number</label>
+            <input asp-for="Phone" type="tel" class="form-control" id="dealershipPhoneId" placeholder="Enter Phone Number" required>
+            <span asp-validation-for="Phone" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Email">Email address</label>
+            <input asp-for="Email" type="email" class="form-control" id="dealershipEmailId" aria-describedby="emailHelp" placeholder="Enter email" required>
+            <small id="emailHelpId" class="form-text text-muted">We'll never share your email with anyone else.</small>
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Url">Dealership Website Address</label>
+            <input asp-for="Url" type="url" class="form-control" pattern="https?://.+" id="dealershipUrlId" placeholder="www.yourwebsite.com">
+            <span asp-validation-for="Url" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label>Upload Logo</label>
+            <div>
+                <div class="custom-file">
+                    <br />
+                    <br />
+                    <div id="thumbnail" class="row"></div>
+                    <input class="custom-file-input" asp-for="Image" type="file" name="Image" id="upload-file" accept="image/*" />
+                    <label class="custom-file-label" for="upload-file">Choose file</label>
+                </div>
+                <br />
+                <br />
+            </div>
+        </div>
+        <div class="row">
+            @if (Model != null && Model.ImageForDisplay != null && Model.ImageForDisplay.Any())
+            {
+                var base64 = Convert.ToBase64String(Model.ImageForDisplay);
+                var imgSrc = string.Format("data:image;base64, {0}", base64);
+                <div id="carDealershipImageDivId" class="col text-center">
+                    <img src="@imgSrc" style="width: 300px !important; height: 300px !important;" class="rounded-sm mb-3" />
+                    <a type="button" onClick="javascript: deleteImage();" style="position: absolute; bottom: 10px; left: 100px; padding: .4em; width: 8.5em; margin: 0em;" class="btn btn-danger mt-3 mb-3">Delete</a>
+                </div>
+            }
+        </div>
+        <input type="checkbox" id="imageDeletedCheckbox" asp-for="ImageDeleted" hidden />
+        @if (Model != null && Model.Id != null)
+        {
+            <button type="submit" id="submitOnEditCarDealershipButtonId" class="btn btn-primary" asp-action="EditCarDealership">Submit</button>
+        }
+        else
+        {
+            <button type="submit" class="btn btn-primary" asp-action="CreateDealership">Submit</button>
+        }
+    </form>
+</div>
+
+<style>
+    img {
+        width: 300px;
+        height: 300px;
+        float: left;
+    }
+
+    .closeDiv {
+        width: 20px;
+        height: 21px;
+        background-color: rgb(35, 179, 119);
+        float: left;
+        cursor: pointer;
+        color: white;
+        box-shadow: 2px 2px 7px rgb(74, 72, 72);
+        text-align: center;
+        margin: 5px;
+    }
+
+    .pDiv {
+        float: left;
+        width: 100%
+    }
+</style>
+
+

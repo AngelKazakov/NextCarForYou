@@ -28,7 +28,7 @@ namespace CarSalesSystem.Models.CarDealership
 
         public IFormFile Image { get; init; }
 
-        public string ImageId { get; init; }
+        public bool ImageDeleted { get; init; }
 
         public byte[] ImageForDisplay { get; init; }
     }

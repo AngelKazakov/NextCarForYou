@@ -35,127 +35,127 @@
     }
 </style>
 
-@section scripts{
-    <script type="text/javascript">
-        var filesToUpload = [];
-        var counter = 0;
+@section scripts {
+<script type="text/javascript">
+    var filesToUpload = [];
+    var counter = 0;
 
-        jQuery(function ($) {
-            $('div').on('click', '.innerDiv',
-                function (event) {
-                    event.preventDefault();
-                    var fileId = event.target.getAttribute("buttonid");
+    jQuery(function ($) {
+        $('div').on('click', '.innerDiv',
+            function (event) {
+                event.preventDefault();
+                var fileId = event.target.getAttribute("buttonid");
 
-                    // loop through the files array and check if the name of that file matches FileName
-                    // and get the index of the match
-                    for (var i = 0; i < filesToUpload.length; ++i) {
-                        if (filesToUpload[i].id === fileId)
-                            filesToUpload.splice(i, 1);
-                    }
+                // loop through the files array and check if the name of that file matches FileName
+                // and get the index of the match
+                for (var i = 0; i < filesToUpload.length; ++i) {
+                    if (filesToUpload[i].id === fileId)
+                        filesToUpload.splice(i, 1);
+                }
 
-                    $(this).parent().remove();
+                $(this).parent().remove();
+            });
+        var fileDiv = document.getElementById("upload");
+        var fileInput = document.getElementById("upload-file");
+
+        fileInput.addEventListener("change",
+            function(e) {
+
+                var filesVAR = this.files;
+                showThumbnail(filesVAR);
+            },
+            false);
+
+        function showThumbnail(files) {
+            for (let i = 0; i < files.length; i++) {
+
+                var file = files[i];
+                var thumbnail = document.getElementById("thumbnail");
+                var pDiv = document.createElement("div");
+                var image = document.createElement("img");
+                var div = document.createElement("div");
+                var innerDiv = document.createElement("div");
+                var deleteButton = document.createElement("button");
+
+                thumbnail.appendChild(pDiv);
+                counter++;
+
+                var fileId = 'file' + counter;
+
+                image.setAttribute('class', 'imgKLIK5 rounded-sm mb-3');
+                image.setAttribute('fileid', fileId);
+
+                filesToUpload.push({
+                    id: fileId,
+                    file: file
                 });
-            var fileDiv = document.getElementById("upload");
-            var fileInput = document.getElementById("upload-file");
 
-            fileInput.addEventListener("change",
-                function(e) {
+                div.setAttribute('class', 'row');
 
-                    var filesVAR = this.files;
-                    showThumbnail(filesVAR);
-                },
-                false);
+                deleteButton.setAttribute('class', 'btn btn-danger mt-3 mb-3');
+                deleteButton.setAttribute('buttonId', fileId);
+                deleteButton.setAttribute('style', 'position: absolute; top: 230px; left: 100px;  padding: .4em;width: 8.5em; margin: 0em;');
+                deleteButton.textContent = 'Delete';
 
-            function showThumbnail(files) {
-                for (let i = 0; i < files.length; i++) {
+                innerDiv.setAttribute('class', 'innerDiv col text-center');
+                innerDiv.appendChild(image);
+                innerDiv.appendChild(deleteButton);
 
-                    var file = files[i];
-                    var thumbnail = document.getElementById("thumbnail");
-                    var pDiv = document.createElement("div");
-                    var image = document.createElement("img");
-                    var div = document.createElement("div");
-                    var innerDiv = document.createElement("div");
-                    var deleteButton = document.createElement("button");
+                pDiv.appendChild(innerDiv);
 
-                    thumbnail.appendChild(pDiv);
-                    counter++;
-
-                    var fileId = 'file' + counter;
-
-                    image.setAttribute('class', 'imgKLIK5 rounded-sm mb-3');
-                    image.setAttribute('fileid', fileId);
-
-                    filesToUpload.push({
-                        id: fileId,
-                        file: file
-                    });
-
-                    div.setAttribute('class', 'row');
-
-                    deleteButton.setAttribute('class', 'btn btn-danger mt-3 mb-3');
-                    deleteButton.setAttribute('buttonId', fileId);
-                    deleteButton.setAttribute('style', 'position: absolute; top: 230px; left: 100px;  padding: .4em;width: 8.5em; margin: 0em;');
-                    deleteButton.textContent = 'Delete';
-
-                    innerDiv.setAttribute('class', 'innerDiv col text-center');
-                    innerDiv.appendChild(image);
-                    innerDiv.appendChild(deleteButton);
-
-                    pDiv.appendChild(innerDiv);
-
-                    image.file = file;
-                    var reader = new FileReader();
-                    reader.onload = (function(aImg) {
-                        return function(e) {
-                            aImg.src = e.target.result;
-                        };
-                    }(image));
-                    var ret = reader.readAsDataURL(file);
-                    var canvas = document.createElement("canvas");
-                    ctx = canvas.getContext("2d");
-                    image.onload = function() {
-                        ctx.drawImage(image, 100, 100);
-                    }
+                image.file = file;
+                var reader = new FileReader();
+                reader.onload = (function(aImg) {
+                    return function(e) {
+                        aImg.src = e.target.result;
+                    };
+                }(image));
+                var ret = reader.readAsDataURL(file);
+                var canvas = document.createElement("canvas");
+                ctx = canvas.getContext("2d");
+                image.onload = function() {
+                    ctx.drawImage(image, 100, 100);
                 }
             }
-
-        });
-
-        var imagesForDeletions = [];
-
-        function deleteImage(imageId) {
-            imagesForDeletions.push(imageId);
-            document.getElementById(imageId).style.display = 'none';
         }
 
-        $('#submitOnEditButtonId').click(function () {
-            var data = new FormData();
-            for (var i = 0; i < filesToUpload.length; i++) {
-                data.append('Images', filesToUpload[i].file);
+    });
+
+    var imagesForDeletions = [];
+
+    function deleteImage(imageId) {
+        imagesForDeletions.push(imageId);
+        document.getElementById(imageId).style.display = 'none';
+    }
+
+    $('#submitOnEditButtonId').click(function () {
+        var data = new FormData();
+        for (var i = 0; i < filesToUpload.length; i++) {
+            data.append('Images', filesToUpload[i].file);
+        }
+
+        data.append('Name', $('#Name').val());
+        data.append('Description', $('#Description').val());
+        data.append('ImagesForDeletion', imagesForDeletions);
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("EditStep2")',
+            contentType: false,
+            processData: false,
+            headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+            data: data,
+            success: function (response) {
+                window.location.href = response.redirectToUrl;
+            },
+            failure: function(errMsg) {
+                console.alert('Error: ' + JSON.stringify(errMsg));
+            },
+            error: function (errMsg) {
+                console.alert('Error: ' + JSON.stringify(errMsg));
             }
-
-            data.append('Name', $('#Name').val());
-            data.append('Description', $('#Description').val());
-            data.append('ImagesForDeletion', imagesForDeletions);
-
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("EditStep2")',
-                contentType: false,
-                processData: false,
-                headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
-                data: data,
-                success: function (response) {
-                    window.location.href = response.redirectToUrl;
-                },
-                failure: function(errMsg) {
-                    console.alert('Error: ' + JSON.stringify(errMsg));
-                },
-                error: function (errMsg) {
-                    console.alert('Error: ' + JSON.stringify(errMsg));
-                }
-            });
-            //return false;
-         });
-    </script>
+        });
+        //return false;
+     });
+</script>
 } 

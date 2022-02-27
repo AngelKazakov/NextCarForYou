@@ -1,30 +1,93 @@
 ﻿@model CarDealershipAddFormModel
 
-<div class="col-md-6 text-center offset-3">
-    <form method="post" asp-controller="CarDealerShip" asp-action="EditCarDealership">
-        <input type="hidden" value="@Model.Id" name="Id"/> 
-        <div class="form-group">
-            <label asp-for="Name">Dealership Name</label>
-            <input asp-for="Name" type="text" class="form-control" id="dealershipNameId" placeholder="Enter Dealership Name">
-        </div>
-        <div class="form-group">
-            <label asp-for="Address">Address</label>
-            <input asp-for="Address" type="text" class="form-control" id="dealershipAddressId" placeholder="Enter Dealership Address">
-        </div>
-        <div class="form-group">
-            <label asp-for="Phone">Phone Number</label>
-            <input asp-for="Phone" type="tel" class="form-control" id="dealershipPhoneId" placeholder="Enter Phone Number">
-        </div>
-        <div class="form-group">
-            <label asp-for="Email">Email address</label>
-            <input asp-for="Email" type="email" class="form-control" id="dealershipEmailId" aria-describedby="emailHelp" placeholder="Enter email">
-            <small id="emailHelpId" class="form-text text-muted">We'll never share your email with anyone else.</small>
-        </div>
-        <div class="form-group">
-            <label asp-for="Url">Dealership Website Address</label>
-            <input asp-for="Url" type="url" class="form-control" id="dealershipUrlId" placeholder="www.yourwebsite.com">
-        </div>
-      
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
-</div>
+<partial name="_CarDealershipFormPartial" model="@Model" />
+
+@section Scripts
+{
+<script type="text/javascript">
+
+    var filesToUpload = [];
+    var fileId = 'carDealershipImageLogoId';
+    var divImageId = 'carDealershipImageDivId';
+    //var counter = 0;
+
+    jQuery(function($) {
+        $('div').on('click',
+            '.innerDiv',
+            function(event) {
+                event.preventDefault();
+                $(this).parent().remove();
+            });
+        var fileDiv = document.getElementById("upload");
+        var fileInput = document.getElementById("upload-file");
+
+        fileInput.addEventListener("change",
+            function(e) {
+                var previousFile = document.getElementById(divImageId);
+                console.log(previousFile);
+                if (previousFile !== null) {
+                    previousFile.remove();
+                }
+
+                var filesVar = this.files;
+                showThumbnail(filesVar);
+            },
+            false);
+
+        function showThumbnail(files) {
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+                var thumbnail = document.getElementById("thumbnail");
+                var pDiv = document.createElement("div");
+                var image = document.createElement("img");
+                var div = document.createElement("div");
+                var innerDiv = document.createElement("div");
+                var deleteButton = document.createElement("button");
+
+                thumbnail.appendChild(pDiv);
+
+                image.setAttribute('class', 'imgKLIK5 rounded-sm mb-3 rounded mx-auto d-block');
+                image.setAttribute('fileid', fileId);
+                image.setAttribute('id', fileId);
+
+                filesToUpload.push({
+                    id: fileId,
+                    file: file
+                });
+
+                div.setAttribute('class', 'row');
+
+                deleteButton.setAttribute('class', 'btn btn-danger mt-3 mb-3');
+                deleteButton.setAttribute('buttonId', fileId);
+                deleteButton.setAttribute('style', 'position: absolute; top: 230px; left: 100px;  padding: .4em;width: 8.5em; margin: 0em;');
+                deleteButton.textContent = 'Delete';
+
+                innerDiv.setAttribute('class', 'innerDiv col text-center');
+                innerDiv.setAttribute('id', divImageId);
+                innerDiv.appendChild(image);
+                innerDiv.appendChild(deleteButton);
+                pDiv.appendChild(innerDiv);
+
+                image.file = file;
+                var reader = new FileReader();
+                reader.onload = (function(aImg) {
+                    return function(e) {
+                        aImg.src = e.target.result;
+                    };
+                }(image));
+                var ret = reader.readAsDataURL(file);
+                var canvas = document.createElement("canvas");
+                ctx = canvas.getContext("2d");
+                image.onload = function() {
+                    ctx.drawImage(image, 100, 100);
+                }
+            }
+        }
+    });
+
+    function deleteImage() {
+        document.getElementById(divImageId).style.display = 'none';
+        document.getElementById('imageDeletedCheckbox').checked = true;
+    }
+</script>
+}

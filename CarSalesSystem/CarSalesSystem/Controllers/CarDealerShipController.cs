@@ -55,8 +55,8 @@ namespace CarSalesSystem.Controllers
             }
             catch (DuplicateCarDealerShipException e)
             {
-               ModelState.AddModelError("",e.Message);
-               return View(dealership);
+                ModelState.AddModelError("", e.Message);
+                return View(dealership);
             }
 
             TempData["Success"] = $"You successfully created dealership with name '{dealership.Name}'.";
@@ -100,7 +100,7 @@ namespace CarSalesSystem.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> EditCarDealership(string dealerId, string userId)
+        public async Task<IActionResult> EditCarDealership(string dealerId)
         {
             CarDealershipAddFormModel carDealershipAddFormModel = await carDealerShipService.GetCarDealershipAsync(dealerId);
 
@@ -123,7 +123,15 @@ namespace CarSalesSystem.Controllers
                 return View(model);
             }
 
-            await carDealerShipService.UpdateCarDealershipAsync(model);
+            try
+            {
+                await carDealerShipService.UpdateCarDealershipAsync(model);
+            }
+            catch (Exception e)
+            {
+                ModelState.AddModelError("", "Error updating car dealership.");
+                return View(model);
+            }
 
             return RedirectToAction("DealershipsList");
 

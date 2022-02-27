@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CarSalesSystem.Data;
 using CarSalesSystem.Exceptions;
+using CarSalesSystem.Infrastructure;
 using CarSalesSystem.Models.CarDealership;
 using Microsoft.EntityFrameworkCore;
 
@@ -50,23 +52,32 @@ namespace CarSalesSystem.Services.CarDealerShip
                 Email = dealerShip.Email,
                 Phone = dealerShip.Phone,
                 Url = dealerShip.Url,
+                ImageForDisplay = dealerShip.ImageLogo,
                 Id = dealerId
             };
 
             return dealershipAddFormModel;
         }
 
-        //TODO: Test
         public async Task<string> UpdateCarDealershipAsync(CarDealershipAddFormModel model)
         {
-            //TODO: Check for null
             var currentDealership = await context.CarDealerShips.FirstOrDefaultAsync(x => x.Id == model.Id);
+            if (currentDealership == null) throw new ArgumentNullException(nameof(currentDealership));
 
             currentDealership.Name = model.Name;
             currentDealership.Address = model.Address;
             currentDealership.Email = model.Email;
             currentDealership.Phone = model.Phone;
             currentDealership.Url = model.Url;
+
+            if (model.Image != null)
+            {
+                currentDealership.ImageLogo = FormFileToByteArrayConverter.Convert(model.Image);
+            }
+            else if (model.ImageDeleted)
+            {
+                currentDealership.ImageLogo = null;
+            }
 
             await this.context.SaveChangesAsync();
 
