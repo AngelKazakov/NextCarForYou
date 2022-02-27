@@ -7,9 +7,14 @@ namespace CarSalesSystem.Infrastructure
     {
         public static byte[] Convert(IFormFile source)
         {
-            MemoryStream target = new MemoryStream();
-            source.CopyTo(target);
-            return target.ToArray();
+            if (source != null)
+            {
+                MemoryStream target = new MemoryStream();
+                source.CopyTo(target);
+                return target.ToArray();
+            }
+
+            return null;
         }
     }
 }

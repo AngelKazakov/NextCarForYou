@@ -5,7 +5,8 @@ namespace CarSalesSystem.Services.Email
 {
     public interface IEmailSender
     {
-        void SendEmail(Message message);
+        public void SendEmail(Message message);
+
         Task SendEmailAsync(Message message);
     }
 }
