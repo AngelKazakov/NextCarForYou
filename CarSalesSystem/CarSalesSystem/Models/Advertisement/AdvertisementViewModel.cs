@@ -64,6 +64,8 @@ namespace CarSalesSystem.Models.Advertisement
 
         public string UserPhone { get; set; }
 
+        public bool IsAllowedToEdit { get; set;}
+
         public Dictionary<string, List<string>> Extras { get; set; } = new Dictionary<string, List<string>>();
 
         public List<byte[]> Images { get; set; } = new List<byte[]>();

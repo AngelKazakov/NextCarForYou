@@ -79,9 +79,9 @@ namespace CarSalesSystem.Controllers
                 //setting up cache options
                 var cacheExpiryOptions = new MemoryCacheEntryOptions
                 {
-                    AbsoluteExpiration = DateTime.Now.AddSeconds(60),
+                    AbsoluteExpiration = DateTime.Now.AddSeconds(30),
                     Priority = CacheItemPriority.High,
-                    SlidingExpiration = TimeSpan.FromSeconds(600)
+                    SlidingExpiration = TimeSpan.FromSeconds(180)
                 };
                 //setting cache entries
                 memoryCache.Set(cacheKey, dealers, cacheExpiryOptions);

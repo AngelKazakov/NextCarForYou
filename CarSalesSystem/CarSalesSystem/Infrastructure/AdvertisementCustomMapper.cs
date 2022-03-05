@@ -75,7 +75,7 @@ namespace CarSalesSystem.Infrastructure
             return advertisement;
         }
 
-        public static AdvertisementViewModel Map(Advertisement advertisement)
+        public static AdvertisementViewModel Map(Advertisement advertisement, string userId)
         {
             AdvertisementViewModel advertisementViewModel = new AdvertisementViewModel()
             {
@@ -106,6 +106,7 @@ namespace CarSalesSystem.Infrastructure
                 VehicleId = advertisement.VehicleId,
                 Description = advertisement.Description,
                 UserPhone = advertisement.User.PhoneNumber,
+                IsAllowedToEdit = !string.IsNullOrEmpty(userId) && userId == advertisement.UserId,
                 Month = GetMonthNameByNumber(advertisement.Vehicle.Month)
             };
 

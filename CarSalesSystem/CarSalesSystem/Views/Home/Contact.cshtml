@@ -1,5 +1,9 @@
 ﻿@model ContactFormView
 
+@{
+    ViewData["Title"] = "Contact Us";
+}
+
 <div class="col-md-6 text-center offset-3">
     @if (TempData["Success"] != null)
     {

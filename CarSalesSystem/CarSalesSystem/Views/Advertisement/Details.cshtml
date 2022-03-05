@@ -1,18 +1,25 @@
 ﻿@model AdvertisementViewModel
 
+@{
+    ViewData["Title"] = @Model.Name;
+}
+
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <div class="container">
     <div class="card mb-3">
         <div class="card-body">
             <div class="container-fluid">
                 <h1 class="card-title">@Model.Name</h1>
-                <div class="float-right">
-                    @using (Html.BeginForm("Edit", "Advertisement", new { Id = @Model.AdvertisementId }, FormMethod.Get))
-                    {
-                        @Html.AntiForgeryToken()
-                        <button type="submit" class="btn btn-info btn-block" value="Edit"><span class="glyphicon glyphicon-edit"></span> Edit</button>
-                    }
-                </div>
+                @if (Model.IsAllowedToEdit)
+                {
+                    <div class="float-right">
+                        @using (Html.BeginForm("Edit", "Advertisement", new { Id = @Model.AdvertisementId }, FormMethod.Get))
+                        {
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-info btn-block" value="Edit"><span class="glyphicon glyphicon-edit"></span> Edit</button>
+                        }
+                    </div>
+                }
                 <br />
                 <h3 class="text-right text-primary font-weight-bold ">€@Model.Price</h3>
                 <div id="carouselExampleControls" class="carousel slide" data-interval="false">
@@ -118,13 +125,16 @@
                 <label for="exampleFormControlTextarea1">Additional information</label>
                 <textarea readonly="readonly" class="form-control" id="exampleFormControlTextarea1" rows="3">@Model.Description</textarea>
             </div>
-            <div class="float-right">
-                @using (Html.BeginForm("DeleteAdvertisement", "Advertisement", new { Id = @Model.AdvertisementId }, FormMethod.Post))
-                {
-                    @Html.AntiForgeryToken()
-                    <button type="submit" class="btn btn-danger btn-block" value="Delete"><span class="glyphicon glyphicon-trash"></span> Delete</button>
-                }
-            </div>
+            @if (Model.IsAllowedToEdit)
+            {
+                <div class="float-right">
+                    @using (Html.BeginForm("DeleteAdvertisement", "Advertisement", new { Id = @Model.AdvertisementId }, FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-danger btn-block" value="Delete"><span class="glyphicon glyphicon-trash"></span> Delete</button>
+                    }
+                </div>
+            }
             <br />
             <div class="card-body">
                 @if (!string.IsNullOrWhiteSpace(Model.DealershipName))

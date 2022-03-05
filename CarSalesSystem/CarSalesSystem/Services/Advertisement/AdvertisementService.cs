@@ -117,7 +117,12 @@ namespace CarSalesSystem.Services.Advertisement
                 throw new Exception("Record not found.");
             }
 
-            using IDbContextTransaction transaction = await context.Database.BeginTransactionAsync();
+            if (currentAdvertisement.UserId != userId)
+            {
+                throw new Exception("You do not have permission to edit this advertisement.");
+            }
+
+            await using IDbContextTransaction transaction = await context.Database.BeginTransactionAsync();
             try
             {
                 await UpdateAdvertisement(currentAdvertisement, advertisementStep1, advertisementStep2);
@@ -313,8 +318,7 @@ namespace CarSalesSystem.Services.Advertisement
             }
         }
 
-        private async Task UpdateAdvertisement(Data.Models.Advertisement advertisement,
-            AdvertisementAddFormModel addModelStep1, AdvertisementAddFormModelStep2 addModelStep2)
+        private async Task UpdateAdvertisement(Data.Models.Advertisement advertisement, AdvertisementAddFormModel addModelStep1, AdvertisementAddFormModelStep2 addModelStep2)
         {
             advertisement.Vehicle.ModelId = addModelStep1.ModelFormModel.Id;
             advertisement.CityId = addModelStep1.CityFormModel.Id;

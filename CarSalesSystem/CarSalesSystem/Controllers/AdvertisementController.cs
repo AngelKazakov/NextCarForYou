@@ -209,7 +209,7 @@ namespace CarSalesSystem.Controllers
         public async Task<IActionResult> Details(string advertisementId)
         {
             Advertisement advertisement = await advertisementService.GetAdvertisementByIdAsync(advertisementId);
-            AdvertisementViewModel advertisementViewModel = AdvertisementCustomMapper.Map(advertisement);
+            AdvertisementViewModel advertisementViewModel = AdvertisementCustomMapper.Map(advertisement,this.User.Id());
 
             return View(advertisementViewModel);
         }
