@@ -36,7 +36,7 @@ namespace CarSalesSystem.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(10000)
+                        .HasMaxLength(6000)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("LastModifiedOn")

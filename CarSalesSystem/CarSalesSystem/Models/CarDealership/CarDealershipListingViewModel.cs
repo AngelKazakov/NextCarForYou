@@ -16,6 +16,8 @@ namespace CarSalesSystem.Models.CarDealership
 
         public string Url { get; set; }
 
+        public bool IsAllowedToEdit { get; set; }
+
         public DateTime CreatedOn { get; set; }
 
         public byte[] ImageLogo { get; set; }

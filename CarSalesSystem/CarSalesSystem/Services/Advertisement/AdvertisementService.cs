@@ -24,6 +24,7 @@ using CarSalesSystem.Services.CarDealerShip;
 using CarSalesSystem.Services.Categories;
 using CarSalesSystem.Services.Models;
 using CarSalesSystem.Services.Regions;
+using CarSalesSystem.Services.Shared;
 using CarSalesSystem.Services.TechnicalData;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -44,6 +45,7 @@ namespace CarSalesSystem.Services.Advertisement
         private readonly IRegionService regionService;
         private readonly IColorService colorService;
         private readonly ICarDealerShipService dealerShipService;
+        private readonly IFileService fileService;
         private readonly IMapper mapper;
 
         public AdvertisementService(CarSalesDbContext context,
@@ -54,11 +56,12 @@ namespace CarSalesSystem.Services.Advertisement
             IColorService colorService,
             IModelService modelService,
             ICarDealerShipService dealerShipService,
-            IMapper mapper)
+            IMapper mapper, IFileService fileService)
         {
             this.context = context;
             this.brandService = brandService;
             this.mapper = mapper;
+            this.fileService = fileService;
             this.dealerShipService = dealerShipService;
             this.modelService = modelService;
             this.colorService = colorService;
@@ -141,7 +144,7 @@ namespace CarSalesSystem.Services.Advertisement
 
         public async Task DeleteAsync(string Id, string UserId)
         {
-            using IDbContextTransaction transaction = await context.Database.BeginTransactionAsync();
+            await using IDbContextTransaction transaction = await context.Database.BeginTransactionAsync();
             try
             {
                 string advertisementUserId = await context.Advertisements
@@ -277,20 +280,6 @@ namespace CarSalesSystem.Services.Advertisement
             return advertisementAddFormModel2;
         }
 
-        private async Task DeleteFileFromFileSystemAsync(string id)
-        {
-            var file = await context.Images.FirstOrDefaultAsync(x => x.Id == id);
-
-            if (file == null) return;
-
-            if (File.Exists(file.FullPath))
-            {
-                File.Delete(file.FullPath);
-            }
-            context.Images.Remove(file);
-            await context.SaveChangesAsync();
-        }
-
         private async Task SaveImagesAsync(ICollection<IFormFile> files, string advertisementId, ICollection<VehicleImage> vehicleImages)
         {
             DirectoryInfo directoryInfo = Directory.CreateDirectory(ImagesPath);
@@ -388,7 +377,7 @@ namespace CarSalesSystem.Services.Advertisement
 
                 foreach (var imgId in imagesForDelete)
                 {
-                    await DeleteFileFromFileSystemAsync(imgId);
+                    await fileService.DeleteFileFromFileSystemAsync(imgId);
                 }
             }
         }

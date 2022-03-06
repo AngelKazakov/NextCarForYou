@@ -6,16 +6,22 @@ using CarSalesSystem.Data;
 using CarSalesSystem.Exceptions;
 using CarSalesSystem.Infrastructure;
 using CarSalesSystem.Models.CarDealership;
+using CarSalesSystem.Services.Shared;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace CarSalesSystem.Services.CarDealerShip
 {
     public class CarDealerShipService : ICarDealerShipService
     {
         private readonly CarSalesDbContext context;
+        private readonly IFileService fileService;
 
-        public CarDealerShipService(CarSalesDbContext context)
-        => this.context = context;
+        public CarDealerShipService(CarSalesDbContext context, IFileService fileService)
+        {
+            this.context = context;
+            this.fileService = fileService;
+        }
 
         public async Task<string> CreateDealerShipAsync(Data.Models.CarDealerShip carDealerShip)
         {
@@ -87,6 +93,49 @@ namespace CarSalesSystem.Services.CarDealerShip
         public async Task<ICollection<Data.Models.Advertisement>> GetAdvertisementsByDealershipIdAsync(string dealerId)
         {
             return await this.context.Advertisements.Where(x => x.CarDealershipId == dealerId).ToListAsync();
+        }
+
+        public async Task DeleteCarDealershipAsync(string dealerId, string userId)
+        {
+            var dealership = await context.CarDealerShips
+                .Include(x => x.Advertisements)
+                .FirstOrDefaultAsync(x => x.Id == dealerId);
+
+            if (dealership == null)
+            {
+                throw new ArgumentNullException(dealerId, "Dealership does not exist.");
+
+            }
+
+            if (dealership.UserId != userId)
+            {
+                throw new Exception("You do not have permission to delete this dealership.");
+            }
+
+            List<string> advertisementIds = dealership.Advertisements.Select(x => x.Id).ToList();
+
+            await using IDbContextTransaction transaction = await context.Database.BeginTransactionAsync();
+            try
+            {
+                foreach (var advertisementId in advertisementIds)
+                {
+                    await fileService.DeleteFileFromFileSystemByAdvertisementIdAsync(advertisementId);
+                }
+
+                context.Advertisements.RemoveRange(dealership.Advertisements);
+
+                context.CarDealerShips.Remove(dealership);
+
+                await context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+            }
+            catch (Exception e)
+            {
+                await transaction.RollbackAsync();
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         private void CheckForExistingCarDealerShip(Data.Models.CarDealerShip carDealerShip)

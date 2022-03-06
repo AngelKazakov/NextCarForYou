@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Cryptography.X509Certificates;
 using AutoMapper;
 using CarSalesSystem.Data;
 using CarSalesSystem.Data.Models;
@@ -37,7 +38,7 @@ namespace CarSalesSystem.Infrastructure
             this.CreateMap<Model, ModelFormModel>();
             this.CreateMap<City, CityFormModel>();
             this.CreateMap<CarDealerShip, CarDealershipViewModel>();
-            this.CreateMap<CarDealerShip, CarDealershipListingViewModel>();
+            this.CreateMap<CarDealerShip, CarDealershipListingViewModel>().ForMember(x => x.IsAllowedToEdit, opt => opt.MapFrom((src, dest, destMember, context) => context.Items["loggedUserId"] as string == src.UserId));
         }
     }
 }

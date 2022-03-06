@@ -12,6 +12,7 @@ using CarSalesSystem.Services.Email;
 using CarSalesSystem.Services.Models;
 using CarSalesSystem.Services.Regions;
 using CarSalesSystem.Services.Search;
+using CarSalesSystem.Services.Shared;
 using CarSalesSystem.Services.TechnicalData;
 using CarSalesSystem.Services.User;
 using Microsoft.AspNetCore.Builder;
@@ -72,6 +73,7 @@ namespace CarSalesSystem
             services.AddTransient<ISearchService, SearchService>();
             services.AddTransient<ICarDealerShipService, CarDealerShipService>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IFileService, FileService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

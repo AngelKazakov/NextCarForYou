@@ -17,6 +17,8 @@ namespace CarSalesSystem.Controllers
 {
     public class CarDealerShipController : Controller
     {
+        private const string CacheKey = "myDealershipsCacheKey";
+
         private readonly ICarDealerShipService carDealerShipService;
         private readonly ISearchService searchService;
         private readonly IMapper mapper;
@@ -67,24 +69,10 @@ namespace CarSalesSystem.Controllers
         [HttpGet]
         public async Task<IActionResult> DealershipsList()
         {
-            var cacheKey = "myDealershipsCacheKey";
-
             //checks if cache entries exists
-            if (!memoryCache.TryGetValue(cacheKey, out ICollection<CarDealershipListingViewModel> dealers))
+            if (!memoryCache.TryGetValue(CacheKey, out ICollection<CarDealershipListingViewModel> dealers))
             {
-                //calling the server
-                dealers = mapper.Map<ICollection<CarDealerShip>, ICollection<CarDealershipListingViewModel>>
-                (await carDealerShipService.GetAllCarDealershipsAsync());
-
-                //setting up cache options
-                var cacheExpiryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddSeconds(30),
-                    Priority = CacheItemPriority.High,
-                    SlidingExpiration = TimeSpan.FromSeconds(180)
-                };
-                //setting cache entries
-                memoryCache.Set(cacheKey, dealers, cacheExpiryOptions);
+                dealers = await SetCarDealershipCache(CacheKey);
             }
 
             return View(dealers);
@@ -137,10 +125,48 @@ namespace CarSalesSystem.Controllers
 
         }
 
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> DeleteCarDealership(string dealerId)
+        {
+            try
+            {
+                await carDealerShipService.DeleteCarDealershipAsync(dealerId, this.User.Id());
+                await SetCarDealershipCache(CacheKey);
+            }
+            catch (Exception e)
+            {
+                ModelState.AddModelError("ErrorMessageDealershipDeletion", "Error deleting car dealership.");
+                return RedirectToAction("DealershipsList");
+            }
+
+            return RedirectToAction("Index", "Home");
+
+        }
+
         [HttpGet]
         public IActionResult CarDealershipAdvertisements()
         {
             return View();
+        }
+
+        private async Task<ICollection<CarDealershipListingViewModel>> SetCarDealershipCache(string cacheKey)
+        {
+            //calling the server
+            ICollection<CarDealershipListingViewModel> dealers = mapper.Map<ICollection<CarDealerShip>, ICollection<CarDealershipListingViewModel>>
+                (await carDealerShipService.GetAllCarDealershipsAsync(), opt => opt.Items["loggedUserId"] = this.User.Id());
+
+            //setting up cache options
+            var cacheExpiryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddSeconds(30),
+                Priority = CacheItemPriority.High,
+                SlidingExpiration = TimeSpan.FromSeconds(180)
+            };
+            //setting cache entries
+            memoryCache.Set(cacheKey, dealers, cacheExpiryOptions);
+
+            return dealers;
         }
     }
 }

@@ -45,7 +45,6 @@ namespace CarSalesSystem.Data
 
         public DbSet<UserFavAdvertisement> UserFavAdvertisements { get; init; }
 
-        //TODO check deleting...
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -53,8 +52,6 @@ namespace CarSalesSystem.Data
             builder.Entity<Advertisement>()
                 .Property(a => a.Price)
                 .HasColumnType("decimal");
-
-
 
             builder.Entity<AdvertisementExtra>().
                 HasKey(x => new { x.AdvertisementId, x.ExtrasId });

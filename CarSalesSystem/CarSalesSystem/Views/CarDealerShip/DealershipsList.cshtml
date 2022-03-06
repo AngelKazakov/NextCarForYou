@@ -5,6 +5,7 @@
         <h5 class="card-title">Dealers</h5>
         <hr class="border-primary" />
         <div class="container mt-4">
+            @Html.ValidationMessage("ErrorMessageDealershipDeletion")
             <div class="row  d-flex justify-content-center">
                 @foreach (var dealer in @Model)
                 {
@@ -30,8 +31,20 @@
                                     <p class="card-text">Dealer since: @dealer.CreatedOn</p>
 
                                     @*<p class="card-text">Created on: @advertisement.CreatedOn</p>*@
-                                    @Html.ActionLink("See all advertisements", "GetAdvertisementsByDealerId", "CarDealerShip", new { dealerId = @dealer.Id }, new { @class = "btn btn-primary" })
-                                    @Html.ActionLink("Edit", "EditCarDealership", "CarDealerShip", new { dealerId = @dealer.Id }, new { @class = "btn btn-primary" })
+                                    @Html.ActionLink("See all advertisements", "GetAdvertisementsByDealerId", "CarDealerShip", new { dealerId = @dealer.Id }, new { @class = "btn btn-primary btn-block" })
+                                    @if (dealer.IsAllowedToEdit)
+                                    {
+                                        <div class="row">
+                                            <div class="col text-center">
+                                                @Html.ActionLink("Edit", "EditCarDealership", "CarDealerShip", new { dealerId = @dealer.Id }, new { @class = "btn btn-primary m-1 glyphicon glyphicon-edit" })
+                                                @using (Html.BeginForm("DeleteCarDealership", "CarDealerShip", new { dealerId = @dealer.Id }, FormMethod.Post))
+                                                {
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="btn btn-danger m-1" value="Delete"><span class="glyphicon glyphicon-trash"></span> Delete</button>
+                                                }
+                                            </div>
+                                        </div>
+                                    }
                                 </div>
                             </div>
                             <br />

@@ -17,5 +17,7 @@ namespace CarSalesSystem.Services.CarDealerShip
         public Task<string> UpdateCarDealershipAsync(CarDealershipAddFormModel model);
 
         public Task<ICollection<Data.Models.Advertisement>> GetAdvertisementsByDealershipIdAsync(string dealerId);
+
+        public Task DeleteCarDealershipAsync(string dealerId, string userId);
     }
 }
