@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace CarSalesSystem.Migrations
+namespace CarSalesSystem.Data.Migrations
 {
-    public partial class InitialMigration_1 : Migration
+    public partial class InitialMigration_4 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -26,6 +26,8 @@ namespace CarSalesSystem.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -56,22 +58,6 @@ namespace CarSalesSystem.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Brands", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CarDealerShips",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
-                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Url = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CarDealerShips", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -265,6 +251,31 @@ namespace CarSalesSystem.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CarDealerShips",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
+                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ImageLogo = table.Column<byte[]>(type: "varbinary(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CarDealerShips", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CarDealerShips_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Models",
                 columns: table => new
                 {
@@ -326,10 +337,11 @@ namespace CarSalesSystem.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    BrandId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ModelId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Power = table.Column<int>(type: "int", nullable: false),
                     ColorId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Mileage = table.Column<int>(type: "int", nullable: false),
+                    Month = table.Column<int>(type: "int", nullable: false),
                     Year = table.Column<int>(type: "int", nullable: false),
                     CategoryId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     EngineTypeId = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -339,12 +351,6 @@ namespace CarSalesSystem.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Vehicles", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Vehicles_Brands_BrandId",
-                        column: x => x.BrandId,
-                        principalTable: "Brands",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Vehicles_Colors_ColorId",
                         column: x => x.ColorId,
@@ -363,6 +369,12 @@ namespace CarSalesSystem.Migrations
                         principalTable: "EuroStandards",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Vehicles_Models_ModelId",
+                        column: x => x.ModelId,
+                        principalTable: "Models",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Vehicles_Transmissions_TransmissionTypeId",
                         column: x => x.TransmissionTypeId,
@@ -386,18 +398,24 @@ namespace CarSalesSystem.Migrations
                     CreatedOnDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Price = table.Column<decimal>(type: "decimal", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", maxLength: 10000, nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", maxLength: 6000, nullable: true),
                     VehicleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CityId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CarDealerShipId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    CarDealershipId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Advertisements", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Advertisements_CarDealerShips_CarDealerShipId",
-                        column: x => x.CarDealerShipId,
+                        name: "FK_Advertisements_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Advertisements_CarDealerShips_CarDealershipId",
+                        column: x => x.CarDealershipId,
                         principalTable: "CarDealerShips",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -444,10 +462,10 @@ namespace CarSalesSystem.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     UniqueName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FullPath = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AdvertisementId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    FullPath = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AdvertisementId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -457,18 +475,47 @@ namespace CarSalesSystem.Migrations
                         column: x => x.AdvertisementId,
                         principalTable: "Advertisements",
                         principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserFavAdvertisements",
+                columns: table => new
+                {
+                    AdvertisementId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserFavAdvertisements", x => new { x.AdvertisementId, x.UserId });
+                    table.ForeignKey(
+                        name: "FK_UserFavAdvertisements_Advertisements_AdvertisementId",
+                        column: x => x.AdvertisementId,
+                        principalTable: "Advertisements",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_UserFavAdvertisements_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Advertisements_CarDealerShipId",
+                name: "IX_Advertisements_CarDealershipId",
                 table: "Advertisements",
-                column: "CarDealerShipId");
+                column: "CarDealershipId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Advertisements_CityId",
                 table: "Advertisements",
                 column: "CityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Advertisements_UserId",
+                table: "Advertisements",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Advertisements_VehicleId",
@@ -520,6 +567,11 @@ namespace CarSalesSystem.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CarDealerShips_UserId",
+                table: "CarDealerShips",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Cities_RegionId",
                 table: "Cities",
                 column: "RegionId");
@@ -540,9 +592,9 @@ namespace CarSalesSystem.Migrations
                 column: "BrandId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Vehicles_BrandId",
-                table: "Vehicles",
-                column: "BrandId");
+                name: "IX_UserFavAdvertisements_UserId",
+                table: "UserFavAdvertisements",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Vehicles_CategoryId",
@@ -563,6 +615,11 @@ namespace CarSalesSystem.Migrations
                 name: "IX_Vehicles_EuroStandardId",
                 table: "Vehicles",
                 column: "EuroStandardId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Vehicles_ModelId",
+                table: "Vehicles",
+                column: "ModelId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Vehicles_TransmissionTypeId",
@@ -594,16 +651,13 @@ namespace CarSalesSystem.Migrations
                 name: "Images");
 
             migrationBuilder.DropTable(
-                name: "Models");
+                name: "UserFavAdvertisements");
 
             migrationBuilder.DropTable(
                 name: "Extras");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Advertisements");
@@ -621,10 +675,10 @@ namespace CarSalesSystem.Migrations
                 name: "Vehicles");
 
             migrationBuilder.DropTable(
-                name: "Regions");
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Brands");
+                name: "Regions");
 
             migrationBuilder.DropTable(
                 name: "Colors");
@@ -636,10 +690,16 @@ namespace CarSalesSystem.Migrations
                 name: "EuroStandards");
 
             migrationBuilder.DropTable(
+                name: "Models");
+
+            migrationBuilder.DropTable(
                 name: "Transmissions");
 
             migrationBuilder.DropTable(
                 name: "VehicleCategories");
+
+            migrationBuilder.DropTable(
+                name: "Brands");
         }
     }
 }

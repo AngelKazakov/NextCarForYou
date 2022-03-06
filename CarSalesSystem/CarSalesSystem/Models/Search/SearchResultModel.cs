@@ -18,6 +18,8 @@
 
         public string CreatedOn { get; init; }
 
+        public bool IsFavorite { get; set; }
+
         public byte[] Image { get; set; }
     }
 }

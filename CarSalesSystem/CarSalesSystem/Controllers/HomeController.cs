@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using CarSalesSystem.Data;
 using CarSalesSystem.Data.Models;
+using CarSalesSystem.Infrastructure;
 using CarSalesSystem.Infrastructure.EmailConfiguration;
 using CarSalesSystem.Models.Brand;
 using CarSalesSystem.Models.Contact;
@@ -74,7 +75,7 @@ namespace CarSalesSystem.Controllers
                         EngineTypes = mapper.Map<ICollection<VehicleEngineType>, ICollection<EngineFormModel>>(await technicalService.GetEngineTypesAsync()),
                         TransmissionTypes = mapper.Map<ICollection<TransmissionType>, ICollection<TransmissionFormModel>>(await technicalService.GetTransmissionTypesAsync()),
                     },
-                    LatestPublishedAdvertisements = await searchService.GetLastPublishedAdvertisementsAsync()
+                    LatestPublishedAdvertisements = await searchService.GetLastPublishedAdvertisementsAsync(this.User.Id())
                 };
 
                 //setting up cache options

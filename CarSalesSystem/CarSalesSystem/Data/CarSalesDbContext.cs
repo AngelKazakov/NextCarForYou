@@ -71,10 +71,14 @@ namespace CarSalesSystem.Data
             builder.Entity<UserFavAdvertisement>().HasKey(x => new { x.AdvertisementId, x.UserId });
 
             builder.Entity<UserFavAdvertisement>()
-                .HasOne(b => b.User)
+                .HasOne(bc => bc.User)
                 .WithMany(b => b.FavAdvertisements)
-                .HasForeignKey(b => b.AdvertisementId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                .HasForeignKey(bc => bc.UserId).OnDelete(DeleteBehavior.ClientSetNull);
+
+            builder.Entity<UserFavAdvertisement>()
+                .HasOne(bc => bc.Advertisement)
+                .WithMany(c => c.FavoriteAdvertisements)
+                .HasForeignKey(bc => bc.AdvertisementId).OnDelete(DeleteBehavior.ClientSetNull);
         }
     }
 }

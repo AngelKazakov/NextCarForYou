@@ -50,5 +50,6 @@ namespace CarSalesSystem.Data.Models
 
         public ICollection<AdvertisementExtra> AdvertisementExtras { get; set; } = new List<AdvertisementExtra>();
 
+        public ICollection<UserFavAdvertisement> FavoriteAdvertisements { get; set; } = new List<UserFavAdvertisement>();
     }
 }

@@ -81,7 +81,7 @@ namespace CarSalesSystem.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAdvertisementsByDealerId(string dealerId)
         {
-            var advertisements = await searchService.BuildSearchResultModelsAsync(await carDealerShipService.GetAdvertisementsByDealershipIdAsync(dealerId));
+            var advertisements = await searchService.BuildSearchResultModelsAsync(await carDealerShipService.GetAdvertisementsByDealershipIdAsync(dealerId),this.User.Id());
 
             return View("../Search/Search", advertisements.ToList());
         }
@@ -91,13 +91,6 @@ namespace CarSalesSystem.Controllers
         public async Task<IActionResult> EditCarDealership(string dealerId)
         {
             CarDealershipAddFormModel carDealershipAddFormModel = await carDealerShipService.GetCarDealershipAsync(dealerId);
-
-            //TODO: Fix return view on error
-            //if (userId != this.User.Id())
-            //{
-            //    this.ModelState.AddModelError(string.Empty, "You do not have permission to edit this car dealership.");
-            //    return View(carDealershipAddFormModel);
-            //}
 
             return View(carDealershipAddFormModel);
         }

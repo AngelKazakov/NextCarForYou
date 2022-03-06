@@ -1,5 +1,6 @@
 ﻿using CarSalesSystem.Infrastructure;
 using CarSalesSystem.Services.User;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarSalesSystem.Controllers
@@ -12,19 +13,12 @@ namespace CarSalesSystem.Controllers
         => this.userService = userService;
 
         [HttpPost]
-        public JsonResult AddAdvertisementToFavorite(string advertisementId)
+        [Authorize]
+        public IActionResult AddAdvertisementToFavorite(string advertisementId)
         {
-            if (userService.AddAdvertisementToFavorite(advertisementId, this.User.Id()))
-            {
-                return Json("Ok");
-            }
+            userService.AddAdvertisementToFavorite(advertisementId, this.User.Id());
 
-            return Json(new { Success = false });
+            return RedirectToAction("Index", "Home");
         }
-
-        //public IActionResult Index()
-        //{
-        //    return View();
-        //}
     }
 }

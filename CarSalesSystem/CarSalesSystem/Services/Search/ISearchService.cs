@@ -7,16 +7,16 @@ namespace CarSalesSystem.Services.Search
     public interface ISearchService
     {
 
-        public Task<ICollection<SearchResultModel>> SearchVehiclesAsync(SearchAdvertisementModel model);
+        public Task<ICollection<SearchResultModel>> SearchVehiclesAsync(SearchAdvertisementModel model, string userId);
 
-        public Task<ICollection<SearchResultModel>> DetailedSearchVehiclesAsync(DetailedSearchAdvertisementModel detailedModel);
+        public Task<ICollection<SearchResultModel>> DetailedSearchVehiclesAsync(DetailedSearchAdvertisementModel detailedModel, string userId);
 
-        public Task<ICollection<SearchResultModel>> GetLastPublishedAdvertisementsAsync();
+        public Task<ICollection<SearchResultModel>> GetLastPublishedAdvertisementsAsync(string userId);
 
-        public Task<ICollection<SearchResultModel>> BuildSearchResultModelsAsync(ICollection<Data.Models.Advertisement> advertisements);
+        public Task<ICollection<SearchResultModel>> BuildSearchResultModelsAsync(ICollection<Data.Models.Advertisement> advertisements, string userId);
 
         public Task<ICollection<SearchResultModel>> FindAdvertisementsByUserIdAsync(string userId);
 
-        public Task<AveragePriceModel> AveragePricesByGivenBrandAndModelAsync(AveragePriceModel priceModel);
+        public Task<AveragePriceModel> AveragePricesByGivenBrandAndModelAsync(AveragePriceModel priceModel, string userId);
     }
 }

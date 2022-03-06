@@ -16,6 +16,7 @@ namespace CarSalesSystem.Services.User
         {
             if (context.UserFavAdvertisements.Any(x => x.AdvertisementId == advertisementId && x.UserId == userId))
             {
+                RemoveAdvertisementFromFavorite(advertisementId, userId);
                 return false;
             }
 

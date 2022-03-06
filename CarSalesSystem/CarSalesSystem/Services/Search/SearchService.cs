@@ -21,25 +21,25 @@ namespace CarSalesSystem.Services.Search
         public SearchService(CarSalesDbContext context)
          => this.context = context;
 
-        public async Task<ICollection<SearchResultModel>> SearchVehiclesAsync(SearchAdvertisementModel model)
+        public async Task<ICollection<SearchResultModel>> SearchVehiclesAsync(SearchAdvertisementModel model, string userId)
         {
-            return await BuildSearchResultModelsAsync(await FindAdvertisementsAsync(model, false));
+            return await BuildSearchResultModelsAsync(await FindAdvertisementsAsync(model, false), userId);
         }
 
-        public async Task<ICollection<SearchResultModel>> DetailedSearchVehiclesAsync(DetailedSearchAdvertisementModel detailedModel)
+        public async Task<ICollection<SearchResultModel>> DetailedSearchVehiclesAsync(DetailedSearchAdvertisementModel detailedModel, string userId)
         {
-            return await BuildSearchResultModelsAsync(await FindAdvertisementsAsync(detailedModel, true));
+            return await BuildSearchResultModelsAsync(await FindAdvertisementsAsync(detailedModel, true), userId);
         }
 
-        public async Task<ICollection<SearchResultModel>> GetLastPublishedAdvertisementsAsync()
+        public async Task<ICollection<SearchResultModel>> GetLastPublishedAdvertisementsAsync(string userId)
         {
             var advertisements = await context.Advertisements.OrderByDescending(x => x.CreatedOnDate).Take(6).ToListAsync();
 
-            return await BuildSearchResultModelsAsync(advertisements);
+            return await BuildSearchResultModelsAsync(advertisements, userId);
 
         }
 
-        public async Task<ICollection<SearchResultModel>> BuildSearchResultModelsAsync(ICollection<Data.Models.Advertisement> advertisements)
+        public async Task<ICollection<SearchResultModel>> BuildSearchResultModelsAsync(ICollection<Data.Models.Advertisement> advertisements, string userId)
         {
             var results = new List<SearchResultModel>();
 
@@ -48,6 +48,7 @@ namespace CarSalesSystem.Services.Search
                 Data.Models.Advertisement loadedAdvertisement = await context.Advertisements
                     .Include(c => c.City)
                     .Include(v => v.Vehicle)
+                    .Include(x => x.FavoriteAdvertisements)
                     .FirstOrDefaultAsync(a => a.Id == advertisement.Id);
 
                 if (loadedAdvertisement != null)
@@ -61,7 +62,9 @@ namespace CarSalesSystem.Services.Search
                         Price = loadedAdvertisement.Price,
                         Region = context.Regions.FirstOrDefaultAsync(r => r.Id == loadedAdvertisement.City.RegionId)?.Result.Name,
                         Year = loadedAdvertisement.Vehicle.Year,
-                        CreatedOn = loadedAdvertisement.CreatedOnDate.ToString("HH:mm, dd.MM.yyyy")
+                        CreatedOn = loadedAdvertisement.CreatedOnDate.ToString("HH:mm, dd.MM.yyyy"),
+                        IsFavorite = loadedAdvertisement.FavoriteAdvertisements
+                            .Any(x => x.AdvertisementId == loadedAdvertisement.Id && loadedAdvertisement.UserId == userId)
                     };
 
                     string fullPath = ImagesPath + "/Advertisement" + loadedAdvertisement.Id;
@@ -136,10 +139,10 @@ namespace CarSalesSystem.Services.Search
             ICollection<Data.Models.Advertisement> advertisements =
              await context.Advertisements.Where(x => x.UserId == userId).ToListAsync();
 
-            return await BuildSearchResultModelsAsync(advertisements);
+            return await BuildSearchResultModelsAsync(advertisements, userId);
         }
 
-        public async Task<AveragePriceModel> AveragePricesByGivenBrandAndModelAsync(AveragePriceModel priceModel)
+        public async Task<AveragePriceModel> AveragePricesByGivenBrandAndModelAsync(AveragePriceModel priceModel, string userId)
         {
             var searchModel = new DetailedSearchAdvertisementModel()
             {
@@ -156,7 +159,7 @@ namespace CarSalesSystem.Services.Search
 
             priceModel.AveragePrice = Convert.ToDecimal(advertisementsAveragePrice.ToString("0.##"));
 
-            priceModel.Advertisements = await BuildSearchResultModelsAsync(advertisements.ToList());
+            priceModel.Advertisements = await BuildSearchResultModelsAsync(advertisements.ToList(), userId);
 
             return priceModel;
         }

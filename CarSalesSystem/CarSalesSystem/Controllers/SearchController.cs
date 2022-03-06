@@ -63,7 +63,7 @@ namespace CarSalesSystem.Controllers
         [HttpGet]
         public async Task<IActionResult> Search(SearchAdvertisementModel searchModel)
         {
-            ICollection<SearchResultModel> models = await searchService.SearchVehiclesAsync(searchModel);
+            ICollection<SearchResultModel> models = await searchService.SearchVehiclesAsync(searchModel, this.User.Id());
 
             return View(models);
         }
@@ -89,7 +89,7 @@ namespace CarSalesSystem.Controllers
         [HttpPost]
         public async Task<IActionResult> DetailedSearch(DetailedSearchAdvertisementModel detailedModel)
         {
-            ICollection<SearchResultModel> detailedResultModels = await searchService.DetailedSearchVehiclesAsync(detailedModel);
+            ICollection<SearchResultModel> detailedResultModels = await searchService.DetailedSearchVehiclesAsync(detailedModel, this.User.Id());
 
             return View("Search", detailedResultModels);
         }
@@ -150,7 +150,7 @@ namespace CarSalesSystem.Controllers
                 return View(priceModel);
             }
 
-            priceModel = await searchService.AveragePricesByGivenBrandAndModelAsync(priceModel);
+            priceModel = await searchService.AveragePricesByGivenBrandAndModelAsync(priceModel, this.User.Id());
 
             if (command == "Compare")
             {
