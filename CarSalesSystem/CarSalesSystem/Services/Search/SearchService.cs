@@ -64,7 +64,7 @@ namespace CarSalesSystem.Services.Search
                         Year = loadedAdvertisement.Vehicle.Year,
                         CreatedOn = loadedAdvertisement.CreatedOnDate.ToString("HH:mm, dd.MM.yyyy"),
                         IsFavorite = loadedAdvertisement.FavoriteAdvertisements
-                            .Any(x => x.AdvertisementId == loadedAdvertisement.Id && loadedAdvertisement.UserId == userId)
+                            .Any(x => x.AdvertisementId == loadedAdvertisement.Id && x.UserId == userId)
                     };
 
                     string fullPath = ImagesPath + "/Advertisement" + loadedAdvertisement.Id;

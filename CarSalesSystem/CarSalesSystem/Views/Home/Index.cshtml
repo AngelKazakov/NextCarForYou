@@ -1,6 +1,8 @@
 ﻿@model HomeViewModel
 @{
     ViewData["Title"] = "Home Page";
+    ViewData["TitlePartial"] = "Newest Advertisements";
+
 }
 
 <div class="text-center">
@@ -92,62 +94,12 @@
                 </div>
             </form>
             <br />
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Newest Advertisements</h5>
-                    <hr class="border-primary" />
-                    <div class="container mt-4">
-                        <div class="row  d-flex justify-content-center">
-                            @foreach (var advertisement in @Model.LatestPublishedAdvertisements)
-                            {
-                                {
-                                    <div class="col-auto mb-3">
-                                        <div class="card" style="width: 18rem;">
-                                            @if (advertisement.Image != null)
-                                            {
-                                                var base64 = Convert.ToBase64String(advertisement.Image);
-                                                var imgSrc = String.Format("data:image/gif;base64,{0}", base64);
-                                                <img class="card-img-top mx-auto d-block m-3" src="@imgSrc" style="height: 250px; width: 250px;" alt="Card image cap">
-                                            }
-                                            <div class="card-body">
-                                                <h3 class="card-title">@advertisement.Name</h3>
-                                                <h5 class="card-text">Price: €@advertisement.Price</h5>
-                                                <p class="card-text">Mileage: @advertisement.Mileage km</p>
-                                                <p class="card-text">City: @advertisement.City, Region: @advertisement.Region</p>
-                                                <p class="card-text">Created on: @advertisement.CreatedOn</p>
-                                                @Html.ActionLink("See Details", "Details", "Advertisement", new { advertisementId = @advertisement.AdvertisementId }, new { @class = "btn btn-primary" })
-                                                @using (Html.BeginForm("AddAdvertisementToFavorite", "User", new { advertisementId = @advertisement.AdvertisementId }, FormMethod.Post))
-                                                {
-                                                    @Html.AntiForgeryToken()
-                                                    @if (advertisement.IsFavorite)
-                                                    {
-                                                        <button title="Remove from Favorite" type="submit" class="btn btn-outline-secondary" id="@advertisement.AdvertisementId">
-                                                            <img src="/images/heart-fill.svg" alt="Remove from favorite">
-                                                        </button>
-
-                                                    }
-                                                    else
-                                                    {
-                                                        <button title="Add to Favorite" type="submit" class="btn btn-outline-secondary" id="@advertisement.AdvertisementId">
-                                                            <img src="/images/heart.svg" alt="Add to favorite">
-                                                        </button>
-                                                    }
-                                                }
-                                            </div>
-                                        </div>
-                                        <br />
-                                    </div>
-                                }
-                            }
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <partial name="_SearchPartial" model="@Model.LatestPublishedAdvertisements" view-data="ViewData" />
         </div>
     </div>
 </div>
 
 @section Scripts
 {
-<script src="/js/site.js" type="text/javascript"></script>
+    <script src="/js/site.js" type="text/javascript"></script>
 }
