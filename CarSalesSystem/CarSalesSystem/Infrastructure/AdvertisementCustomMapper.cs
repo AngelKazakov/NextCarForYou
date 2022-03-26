@@ -184,7 +184,6 @@ namespace CarSalesSystem.Infrastructure
                 default:
                     return "January";
             }
-
         }
     }
 }

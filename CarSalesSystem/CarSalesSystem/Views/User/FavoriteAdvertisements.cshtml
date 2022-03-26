@@ -1,0 +1,7 @@
+﻿@model ICollection<SearchResultModel>
+
+@{
+    ViewData["TitlePartial"] = "My favorite advertisements";
+}
+
+<partial name="_SearchPartial" model="@Model" view-data="ViewData"/>

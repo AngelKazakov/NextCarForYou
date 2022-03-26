@@ -7,16 +7,18 @@ namespace CarSalesSystem.Services.Advertisement
 {
     public interface IAdvertisementService
     {
-        Task<string> SaveAsync(Data.Models.Advertisement advertisement, List<string> extrasIds, ICollection<IFormFile> images);
+        public Task<AdvertisementAddFormModel> GetAdvertisementAddFormModel(string userId);
 
-        Task<string> EditAsync(AdvertisementAddFormModel advertisement, AdvertisementAddFormModelStep2 advertisementStep2, string userId);
+        public Task<string> SaveAsync(Data.Models.Advertisement advertisement, List<string> extrasIds, ICollection<IFormFile> images);
 
-        Task DeleteAsync(string Id, string UserId);
+        public Task<string> EditAsync(AdvertisementAddFormModel advertisement, AdvertisementAddFormModelStep2 advertisementStep2, string userId);
 
-       Task< Data.Models.Advertisement> GetAdvertisementByIdAsync(string advertisementId);
+        public Task DeleteAsync(string Id, string UserId);
 
-        public Task< AdvertisementAddFormModel> GetRecordDataAsync(string advertisementId, string userId);
+        public Task<Data.Models.Advertisement> GetAdvertisementByIdAsync(string advertisementId);
 
-        public Task< AdvertisementAddFormModelStep2> GetRecordDataStep2Async(string advertisementId);
+        public Task<AdvertisementAddFormModel> GetRecordDataAsync(string advertisementId, string userId);
+
+        public Task<AdvertisementAddFormModelStep2> GetRecordDataStep2Async(string advertisementId);
     }
 }

@@ -1,6 +1,8 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using CarSalesSystem.Data;
 using CarSalesSystem.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CarSalesSystem.Services.User
 {
@@ -12,11 +14,11 @@ namespace CarSalesSystem.Services.User
         => this.context = context;
 
 
-        public bool AddAdvertisementToFavorite(string advertisementId, string userId)
+        public async Task<bool> AddAdvertisementToFavoriteAsync(string advertisementId, string userId)
         {
             if (context.UserFavAdvertisements.Any(x => x.AdvertisementId == advertisementId && x.UserId == userId))
             {
-                RemoveAdvertisementFromFavorite(advertisementId, userId);
+                await RemoveAdvertisementFromFavoriteAsync(advertisementId, userId);
                 return false;
             }
 
@@ -26,20 +28,20 @@ namespace CarSalesSystem.Services.User
                 AdvertisementId = advertisementId
             });
 
-            context.SaveChanges();
+            await context.SaveChangesAsync();
 
             return true;
         }
 
-        public bool RemoveAdvertisementFromFavorite(string advertisementId, string userId)
+        public async Task<bool> RemoveAdvertisementFromFavoriteAsync(string advertisementId, string userId)
         {
             var favAdvertisement =
-                context.UserFavAdvertisements.FirstOrDefault(x => x.UserId == userId && x.AdvertisementId == advertisementId);
+               await context.UserFavAdvertisements.FirstOrDefaultAsync(x => x.UserId == userId && x.AdvertisementId == advertisementId);
 
             if (favAdvertisement != null)
             {
                 context.UserFavAdvertisements.Remove(favAdvertisement);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
 
                 return true;
             }

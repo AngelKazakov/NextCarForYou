@@ -19,7 +19,6 @@
                                             <option value="@brand.Id">@brand.Name</option>
                                         }
                                     </select>
-                                    @*@Html.DropDownListFor(model => model.BrandFormModel.Id, new SelectList(Model.Brands, "Id", "Name"), new { id = "selectBrandId", @class = "form-control"})*@
                                     <span asp-validation-for="BrandFormModel.Name" class="text-danger"></span>
                                     <br />
                                     <label asp-for="Price">Price</label>

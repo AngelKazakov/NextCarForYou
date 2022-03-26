@@ -2,89 +2,41 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using CarSalesSystem.Data;
 using CarSalesSystem.Data.Models;
 using CarSalesSystem.Infrastructure;
 using CarSalesSystem.Models.Advertisement;
-using CarSalesSystem.Models.Brand;
-using CarSalesSystem.Models.CarDealership;
-using CarSalesSystem.Models.Category;
-using CarSalesSystem.Models.Color;
-using CarSalesSystem.Models.Engine;
-using CarSalesSystem.Models.EuroStandard;
-using CarSalesSystem.Models.ExtrasCategory;
-using CarSalesSystem.Models.Region;
-using CarSalesSystem.Models.Transmission;
-using CarSalesSystem.Services;
 using CarSalesSystem.Services.Advertisement;
-using CarSalesSystem.Services.Brands;
-using CarSalesSystem.Services.CarDealerShip;
-using CarSalesSystem.Services.Categories;
 using CarSalesSystem.Services.Models;
 using CarSalesSystem.Services.Regions;
-using CarSalesSystem.Services.TechnicalData;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using AutoMapper;
 using Newtonsoft.Json;
-
 
 namespace CarSalesSystem.Controllers
 {
     public class AdvertisementController : Controller
     {
-        private readonly IBrandService brandService;
         private readonly IModelService modelService;
-        private readonly ICategoryService categoryService;
-        private readonly IColorService colorService;
         private readonly IRegionService regionService;
-        private readonly ITechnicalService technicalService;
-        private readonly ICarDealerShipService dealerShipService;
         private readonly IAdvertisementService advertisementService;
-        private readonly IMapper mapper;
 
         public AdvertisementController(
-            IBrandService brandService,
             IModelService modelService,
-            ICategoryService categoryService,
-            IMapper mapper, IColorService colorService,
             IRegionService regionService,
-            ITechnicalService technicalService,
-            ICarDealerShipService dealerShipService,
             IAdvertisementService advertisementService
             )
         {
-            this.brandService = brandService;
             this.modelService = modelService;
-            this.categoryService = categoryService;
-            this.mapper = mapper;
-            this.colorService = colorService;
             this.regionService = regionService;
-            this.technicalService = technicalService;
-            this.technicalService = technicalService;
             this.advertisementService = advertisementService;
-            this.dealerShipService = dealerShipService;
         }
 
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> Add()
         {
-            AdvertisementAddFormModel model = new AdvertisementAddFormModel()
-            {
-                Brands = mapper.Map<ICollection<Brand>, ICollection<BrandFormModel>>(await brandService.GetAllBrandsAsync()),
-                VehicleCategories = mapper.Map<ICollection<VehicleCategory>, ICollection<CategoryFormModel>>(await categoryService.GetVehicleCategoriesAsync()),
-                Colors = mapper.Map<ICollection<Color>, ICollection<ColorFormModel>>(await colorService.GetColorsAsync()),
-                Regions = mapper.Map<ICollection<Region>, ICollection<RegionFormModel>>(await regionService.GetAllRegionsAsync()),
-                EngineTypes = mapper.Map<ICollection<VehicleEngineType>, ICollection<EngineFormModel>>(await technicalService.GetEngineTypesAsync()),
-                TransmissionTypes = mapper.Map<ICollection<TransmissionType>, ICollection<TransmissionFormModel>>(await technicalService.GetTransmissionTypesAsync()),
-                EuroStandards = mapper.Map<ICollection<VehicleEuroStandard>, ICollection<EuroStandardFormModel>>(await technicalService.GetEuroStandardsAsync()),
-                Extras = mapper.Map<ICollection<ExtrasCategory>, ICollection<ExtrasCategoryFormModel>>(await technicalService.GetExtrasCategoriesAsync()),
-                Dealerships = mapper.Map<ICollection<CarDealerShip>, ICollection<CarDealershipViewModel>>(await dealerShipService.GetAllCarDealershipsByUserIdAsync(this.User.Id()))
-            };
-
-            return View(model);
+            return View(await advertisementService.GetAdvertisementAddFormModel(this.User.Id()));
         }
 
         [HttpPost]
@@ -209,7 +161,7 @@ namespace CarSalesSystem.Controllers
         public async Task<IActionResult> Details(string advertisementId)
         {
             Advertisement advertisement = await advertisementService.GetAdvertisementByIdAsync(advertisementId);
-            AdvertisementViewModel advertisementViewModel = AdvertisementCustomMapper.Map(advertisement,this.User.Id());
+            AdvertisementViewModel advertisementViewModel = AdvertisementCustomMapper.Map(advertisement, this.User.Id());
 
             return View(advertisementViewModel);
         }

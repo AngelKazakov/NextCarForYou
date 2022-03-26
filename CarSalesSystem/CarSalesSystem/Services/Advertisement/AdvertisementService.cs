@@ -70,6 +70,24 @@ namespace CarSalesSystem.Services.Advertisement
             this.technicalService = technicalService;
         }
 
+        public async Task<AdvertisementAddFormModel> GetAdvertisementAddFormModel(string userId)
+        {
+            AdvertisementAddFormModel model = new AdvertisementAddFormModel()
+            {
+                Brands = mapper.Map<ICollection<Brand>, ICollection<BrandFormModel>>(await brandService.GetAllBrandsAsync()),
+                VehicleCategories = mapper.Map<ICollection<VehicleCategory>, ICollection<CategoryFormModel>>(await categoryService.GetVehicleCategoriesAsync()),
+                Colors = mapper.Map<ICollection<Color>, ICollection<ColorFormModel>>(await colorService.GetColorsAsync()),
+                Regions = mapper.Map<ICollection<Region>, ICollection<RegionFormModel>>(await regionService.GetAllRegionsAsync()),
+                EngineTypes = mapper.Map<ICollection<VehicleEngineType>, ICollection<EngineFormModel>>(await technicalService.GetEngineTypesAsync()),
+                TransmissionTypes = mapper.Map<ICollection<TransmissionType>, ICollection<TransmissionFormModel>>(await technicalService.GetTransmissionTypesAsync()),
+                EuroStandards = mapper.Map<ICollection<VehicleEuroStandard>, ICollection<EuroStandardFormModel>>(await technicalService.GetEuroStandardsAsync()),
+                Extras = mapper.Map<ICollection<ExtrasCategory>, ICollection<ExtrasCategoryFormModel>>(await technicalService.GetExtrasCategoriesAsync()),
+                Dealerships = mapper.Map<ICollection<Data.Models.CarDealerShip>, ICollection<CarDealershipViewModel>>(await dealerShipService.GetAllCarDealershipsByUserIdAsync(userId))
+            };
+
+            return model;
+        }
+
         public async Task<string> SaveAsync(Data.Models.Advertisement advertisement, List<string> extrasIds, ICollection<IFormFile> images)
         {
             await using IDbContextTransaction transaction = await context.Database.BeginTransactionAsync();
@@ -239,13 +257,13 @@ namespace CarSalesSystem.Services.Advertisement
             };
 
 
-            List<string> SelectedExtras = model.AdvertisementExtras.Select(x => x.Extras.Name).ToList();
+            List<string> selectedExtras = model.AdvertisementExtras.Select(x => x.Extras.Name).ToList();
 
             foreach (var category in advertisementAddFormModel.Extras)
             {
                 foreach (var extra in category.Extras)
                 {
-                    if (SelectedExtras.Contains(extra.Name))
+                    if (selectedExtras.Contains(extra.Name))
                     {
                         extra.Checked = true;
                     }
@@ -267,6 +285,7 @@ namespace CarSalesSystem.Services.Advertisement
             };
 
             Dictionary<string, byte[]> idsToImages = new Dictionary<string, byte[]>();
+
             foreach (var vehicleImage in model.VehicleImages)
             {
                 if (!string.IsNullOrWhiteSpace(vehicleImage.FullPath))

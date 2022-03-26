@@ -1,9 +1,11 @@
-﻿namespace CarSalesSystem.Services.User
+﻿using System.Threading.Tasks;
+
+namespace CarSalesSystem.Services.User
 {
     public interface IUserService
     {
-        public bool AddAdvertisementToFavorite(string advertisementId,string userId);
+        public Task<bool> AddAdvertisementToFavoriteAsync(string advertisementId, string userId);
 
-        public bool RemoveAdvertisementFromFavorite(string advertisementId,string userId);
+        public Task<bool> RemoveAdvertisementFromFavoriteAsync(string advertisementId, string userId);
     }
 }
