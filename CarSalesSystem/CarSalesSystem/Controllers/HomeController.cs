@@ -1,60 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
 using CarSalesSystem.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using AutoMapper;
-using CarSalesSystem.Data;
-using CarSalesSystem.Data.Models;
+using Microsoft.Extensions.Caching.Memory;
 using CarSalesSystem.Infrastructure;
 using CarSalesSystem.Infrastructure.EmailConfiguration;
-using CarSalesSystem.Models.Brand;
 using CarSalesSystem.Models.Contact;
-using CarSalesSystem.Models.Engine;
 using CarSalesSystem.Models.Home;
-using CarSalesSystem.Models.Region;
-using CarSalesSystem.Models.Search;
-using CarSalesSystem.Models.Transmission;
-using CarSalesSystem.Services.Brands;
 using CarSalesSystem.Services.Email;
-using CarSalesSystem.Services.Models;
-using CarSalesSystem.Services.Regions;
 using CarSalesSystem.Services.Search;
-using CarSalesSystem.Services.TechnicalData;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace CarSalesSystem.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IBrandService brandService;
-        private readonly IModelService modelService;
-        private readonly IRegionService regionService;
         private readonly ISearchService searchService;
-        private readonly ITechnicalService technicalService;
-        private readonly IMapper mapper;
         private readonly IMemoryCache memoryCache;
         private readonly IEmailSender emailSender;
 
         public HomeController(
-            IBrandService brandService,
-            IModelService modelService,
-            IRegionService regionService,
-            ITechnicalService technicalService,
             ISearchService searchService,
-            IMapper mapper,
             IEmailSender emailSender,
             IMemoryCache memoryCache)
         {
             this.emailSender = emailSender;
             this.memoryCache = memoryCache;
             this.searchService = searchService;
-            this.brandService = brandService;
-            this.modelService = modelService;
-            this.regionService = regionService;
-            this.technicalService = technicalService;
-            this.mapper = mapper;
         }
 
         [HttpGet]
@@ -66,17 +38,7 @@ namespace CarSalesSystem.Controllers
             if (!memoryCache.TryGetValue(cacheKey, out HomeViewModel model))
             {
                 //calling the server
-                model = new HomeViewModel()
-                {
-                    SearchAdvertisementModel = new SearchAdvertisementModel()
-                    {
-                        Brands = mapper.Map<ICollection<Brand>, ICollection<BrandFormModel>>(await brandService.GetAllBrandsAsync()),
-                        Regions = mapper.Map<ICollection<Region>, ICollection<RegionFormModel>>(await regionService.GetAllRegionsAsync()),
-                        EngineTypes = mapper.Map<ICollection<VehicleEngineType>, ICollection<EngineFormModel>>(await technicalService.GetEngineTypesAsync()),
-                        TransmissionTypes = mapper.Map<ICollection<TransmissionType>, ICollection<TransmissionFormModel>>(await technicalService.GetTransmissionTypesAsync()),
-                    },
-                    LatestPublishedAdvertisements = await searchService.GetLastPublishedAdvertisementsAsync(this.User.Id())
-                };
+                model = await searchService.InitHomeViewModelAsync(this.User.Id());
 
                 //setting up cache options
                 var cacheExpiryOptions = new MemoryCacheEntryOptions

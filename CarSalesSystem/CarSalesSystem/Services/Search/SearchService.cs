@@ -14,6 +14,7 @@ using CarSalesSystem.Models.Color;
 using CarSalesSystem.Models.Engine;
 using CarSalesSystem.Models.EuroStandard;
 using CarSalesSystem.Models.ExtrasCategory;
+using CarSalesSystem.Models.Home;
 using CarSalesSystem.Models.Model;
 using CarSalesSystem.Models.Region;
 using CarSalesSystem.Models.Search;
@@ -167,7 +168,7 @@ namespace CarSalesSystem.Services.Search
             return priceModel;
         }
 
-        public async Task<DetailedSearchAdvertisementModel> GetDetailedSearchAdvertisementModel()
+        public async Task<DetailedSearchAdvertisementModel> InitDetailedSearchAdvertisementModelAsync()
         {
             DetailedSearchAdvertisementModel model = new DetailedSearchAdvertisementModel()
             {
@@ -184,13 +185,30 @@ namespace CarSalesSystem.Services.Search
             return model;
         }
 
-        public async Task<AveragePriceModel> GetAveragePriceModel()
+        public async Task<AveragePriceModel> InitAveragePriceModelAsync()
         {
             AveragePriceModel model = new AveragePriceModel()
             {
                 Brands = mapper.Map<ICollection<Brand>, ICollection<BrandFormModel>>(await brandService.GetAllBrandsAsync()),
                 Engines = mapper.Map<ICollection<VehicleEngineType>, ICollection<EngineFormModel>>(await technicalService.GetEngineTypesAsync()),
                 Transmissions = mapper.Map<ICollection<TransmissionType>, ICollection<TransmissionFormModel>>(await technicalService.GetTransmissionTypesAsync()),
+            };
+
+            return model;
+        }
+
+        public async Task<HomeViewModel> InitHomeViewModelAsync(string userId)
+        {
+            var model = new HomeViewModel()
+            {
+                SearchAdvertisementModel = new SearchAdvertisementModel()
+                {
+                    Brands = mapper.Map<ICollection<Brand>, ICollection<BrandFormModel>>(await brandService.GetAllBrandsAsync()),
+                    Regions = mapper.Map<ICollection<Region>, ICollection<RegionFormModel>>(await regionService.GetAllRegionsAsync()),
+                    EngineTypes = mapper.Map<ICollection<VehicleEngineType>, ICollection<EngineFormModel>>(await technicalService.GetEngineTypesAsync()),
+                    TransmissionTypes = mapper.Map<ICollection<TransmissionType>, ICollection<TransmissionFormModel>>(await technicalService.GetTransmissionTypesAsync()),
+                },
+                LatestPublishedAdvertisements = await GetLastPublishedAdvertisementsAsync(userId)
             };
 
             return model;

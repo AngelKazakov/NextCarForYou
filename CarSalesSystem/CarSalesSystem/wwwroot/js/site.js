@@ -86,6 +86,28 @@
 
         $(this).data('previousRegion', $(this).val());
     });
-
-
 });
+
+function addOrRemoveFromFavoriteAdvertisement(advertisementId) {
+    var removeFromFavId = "#removeFromFavorite_" + advertisementId;
+    var addToFavId = "#addToFavorite_" + advertisementId;
+    $.ajax({
+        type: 'POST',
+        url: '/User/AddAdvertisementToFavorite',
+        dataType: 'json',
+        data: { advertisementId: advertisementId },
+        headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+        success: function (result) {
+            if (result) {
+                $(addToFavId).css('display', 'none');
+                $(removeFromFavId).css('display', 'block');
+            } else {
+                $(addToFavId).css('display', 'block');
+                $(removeFromFavId).css('display', 'none');
+            }
+        },
+        error: function (ex) {
+            alert('Failed to perform operation.' + ex);
+        }
+    });
+}

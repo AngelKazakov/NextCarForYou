@@ -30,23 +30,10 @@
                                         <p class="card-text">City: @advertisement.City, Region: @advertisement.Region</p>
                                         <p class="card-text">Created on: @advertisement.CreatedOn</p>
                                         @Html.ActionLink("See Details", "Details", "Advertisement", new { advertisementId = @advertisement.AdvertisementId }, new { @class = "btn btn-primary" })
-                                        @using (Html.BeginForm("AddAdvertisementToFavorite", "User", new { advertisementId = @advertisement.AdvertisementId }, FormMethod.Post))
-                                        {
-                                            @Html.AntiForgeryToken()
-                                            @if (advertisement.IsFavorite)
-                                            {
-                                                <button title="Remove from Favorite" type="submit" class="btn btn-outline-secondary" id="@advertisement.AdvertisementId">
-                                                    <img src="/images/heart-fill.svg" alt="Remove from favorite">
-                                                </button>
-
-                                            }
-                                            else
-                                            {
-                                                <button title="Add to Favorite" type="submit" class="btn btn-outline-secondary" id="@advertisement.AdvertisementId">
-                                                    <img src="/images/heart.svg" alt="Add to favorite">
-                                                </button>
-                                            }
-                                        }
+                                            <button type="submit" onclick="javascript: addOrRemoveFromFavoriteAdvertisement('@advertisement.AdvertisementId');" class="btn btn-outline-secondary" id="removeAdvFromFavoriteId">
+                                                <img style="@(advertisement.IsFavorite ? "display:block" : "display:none")" id="removeFromFavorite_@advertisement.AdvertisementId" src="/images/heart-fill.svg" alt="Remove from favorite">
+                                                <img style="@(!advertisement.IsFavorite? "display:block" : "display:none")" id="addToFavorite_@advertisement.AdvertisementId" src="/images/heart.svg" alt="Add to favorite">
+                                            </button>
                                     </div>
                                 </div>
                                 <br />
@@ -58,3 +45,4 @@
         </div>
     </div>
 </div>
+

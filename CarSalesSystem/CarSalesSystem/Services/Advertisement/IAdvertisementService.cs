@@ -7,7 +7,7 @@ namespace CarSalesSystem.Services.Advertisement
 {
     public interface IAdvertisementService
     {
-        public Task<AdvertisementAddFormModel> GetAdvertisementAddFormModel(string userId);
+        public Task<AdvertisementAddFormModel> InitAdvertisementAddFormModel(string userId);
 
         public Task<string> SaveAsync(Data.Models.Advertisement advertisement, List<string> extrasIds, ICollection<IFormFile> images);
 

@@ -20,11 +20,11 @@ namespace CarSalesSystem.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> AddAdvertisementToFavorite(string advertisementId)
+        public async Task<JsonResult> AddAdvertisementToFavorite(string advertisementId)
         {
-            await userService.AddAdvertisementToFavoriteAsync(advertisementId, this.User.Id());
+            var result = await userService.AddAdvertisementToFavoriteAsync(advertisementId, this.User.Id());
 
-            return RedirectToAction("Index", "Home");
+            return Json(result);
         }
 
         [HttpGet]

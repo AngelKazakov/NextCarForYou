@@ -36,7 +36,7 @@ namespace CarSalesSystem.Controllers
         [HttpGet]
         public async Task<IActionResult> Add()
         {
-            return View(await advertisementService.GetAdvertisementAddFormModel(this.User.Id()));
+            return View(await advertisementService.InitAdvertisementAddFormModel(this.User.Id()));
         }
 
         [HttpPost]

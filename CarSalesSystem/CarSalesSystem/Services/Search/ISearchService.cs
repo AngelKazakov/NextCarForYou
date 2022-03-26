@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using CarSalesSystem.Models.Home;
 using CarSalesSystem.Models.Search;
 
 namespace CarSalesSystem.Services.Search
@@ -20,8 +21,10 @@ namespace CarSalesSystem.Services.Search
 
         public Task<AveragePriceModel> AveragePricesByGivenBrandAndModelAsync(AveragePriceModel priceModel, string userId);
 
-        public Task<DetailedSearchAdvertisementModel> GetDetailedSearchAdvertisementModel();
+        public Task<DetailedSearchAdvertisementModel> InitDetailedSearchAdvertisementModelAsync();
 
-        public Task<AveragePriceModel> GetAveragePriceModel();
+        public Task<AveragePriceModel> InitAveragePriceModelAsync();
+
+        public Task<HomeViewModel> InitHomeViewModelAsync(string userId);
     }
 }

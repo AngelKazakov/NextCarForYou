@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using CarSalesSystem.Data;
 using CarSalesSystem.Data.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace CarSalesSystem.Services.User
 {

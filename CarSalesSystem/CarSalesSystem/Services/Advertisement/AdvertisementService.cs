@@ -70,7 +70,7 @@ namespace CarSalesSystem.Services.Advertisement
             this.technicalService = technicalService;
         }
 
-        public async Task<AdvertisementAddFormModel> GetAdvertisementAddFormModel(string userId)
+        public async Task<AdvertisementAddFormModel> InitAdvertisementAddFormModel(string userId)
         {
             AdvertisementAddFormModel model = new AdvertisementAddFormModel()
             {

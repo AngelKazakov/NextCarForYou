@@ -34,7 +34,7 @@ namespace CarSalesSystem.Controllers
         [HttpGet]
         public async Task<IActionResult> DetailedSearch()
         {
-            return View(await searchService.GetDetailedSearchAdvertisementModel());
+            return View(await searchService.InitDetailedSearchAdvertisementModelAsync());
         }
 
         [HttpPost]
@@ -72,7 +72,7 @@ namespace CarSalesSystem.Controllers
         [HttpGet]
         public async Task<IActionResult> AveragePrice()
         {
-            return View(await searchService.GetAveragePriceModel());
+            return View(await searchService.InitAveragePriceModelAsync());
         }
 
         [HttpPost]
