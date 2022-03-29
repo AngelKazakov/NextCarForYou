@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using AutoMapper;
 using CarSalesSystem.Data;
@@ -176,6 +177,10 @@ namespace CarSalesSystem.Services.Advertisement
                 }
 
                 Data.Models.Advertisement advertisement = context.Advertisements.Include(x => x.Vehicle).First(adv => adv.Id == Id);
+
+                var favAdvertisementsForDeletion = context.UserFavAdvertisements.Where(x => x.AdvertisementId == advertisement.Id);
+
+                context.UserFavAdvertisements.RemoveRange(favAdvertisementsForDeletion);
                 context.Advertisements.Remove(advertisement);
                 context.Vehicles.Remove(advertisement.Vehicle);
                 await context.SaveChangesAsync();
