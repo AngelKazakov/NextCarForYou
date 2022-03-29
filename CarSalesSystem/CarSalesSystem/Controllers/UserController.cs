@@ -28,6 +28,7 @@ namespace CarSalesSystem.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> FavoriteAdvertisements()
         {
             return View(await searchService.GetUserFavoriteAdvertisementsAsync(this.User.Id()));

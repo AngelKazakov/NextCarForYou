@@ -6,6 +6,25 @@
 
 <partial name="_CarDealershipFormPartial" model="@Model" />
 
+<style>
+    .closeDiv {
+        width: 20px;
+        height: 21px;
+        background-color: rgb(35, 179, 119);
+        float: left;
+        cursor: pointer;
+        color: white;
+        box-shadow: 2px 2px 7px rgb(74, 72, 72);
+        text-align: center;
+        margin: 5px;
+    }
+
+    .pDiv {
+        float: left;
+        width: 100%
+    }
+</style>
+
 @section Scripts
 {
 <script type="text/javascript">
@@ -47,6 +66,7 @@
                 image.setAttribute('class', 'imgKLIK5 rounded-sm mb-3 rounded mx-auto d-block');
                 image.setAttribute('fileid', fileId);
                 image.setAttribute('id', fileId);
+                image.setAttribute('style', 'width: 300px;  height: 300px; float: left;');
 
                 filesToUpload.push({
                     id: fileId,

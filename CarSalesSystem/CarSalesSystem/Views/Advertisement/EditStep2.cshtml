@@ -8,12 +8,6 @@
 <partial name="_AdvertisementAddForm2Partial" model="@Model" />
 
 <style>
-    img {
-        width: 300px;
-        height: 300px;
-        float: left;
-    }
-
     .closeDiv {
         width: 20px;
         height: 21px;
@@ -84,6 +78,7 @@
 
                 image.setAttribute('class', 'imgKLIK5 rounded-sm mb-3');
                 image.setAttribute('fileid', fileId);
+                image.setAttribute('style', 'width: 300px;  height: 300px; float: left;');
 
                 filesToUpload.push({
                     id: fileId,
