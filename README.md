@@ -10,4 +10,4 @@ There is a contact form for any suggestions, questions or issues.
 
 Welcome page
 
-![Image!] (/READMEImages/WelcomePage.png)
+![Image](READMEImages/WelcomePage.png)
