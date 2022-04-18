@@ -97,6 +97,7 @@ namespace CarSalesSystem
             .UseAuthorization()
             .UseEndpoints(endpoints =>
             {
+                //endpoints.MapControllerRoute("areaRoute","{area:exists}/{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapDefaultControllerRoute();
                 endpoints.MapRazorPages();
             });

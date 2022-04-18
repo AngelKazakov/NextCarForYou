@@ -160,8 +160,8 @@ namespace CarSalesSystem.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(string advertisementId)
         {
-            Advertisement advertisement = await advertisementService.GetAdvertisementByIdAsync(advertisementId);
-            AdvertisementViewModel advertisementViewModel = AdvertisementCustomMapper.Map(advertisement, this.User.Id());
+            var advertisementViewModel =
+                AdvertisementCustomMapper.Map(await advertisementService.GetAdvertisementByIdAsync(advertisementId), this.User.Id());
 
             return View(advertisementViewModel);
         }

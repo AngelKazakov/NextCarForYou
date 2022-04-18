@@ -107,7 +107,11 @@ function addOrRemoveFromFavoriteAdvertisement(advertisementId) {
             }
         },
         error: function (ex) {
-            alert('Failed to perform operation.' + ex);
+            if (ex.status == 401) {
+                window.location = "https://localhost:44300/Identity/Account/Login/";
+            } else {
+                alert('Failed to perform operation.' + ex);
+            }
         }
     });
 }

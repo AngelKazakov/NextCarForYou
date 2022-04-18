@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using AutoMapper;
 using CarSalesSystem.Data;
@@ -160,7 +159,6 @@ namespace CarSalesSystem.Services.Advertisement
 
             return currentAdvertisement.Id;
         }
-
         public async Task DeleteAsync(string Id, string UserId)
         {
             await using IDbContextTransaction transaction = await context.Database.BeginTransactionAsync();
@@ -221,7 +219,6 @@ namespace CarSalesSystem.Services.Advertisement
                     .ThenInclude(x => x.Extras)
                     .ThenInclude(x => x.Category)
                     .FirstOrDefaultAsync(x => x.Id == advertisementId);
-
 
             return advertisement;
         }
@@ -306,6 +303,10 @@ namespace CarSalesSystem.Services.Advertisement
 
         private async Task SaveImagesAsync(ICollection<IFormFile> files, string advertisementId, ICollection<VehicleImage> vehicleImages)
         {
+            if (files == null || files.Count == 0)
+            {
+                return;
+            }
             DirectoryInfo directoryInfo = Directory.CreateDirectory(ImagesPath);
 
             DirectoryInfo subDirectoryInfo = directoryInfo.CreateSubdirectory($"Advertisement{advertisementId}");
