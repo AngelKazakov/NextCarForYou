@@ -49,7 +49,7 @@ namespace CarSalesSystem.Tests.TestDataFactory
         => new Region() { Id = "testRegionId", Name = "testName" };
 
         public static User BuildUser()
-            => new User() { FirstName = "firstName", LastName = "lastName" };
+            => new User() { FirstName = "userFirstName", LastName = "userLastName" };
 
         public static Vehicle BuilVehicle()
         {

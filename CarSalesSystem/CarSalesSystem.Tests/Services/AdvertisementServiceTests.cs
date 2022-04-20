@@ -25,6 +25,7 @@ namespace CarSalesSystem.Tests.Services
         [Fact]
         public async Task GetShouldReturnCorrectAdvertisement()
         {
+            //Arrange
             var optionsBuilder = new DbContextOptionsBuilder<CarSalesDbContext>().UseInMemoryDatabase("testDb");
             var dbContext = new CarSalesDbContext(optionsBuilder.Options);
             dbContext.Advertisements.Add(BuildAdvertisement("15"));
@@ -32,8 +33,10 @@ namespace CarSalesSystem.Tests.Services
             var advertisementService =
                 new AdvertisementService(dbContext, null, null, null, null, null, null, null, null, null);
 
+            //Act
             var advertisement = await advertisementService.GetAdvertisementByIdAsync("15");
 
+            //Assert
             Assert.NotNull(advertisement);
             Assert.Equal("BMW 330CD", advertisement.Name);
         }
@@ -41,13 +44,16 @@ namespace CarSalesSystem.Tests.Services
         [Fact]
         public async Task GetNotExistingAdvertisement()
         {
+            //Arrange
             var optionsBuilder = new DbContextOptionsBuilder<CarSalesDbContext>().UseInMemoryDatabase("testDb");
             var dbContext = new CarSalesDbContext(optionsBuilder.Options);
             var advertisementService =
                 new AdvertisementService(dbContext, null, null, null, null, null, null, null, null, null);
 
+            //Act
             var advertisement = await advertisementService.GetAdvertisementByIdAsync("13");
 
+            //Assert
             Assert.Null(advertisement);
         }
 
@@ -120,15 +126,16 @@ namespace CarSalesSystem.Tests.Services
             Assert.Equal(dealership.Name, result.Dealerships.ElementAt(0).Name);
         }
 
-        public async Task SaveAdvertisementSuccessfullyToDb()
-        {
-            var optionsBuilder = new DbContextOptionsBuilder<CarSalesDbContext>().UseInMemoryDatabase("testDb");
-            var dbContext = new CarSalesDbContext(optionsBuilder.Options);
+        //[Fact]
+        //public async Task SaveAdvertisementSuccessfullyToDb()
+        //{
+        //    var optionsBuilder = new DbContextOptionsBuilder<CarSalesDbContext>().UseInMemoryDatabase("testDb");
+        //    var dbContext = new CarSalesDbContext(optionsBuilder.Options);
 
-            var advertisementService =
-                new AdvertisementService(dbContext, null, null, null, null, null, null, null, null, null);
+        //    var advertisementService =
+        //        new AdvertisementService(dbContext, null, null, null, null, null, null, null, null, null);
 
-            await advertisementService.SaveAsync(BuildAdvertisement(), new List<string>() { "dsc", "abs" }, null);
-        }
+        //    await advertisementService.SaveAsync(BuildAdvertisement(), new List<string>() { "dsc", "abs" }, null);
+        //}
     }
 }
