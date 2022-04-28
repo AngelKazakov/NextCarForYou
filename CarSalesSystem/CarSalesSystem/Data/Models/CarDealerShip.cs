@@ -40,7 +40,7 @@ namespace CarSalesSystem.Data.Models
 
         public byte[] ImageLogo { get; set; }
 
-        public ICollection<Advertisement> Advertisements { get; init; } = new List<Advertisement>();
+        public ICollection<Advertisement> Advertisements { get; set; } = new List<Advertisement>();
 
     }
 }

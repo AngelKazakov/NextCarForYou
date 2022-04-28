@@ -307,6 +307,7 @@ namespace CarSalesSystem.Services.Advertisement
             {
                 return;
             }
+
             DirectoryInfo directoryInfo = Directory.CreateDirectory(ImagesPath);
 
             DirectoryInfo subDirectoryInfo = directoryInfo.CreateSubdirectory($"Advertisement{advertisementId}");
